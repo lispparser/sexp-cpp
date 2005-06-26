@@ -21,7 +21,7 @@
 #define __LISPPARSER_H__
 
 #include <string>
-#include "lexer.h"
+#include "lexer.hpp"
 
 namespace TinyGetText {
 class Dictionary;

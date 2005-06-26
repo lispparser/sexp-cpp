@@ -21,7 +21,7 @@
 #ifndef __LISP_ITERATOR_H__
 #define __LISP_ITERATOR_H__
 
-#include "lisp/lisp.h"
+#include "lisp/lisp.hpp"
 
 namespace lisp
 {
