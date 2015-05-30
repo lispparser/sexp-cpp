@@ -1,4 +1,3 @@
-
 //  Copyright (C) 2004 Matthias Braun <matze@braunis.de>
 //  code in this file based on lispreader from Mark Probst
 //
@@ -18,11 +17,13 @@
 #ifndef __LISP_HPP__
 #define __LISP_HPP__
 
-#include <assert.h>
-#include <iostream>
-#include <memory>
-#include <stdexcept>
+// unions aren't properly handled by -Weffc++, so we switch the warning off
+#pragma GCC diagnostic ignored "-Weffc++"
+
 #include <vector>
+#include <iostream>
+#include <stdexcept>
+#include <assert.h>
 
 namespace lisp
 {

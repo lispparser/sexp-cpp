@@ -1,4 +1,3 @@
-
 //  TuxKart - a fun racing game with go-kart
 //  Copyright (C) 2004 Matthias Braun <matze@braunis.de>
 //
@@ -18,10 +17,9 @@
 #ifndef __LISPPARSER_H__
 #define __LISPPARSER_H__
 
-#include <memory>
 #include <string>
 
-#include "lexer.hpp"
+#include "lisp/lexer.hpp"
 
 namespace lisp
 {

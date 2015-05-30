@@ -30,10 +30,12 @@ public:
   {
     return &currentval;
   }
+
   T operator*() const
   {
     return currentval;
   }
+
   bool next() {
     bool res;
     do {
@@ -58,8 +60,8 @@ public:
 private:
   friend class Properties;
 
-  PropertyIterator(PropertyMap::iterator begin, PropertyMap::iterator end)
-    : i(begin), end(end)
+  PropertyIterator(PropertyMap::iterator begin_, PropertyMap::iterator end_)
+    : i(begin_), end(end_)
   {
   }
 

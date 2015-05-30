@@ -1,4 +1,3 @@
-
 //  Copyright (C) 2004 Matthias Braun <matze@braunis.de>
 //  code in this file based on lispreader from Mark Probst
 //
@@ -20,7 +19,7 @@
 #include <stdexcept>
 #include <string.h>
 
-#include "lexer.hpp"
+#include "lisp/lexer.hpp"
 
 namespace lisp
 {
@@ -30,19 +29,14 @@ class EOFException
 };
 
 Lexer::Lexer(std::istream& newstream) :
-  stream(newstream),
-  eof(false),
-  linenumber(0),
-  bufend(),
-  c(),
-  token_length()
+  stream(newstream), eof(false), linenumber(0), bufend(0), c(0), token_length(0)
 {
   try {
     // trigger a refill of the buffer
     c = 0;
     bufend = 0;
     nextChar();
-  } catch(EOFException&) {
+  } catch(EOFException& e) {
   }
 }
 

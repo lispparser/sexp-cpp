@@ -1,4 +1,3 @@
-
 //  TuxKart - a fun racing game with go-kart
 //  Copyright (C) 2004 Matthias Braun <matze@braunis.de>
 //  code in this file based on lispreader from Mark Probst
@@ -20,7 +19,7 @@
 #include <string.h>
 #include <ostream>
 
-#include "lisp.hpp"
+#include "lisp/lisp.hpp"
 
 namespace lisp
 {
@@ -78,15 +77,19 @@ Lisp::print(std::ostream& out, int indent) const
 
   switch(type) {
     case TYPE_LIST:
-      out << "(\n";
+      out << "(";
+
       for(size_t i = 0; i < v.list.size; ++i)
-        v.list.entries[i]->print(out, indent+2);
-      for(int i = 0; i < indent; ++i)
-        out << ' ';
+      {
+        v.list.entries[i]->print(out, indent);
+        if (i != v.list.size-1)
+          out << ' ';
+      }
+
       out << ")";
       break;
     case TYPE_STRING:
-      out << '\'' << v.string << '\'';
+      out << '\"' << v.string << '\"';
       break;
     case TYPE_INT:
       out << v.int_;
@@ -101,10 +104,10 @@ Lisp::print(std::ostream& out, int indent) const
       out << (v.bool_ ? "true" : "false");
       break;
     default:
-      out << "UNKNOWN?!?";
+      out << "#<unknown>";
       break;
   }
-  out << '\n';
+  //out << '\n';
 }
 
 } // end of namespace lisp

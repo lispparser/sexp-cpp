@@ -1,4 +1,3 @@
-
 //  TuxKart - a fun racing game with go-kart
 //  Copyright (C) 2004 Matthias Braun <matze@braunis.de>
 //  code in this file based on lispreader from Mark Probst
@@ -17,12 +16,14 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+#include "lisp/parser.hpp"
+
 #include <fstream>
 #include <sstream>
+#include <stdio.h>
 #include <string.h>
 
-#include "lisp.hpp"
-#include "parser.hpp"
+#include "lisp/lisp.hpp"
 
 namespace lisp
 {
@@ -102,6 +103,14 @@ std::shared_ptr<Lisp>
 Parser::parse()
 {
   std::vector<std::shared_ptr<Lisp> > entries;
+  return result.release();
+}
+
+Lisp*
+Parser::parse()
+{
+  std::vector<Lisp*> entries;
+  try {
   while(token != Lexer::TOKEN_CLOSE_PAREN && token != Lexer::TOKEN_EOF) {
     switch(token) {
       case Lexer::TOKEN_OPEN_PAREN:
