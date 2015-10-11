@@ -19,13 +19,17 @@ endif()
 
 add_compile_options(-std=c++1y)
 
-file(GLOB SUPERTUX_LISP_SOURCES supertux/lisp/*.cpp)
-add_library(supertux-lisp ${SUPERTUX_LISP_SOURCES})
-target_include_directories(supertux-lisp SYSTEM PUBLIC supertux)
+# file(GLOB SUPERTUX_LISP_SOURCES supertux/lisp/*.cpp)
+# add_library(supertux-lisp ${SUPERTUX_LISP_SOURCES})
+# target_include_directories(supertux-lisp SYSTEM PUBLIC supertux)
 
-file(GLOB PINGUS_LISP_SOURCES pingus/lisp/*.cpp)
-add_library(pingus-lisp ${PINGUS_LISP_SOURCES})
-target_include_directories(pingus-lisp SYSTEM PUBLIC pingus)
+# file(GLOB PINGUS_LISP_SOURCES pingus/lisp/*.cpp)
+# add_library(pingus-lisp ${PINGUS_LISP_SOURCES})
+# target_include_directories(pingus-lisp SYSTEM PUBLIC pingus)
+
+file(GLOB LISPPARSER_SOURCES src/lisp/*.cpp)
+add_library(lispparser ${LISPPARSER_SOURCES})
+target_include_directories(lispparser SYSTEM PUBLIC src)
 
 if(BUILD_TESTS)
   # build gtest
