@@ -30,8 +30,7 @@ Lexer::Lexer(std::istream& newstream) :
   bufend(),
   bufpos(),
   c(),
-  token_string(),
-  token_length()
+  token_string()
 {
   // trigger a refill of the buffer
   bufpos = NULL;
@@ -78,8 +77,7 @@ Lexer::nextChar()
 void
 Lexer::addChar()
 {
-  if(token_length < MAX_TOKEN_LENGTH)
-    token_string[token_length++] = c;
+  token_string += c;
   nextChar();
 }
 
@@ -92,7 +90,7 @@ Lexer::getNextToken()
     nextChar();
   }
 
-  token_length = 0;
+  token_string.clear();
 
   switch(c) {
     case ';': // comment
@@ -138,11 +136,9 @@ Lexer::getNextToken()
           default:
             break;
         }
-        if(token_length < MAX_TOKEN_LENGTH)
-          token_string[token_length++] = c;
+        token_string += c;
       }
       string_finished:
-      token_string[token_length] = 0;
       return TOKEN_STRING;
     }
     case '#': // constant
@@ -151,11 +147,10 @@ Lexer::getNextToken()
       while(isalnum(c) || c == '_') {
         addChar();
       }
-      token_string[token_length] = 0;
 
-      if(strcmp(token_string, "t") == 0)
+      if(token_string == "t")
         return TOKEN_TRUE;
-      if(strcmp(token_string, "f") == 0)
+      if(token_string == "f")
         return TOKEN_FALSE;
 
       // we only handle #t and #f constants at the moment...
@@ -186,8 +181,6 @@ Lexer::getNextToken()
           addChar();
         } while(!isspace(c) && !strchr(delims, c));
 
-        token_string[token_length] = 0;
-
         // no nextChar
 
         if(have_nondigits || !have_digits || have_floating_point > 1)
@@ -200,7 +193,6 @@ Lexer::getNextToken()
         do {
           addChar();
         } while(!isspace(c) && !strchr(delims, c));
-        token_string[token_length] = 0;
 
         // no nextChar
 

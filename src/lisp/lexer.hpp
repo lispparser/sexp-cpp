@@ -41,7 +41,7 @@ public:
 
   TokenType getNextToken();
   const char* getString() const
-  { return token_string; }
+  { return token_string.c_str(); }
   int getLineNumber() const
   { return linenumber; }
 
@@ -62,8 +62,7 @@ private:
   char* bufend;
   char* bufpos;
   int  c;
-  char token_string[MAX_TOKEN_LENGTH + 1];
-  int token_length;
+  std::string token_string;
 
 private:
   Lexer(const Lexer&);
