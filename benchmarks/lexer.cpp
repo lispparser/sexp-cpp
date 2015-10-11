@@ -10,18 +10,16 @@
 
 static void BM_lexer(benchmark::State& state)
 {
-  std::ifstream fin("benchmarks/test.lisp");
-  if (!fin)
+  while (state.KeepRunning())
   {
-    throw std::runtime_error("failed to open benchmarks/test.lisp");
-  }
-  else
-  {
-    std::string str(std::istreambuf_iterator<char>{fin}, std::istreambuf_iterator<char>{});
-    while (state.KeepRunning())
+    std::ifstream fin("benchmarks/test.lisp");
+    if (!fin)
     {
-      std::istringstream in(str);
-      lisp::Lexer lexer(in);
+      throw std::runtime_error("failed to open benchmarks/test.lisp");
+    }
+    else
+    {
+      lisp::Lexer lexer(fin);
       while(lexer.getNextToken() != lisp::Lexer::TOKEN_EOF);
     }
   }
