@@ -16,24 +16,10 @@
 
 #include "lisp/writer.hpp"
 
-#if 0
-#include "physfs/ofile_stream.hpp"
-#include "util/log.hpp"
-#endif
+#include <iostream>
+#include <ostream>
 
 namespace lisp {
-
-Writer::Writer(const std::string& filename) :
-  out(),
-  out_owned(),
-  indent_depth(),
-  lists()
-{
-  out = new OFileStream(filename);
-  out_owned = true;
-  indent_depth = 0;
-  out->precision(10);
-}
 
 Writer::Writer(std::ostream* newout) :
   out(),
@@ -50,7 +36,7 @@ Writer::Writer(std::ostream* newout) :
 Writer::~Writer()
 {
   if(lists.size() > 0) {
-    log_warning << "Not all sections closed in lispwriter" << std::endl;
+    std::cerr << "Not all sections closed in lispwriter" << std::endl;
   }
   if(out_owned)
     delete out;
@@ -81,11 +67,11 @@ void
 Writer::end_list(const std::string& listname)
 {
   if(lists.size() == 0) {
-    log_warning << "Trying to close list '" << listname << "', which is not open" << std::endl;
+    std::cerr << "Trying to close list '" << listname << "', which is not open" << std::endl;
     return;
   }
   if(lists.back() != listname) {
-    log_warning << "trying to close list '" << listname << "' while list '" << lists.back() << "' is open" << std::endl;
+    std::cerr << "trying to close list '" << listname << "' while list '" << lists.back() << "' is open" << std::endl;
     return;
   }
   lists.pop_back();

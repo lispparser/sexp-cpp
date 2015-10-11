@@ -25,7 +25,6 @@ namespace lisp {
 class Writer
 {
 public:
-  Writer(const std::string& filename);
   Writer(std::ostream* out);
   ~Writer();
 

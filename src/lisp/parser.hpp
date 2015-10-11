@@ -34,20 +34,14 @@ class LispFile;
 class Parser
 {
 public:
-  Parser(bool translate = true);
+  Parser();
   ~Parser();
 
-  /**
-   * Parses a lispfile and returns the s-expression structure.
-   * Note that all memory is held by the parser so don't destroy the parser
-   * before you are finished with the lisp tree
-   */
-  const Lisp* parse(const std::string& filename);
   /**
    * Same as parse but reads from a generic std::istream. The sourcename is
    * used for errormessages to indicate the source of the data.
    */
-  const Lisp* parse(std::istream& stream, const std::string& sourcename);
+  const Lisp* parse(std::istream& stream);
 
 private:
   void parse_error(const char* msg) const __attribute__((__noreturn__));
@@ -56,11 +50,7 @@ private:
 
 private:
   Lexer* lexer;
-  std::string filename;
-  tinygettext::DictionaryManager* dictionary_manager;
-  tinygettext::Dictionary* dictionary;
   Lexer::TokenType token;
-  char** searchpath;
 
   struct obstack obst;
 
