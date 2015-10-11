@@ -7,8 +7,8 @@ option(WERROR "Turn warnings into errors" OFF)
 if(WARNINGS)
   set(WARNINGS_CXX_FLAGS ${WARNINGS_CXX_FLAGS}
     -pedantic -Wall -Wextra -Wno-c++0x-compat -Wnon-virtual-dtor
-     -Wshadow -Wcast-qual -Winit-self -Wno-unused-parameter)
-  # temporarily deactived: -Weffc++ -Wconversion
+    -Wshadow -Wcast-qual -Winit-self -Wno-unused-parameter
+    -Weffc++ -Wconversion -Wold-style-cast)
   # -Winline -Wfloat-equal -Wunreachable-code
 endif()
 
@@ -35,11 +35,12 @@ target_include_directories(lispparser SYSTEM PUBLIC src)
 
 if(BUILD_TESTS)
   # build gtest
+  # ${CMAKE_CURRENT_SOURCE_DIR} in include_directories is needed to generate -isystem instead of -I flags
   add_library(gtest_main STATIC ${CMAKE_CURRENT_SOURCE_DIR}/external/googletest/googletest/src/gtest_main.cc)
-  target_include_directories(gtest_main SYSTEM PUBLIC external/googletest/googletest/include/)
+  target_include_directories(gtest_main SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/external/googletest/googletest/include/)
   add_library(gtest STATIC ${CMAKE_CURRENT_SOURCE_DIR}/external/googletest/googletest/src/gtest-all.cc)
-  target_include_directories(gtest SYSTEM PRIVATE external/googletest/googletest/)
-  target_include_directories(gtest SYSTEM PUBLIC external/googletest/googletest/include/)
+  target_include_directories(gtest SYSTEM PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/googletest/googletest/)
+  target_include_directories(gtest SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/external/googletest/googletest/include/)
 
   # build lispparser tests
   file(GLOB TEST_LISPPARSER_SOURCES tests/*.cpp)
