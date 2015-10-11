@@ -48,9 +48,14 @@ public:
   bool get(std::string& val) const
   {
     if(type != TYPE_STRING && type != TYPE_SYMBOL)
+    {
       return false;
-    val = v.string;
-    return true;
+    }
+    else
+    {
+      val = v.string;
+      return true;
+    }
   }
 
   std::string get_symbol() const
@@ -68,17 +73,27 @@ public:
   bool get(unsigned int& val) const
   {
     if(type != TYPE_INTEGER)
+    {
       return false;
-    val = v.integer;
-    return true;
+    }
+    else
+    {
+      val = v.integer;
+      return true;
+    }
   }
 
   bool get(int& val) const
   {
     if(type != TYPE_INTEGER)
+    {
       return false;
-    val = v.integer;
-    return true;
+    }
+    else
+    {
+      val = v.integer;
+      return true;
+    }
   }
 
   int get_int() const
@@ -89,15 +104,20 @@ public:
 
   bool get(float& val) const
   {
-    if(type != TYPE_REAL) {
-      if(type == TYPE_INTEGER) {
-        val = (float) v.integer;
-        return true;
-      }
+    if(type == TYPE_REAL)
+    {
+      val = v.real;
+      return true;
+    }
+    else if(type == TYPE_INTEGER)
+    {
+      val = static_cast<float>(v.integer);
+      return true;
+    }
+    else
+    {
       return false;
     }
-    val = v.real;
-    return true;
   }
 
   float get_float() const
@@ -109,9 +129,14 @@ public:
   bool get(bool& val) const
   {
     if(type != TYPE_BOOLEAN)
+    {
       return false;
-    val = v.boolean;
-    return true;
+    }
+    else
+    {
+      val = v.boolean;
+      return true;
+    }
   }
 
   bool get_bool() const
