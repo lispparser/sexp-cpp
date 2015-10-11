@@ -48,7 +48,7 @@ public:
 private:
   enum {
     MAX_TOKEN_LENGTH = 16384,
-    BUFFER_SIZE = 1024
+    BUFFER_SIZE = 16384
   };
 
   inline void nextChar();
