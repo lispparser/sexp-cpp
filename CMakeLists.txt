@@ -17,6 +17,8 @@ if(WERROR)
     -Werror)
 endif()
 
+find_package(Threads REQUIRED)
+
 add_compile_options(-std=c++1y)
 
 # file(GLOB SUPERTUX_LISP_SOURCES supertux/lisp/*.cpp)
@@ -34,18 +36,25 @@ target_include_directories(lispparser SYSTEM PUBLIC src)
 if(BUILD_TESTS)
   # build gtest
   add_library(gtest_main STATIC ${CMAKE_CURRENT_SOURCE_DIR}/external/googletest/googletest/src/gtest_main.cc)
-  target_include_directories(gtest_main SYSTEM PRIVATE external/googletest/googletest/include/)
+  target_include_directories(gtest_main SYSTEM PUBLIC external/googletest/googletest/include/)
   add_library(gtest STATIC ${CMAKE_CURRENT_SOURCE_DIR}/external/googletest/googletest/src/gtest-all.cc)
-  target_include_directories(gtest SYSTEM PRIVATE
-    external/googletest/googletest/
-    external/googletest/googletest/include/)
+  target_include_directories(gtest SYSTEM PRIVATE external/googletest/googletest/)
+  target_include_directories(gtest SYSTEM PUBLIC external/googletest/googletest/include/)
 
-  file(GLOB TEST_SOURCES tests/*.cpp)
-  foreach(SOURCE ${TEST_SOURCES})
-    get_filename_component(SOURCE_BASENAME ${SOURCE} NAME_WE)
-    add_executable(${SOURCE_BASENAME} ${SOURCE})
-    target_link_libraries(${SOURCE_BASENAME} viewerlib)
-  endforeach(SOURCE)
+  # build lispparser tests
+  file(GLOB TEST_LISPPARSER_SOURCES tests/*.cpp)
+  add_executable(test_lispparser ${TEST_LISPPARSER_SOURCES})
+  target_compile_options(test_lispparser PRIVATE ${WARNINGS_CXX_FLAGS})
+  target_link_libraries(test_lispparser
+    gtest gtest_main
+    lispparser
+    ${CMAKE_THREAD_LIBS_INIT})
+
+  # add 'make test' target, use 'make test ARGS="-V"' or 'ctest -V' for verbose
+  enable_testing()
+  add_test(NAME test_lispparser
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMAND test_lispparser)
 endif()
 
 if(BUILD_BENCHMARKS)
