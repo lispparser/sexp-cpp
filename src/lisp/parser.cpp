@@ -24,7 +24,7 @@
 namespace lisp {
 
 Parser::Parser() :
-  lexer(0),
+  lexer(),
   token(),
   obst()
 {
@@ -34,14 +34,12 @@ Parser::Parser() :
 Parser::~Parser()
 {
   obstack_free(&obst, NULL);
-  delete lexer;
 }
 
 const Lisp*
 Parser::parse(std::istream& stream)
 {
-  delete lexer;
-  lexer = new Lexer(stream);
+  lexer = std::make_unique<Lexer>(stream);
 
   token = lexer->getNextToken();
 
@@ -49,8 +47,7 @@ Parser::parse(std::istream& stream)
   result->v.cons.car = read();
   result->v.cons.cdr = 0;
 
-  delete lexer;
-  lexer = 0;
+  lexer.reset();
 
   return result;
 }

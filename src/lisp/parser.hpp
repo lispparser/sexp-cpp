@@ -18,18 +18,13 @@
 #define HEADER_SUPERTUX_LISP_PARSER_HPP
 
 #include <obstack.h>
+#include <memory>
 
 #include "lisp/lexer.hpp"
-
-namespace tinygettext {
-class Dictionary;
-class DictionaryManager;
-}
 
 namespace lisp {
 
 class Lisp;
-class LispFile;
 
 class Parser
 {
@@ -49,7 +44,7 @@ private:
 
 
 private:
-  Lexer* lexer;
+  std::unique_ptr<Lexer> lexer;
   Lexer::TokenType token;
 
   struct obstack obst;
