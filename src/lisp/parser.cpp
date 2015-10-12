@@ -45,7 +45,7 @@ Parser::parse(std::istream& stream)
 
   Lisp* result = new(obst) Lisp(Lisp::TYPE_CONS);
   result->v.cons.car = read();
-  result->v.cons.cdr = 0;
+  result->v.cons.cdr = nullptr;
 
   lexer.reset();
 
@@ -77,8 +77,8 @@ Parser::read()
 
       token = lexer->getNextToken();
       if(token == Lexer::TOKEN_CLOSE_PAREN) {
-        result->v.cons.car = 0;
-        result->v.cons.cdr = 0;
+        result->v.cons.car = nullptr;
+        result->v.cons.cdr = nullptr;
         break;
       }
 
@@ -86,7 +86,7 @@ Parser::read()
       do {
         cur->v.cons.car = read();
         if(token == Lexer::TOKEN_CLOSE_PAREN) {
-          cur->v.cons.cdr = 0;
+          cur->v.cons.cdr = nullptr;
           break;
         }
         Lisp *newcur = new(obst) Lisp(Lisp::TYPE_CONS);
