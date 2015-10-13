@@ -28,7 +28,22 @@ Lisp::Lisp(LispType newtype) :
 
 Lisp::~Lisp()
 {
-  // resources should be on parser obstack, so no need to delete anything
+  switch(type)
+  {
+    case TYPE_STRING:
+    case TYPE_SYMBOL:
+      delete v.string;
+      break;
+
+    case TYPE_CONS:
+      delete v.cons.car;
+      delete v.cons.cdr;
+      break;
+
+    default:
+      // atoms don't need deletion
+      break;
+  }
 }
 
 const Lisp*

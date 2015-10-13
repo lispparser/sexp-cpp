@@ -17,10 +17,10 @@
 #ifndef HEADER_SUPERTUX_LISP_PARSER_HPP
 #define HEADER_SUPERTUX_LISP_PARSER_HPP
 
-#include <obstack.h>
 #include <memory>
 
 #include "lisp/lexer.hpp"
+#include "lisp/lisp.hpp"
 
 namespace lisp {
 
@@ -42,12 +42,9 @@ private:
   void parse_error(const char* msg) const __attribute__((__noreturn__));
   const Lisp* read();
 
-
 private:
   std::unique_ptr<Lexer> lexer;
   Lexer::TokenType token;
-
-  struct obstack obst;
 
 private:
   Parser(const Parser&);

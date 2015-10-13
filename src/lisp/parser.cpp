@@ -16,24 +16,21 @@
 
 #include <sstream>
 #include <stdexcept>
+#include <string.h>
 
 #include "lisp/lisp.hpp"
 #include "lisp/parser.hpp"
-#include "util/obstackpp.hpp"
 
 namespace lisp {
 
 Parser::Parser() :
   lexer(),
-  token(),
-  obst()
+  token()
 {
-  obstack_init(&obst);
 }
 
 Parser::~Parser()
 {
-  obstack_free(&obst, NULL);
 }
 
 const Lisp*
@@ -43,7 +40,7 @@ Parser::parse(std::istream& stream)
 
   token = lexer->getNextToken();
 
-  Lisp* result = new(obst) Lisp(Lisp::TYPE_CONS);
+  Lisp* result = new Lisp(Lisp::TYPE_CONS);
   result->v.cons.car = read();
   result->v.cons.cdr = nullptr;
 
@@ -73,15 +70,13 @@ Parser::read()
       parse_error("Unexpected ')'.");
     }
     case Lexer::TOKEN_OPEN_PAREN: {
-      result = new(obst) Lisp(Lisp::TYPE_CONS);
+      result = new Lisp(Lisp::TYPE_CONS);
 
       token = lexer->getNextToken();
       if(token == Lexer::TOKEN_CLOSE_PAREN) {
         result->v.cons.car = nullptr;
         result->v.cons.cdr = nullptr;
-        break;
       }
-
       Lisp* cur = result;
       do {
         cur->v.cons.car = read();
@@ -89,7 +84,7 @@ Parser::read()
           cur->v.cons.cdr = nullptr;
           break;
         }
-        Lisp *newcur = new(obst) Lisp(Lisp::TYPE_CONS);
+        Lisp *newcur = new Lisp(Lisp::TYPE_CONS);
         cur->v.cons.cdr = newcur;
         cur = newcur;
       } while(1);
@@ -97,33 +92,33 @@ Parser::read()
       break;
     }
     case Lexer::TOKEN_SYMBOL: {
-      result = new(obst) Lisp(Lisp::TYPE_SYMBOL);
+      result = new Lisp(Lisp::TYPE_SYMBOL);
       size_t len = strlen(lexer->getString()) + 1;
-      result->v.string = new(obst) char[len];
+      result->v.string = new char[len];
       memcpy(result->v.string, lexer->getString(), len);
       break;
     }
     case Lexer::TOKEN_STRING: {
-      result = new(obst) Lisp(Lisp::TYPE_STRING);
+      result = new Lisp(Lisp::TYPE_STRING);
       size_t len = strlen(lexer->getString()) + 1;
-      result->v.string = new(obst) char[len];
+      result->v.string = new char[len];
       memcpy(result->v.string, lexer->getString(), len);
       break;
     }
     case Lexer::TOKEN_INTEGER:
-      result = new(obst) Lisp(Lisp::TYPE_INTEGER);
+      result = new Lisp(Lisp::TYPE_INTEGER);
       result->v.integer = atoi(lexer->getString());
       break;
     case Lexer::TOKEN_REAL:
-      result = new(obst) Lisp(Lisp::TYPE_REAL);
+      result = new Lisp(Lisp::TYPE_REAL);
       result->v.real = strtof(lexer->getString(), NULL);
       break;
     case Lexer::TOKEN_TRUE:
-      result = new(obst) Lisp(Lisp::TYPE_BOOLEAN);
+      result = new Lisp(Lisp::TYPE_BOOLEAN);
       result->v.boolean = true;
       break;
     case Lexer::TOKEN_FALSE:
-      result = new(obst) Lisp(Lisp::TYPE_BOOLEAN);
+      result = new Lisp(Lisp::TYPE_BOOLEAN);
       result->v.boolean = false;
       break;
 
