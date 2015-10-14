@@ -40,8 +40,7 @@ public:
   ~Lexer();
 
   TokenType getNextToken();
-  const char* getString() const
-  { return token_string.c_str(); }
+  std::string const& getString() const { return token_string; }
   int getLineNumber() const
   { return linenumber; }
 
