@@ -18,15 +18,18 @@ operator<<(std::ostream& os, SExpr const& sexpr)
 
     case SExpr::TYPE_CONS:
       {
-        if (sexpr.get_cdr().get_type() != SExpr::TYPE_CONS)
+        os << "(";
+        os << sexpr.get_car() << ' ';
+
+        SExpr const* cur = &sexpr.get_cdr();
+        while(*cur)
         {
-          os << "(" << sexpr.get_car() << " . " << sexpr.get_cdr() << ")";
-        }
-        else
-        {
-          SExpr const* cur = &sexpr;
-          os << '(';
-          while(*cur)
+          if (cur->get_type() != SExpr::TYPE_CONS)
+          {
+            os << ". " << *cur;
+            break;
+          }
+          else
           {
             os << cur->get_car();
             cur = &cur->get_cdr();
@@ -35,8 +38,8 @@ operator<<(std::ostream& os, SExpr const& sexpr)
               os << ' ';
             }
           }
-          os << ')';
         }
+        os << ')';
       }
       break;
 

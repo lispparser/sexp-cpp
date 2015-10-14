@@ -60,9 +60,10 @@ TEST(ParserTest, simple_pair)
 
 TEST(ParserTest, list_pair)
 {
-  std::istringstream in("(one two three . end)");
-  //auto root = lisp::Parser::parse(in);
-  //cons->print();
+  lisp::SExpr sexpr = lisp::Parser::from_string("(1 2 3 4 5 . 6)");
+  std::ostringstream os;
+  os << sexpr;
+  ASSERT_EQ("(1 2 3 4 5 . 6)", os.str());
 }
 
 /* EOF */
