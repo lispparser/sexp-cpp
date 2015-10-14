@@ -1,5 +1,21 @@
+# SExp - A S-Expression Parser for C++
+# Copyright (C) 2015 Ingo Ruhnke <grumbel@gmail.com>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 cmake_minimum_required(VERSION 3.0)
-project(lispparser VERSION 0.0.0)
+project(sexp VERSION 0.1.0)
 
 option(WARNINGS "Switch on extra warnings" OFF)
 option(WERROR "Turn warnings into errors" OFF)
@@ -29,9 +45,9 @@ add_compile_options(-std=c++1y)
 # add_library(pingus-lisp ${PINGUS_LISP_SOURCES})
 # target_include_directories(pingus-lisp SYSTEM PUBLIC pingus)
 
-file(GLOB LISPPARSER_SOURCES src/*.cpp)
-add_library(lispparser ${LISPPARSER_SOURCES})
-target_include_directories(lispparser SYSTEM PUBLIC include)
+file(GLOB SEXP_SOURCES src/*.cpp)
+add_library(sexp ${SEXP_SOURCES})
+target_include_directories(sexp SYSTEM PUBLIC include)
 
 if(BUILD_TESTS)
   # build gtest
@@ -42,20 +58,20 @@ if(BUILD_TESTS)
   target_include_directories(gtest SYSTEM PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/googletest/googletest/)
   target_include_directories(gtest SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/external/googletest/googletest/include/)
 
-  # build lispparser tests
-  file(GLOB TEST_LISPPARSER_SOURCES tests/*.cpp)
-  add_executable(test_lispparser ${TEST_LISPPARSER_SOURCES})
-  target_compile_options(test_lispparser PRIVATE ${WARNINGS_CXX_FLAGS})
-  target_link_libraries(test_lispparser
+  # build sexp tests
+  file(GLOB TEST_SEXP_SOURCES tests/*.cpp)
+  add_executable(test_sexp ${TEST_SEXP_SOURCES})
+  target_compile_options(test_sexp PRIVATE ${WARNINGS_CXX_FLAGS})
+  target_link_libraries(test_sexp
     gtest gtest_main
-    lispparser
+    sexp
     ${CMAKE_THREAD_LIBS_INIT})
 
   # add 'make test' target, use 'make test ARGS="-V"' or 'ctest -V' for verbose
   enable_testing()
-  add_test(NAME test_lispparser
+  add_test(NAME test_sexp
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    COMMAND test_lispparser)
+    COMMAND test_sexp)
 endif()
 
 if(BUILD_BENCHMARKS)
@@ -86,7 +102,7 @@ if(BUILD_BENCHMARKS)
   foreach(SOURCE ${BENCHMARKSOURCES})
     get_filename_component(SOURCE_BASENAME ${SOURCE} NAME_WE)
     add_executable(${SOURCE_BASENAME} ${SOURCE})
-    target_link_libraries(${SOURCE_BASENAME} benchmark lispparser ${CMAKE_THREAD_LIBS_INIT})
+    target_link_libraries(${SOURCE_BASENAME} benchmark sexp ${CMAKE_THREAD_LIBS_INIT})
     set_target_properties(${SOURCE_BASENAME} PROPERTIES
       RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/benchmarks/")
     target_compile_options(${SOURCE_BASENAME} PRIVATE -std=c++1y ${WARNINGS_CXX_FLAGS})
