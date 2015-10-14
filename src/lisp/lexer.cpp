@@ -92,18 +92,22 @@ Lexer::getNextToken()
 
   token_string.clear();
 
-  switch(c) {
+  switch(c)
+  {
     case ';': // comment
       while(c != '\n') {
         nextChar();
       }
       return getNextToken(); // and again
+
     case '(':
       nextChar();
       return TOKEN_OPEN_PAREN;
+
     case ')':
       nextChar();
       return TOKEN_CLOSE_PAREN;
+
     case '"': {  // string
       int startline = linenumber;
       while(1) {
@@ -149,12 +153,16 @@ Lexer::getNextToken()
       }
 
       if(token_string == "t")
-        return TOKEN_TRUE;
-      if(token_string == "f")
-        return TOKEN_FALSE;
-
-      // we only handle #t and #f constants at the moment...
       {
+        return TOKEN_TRUE;
+      }
+      else if(token_string == "f")
+      {
+        return TOKEN_FALSE;
+      }
+      else
+      {
+        // we only handle #t and #f constants at the moment...
         std::stringstream msg;
         msg << "Parse Error in line " << linenumber << ": "
             << "Unknown constant '" << token_string << "'.";
@@ -165,31 +173,52 @@ Lexer::getNextToken()
       return TOKEN_EOF;
 
     default:
-      if(isdigit(c) || c == '-') {
+      if(isdigit(c) || c == '-' || c == '.')
+      {
         bool have_nondigits = false;
         bool have_digits = false;
         int have_floating_point = 0;
 
-        do {
-          if(isdigit(c))
+        do
+        {
+          if (isdigit(c))
+          {
             have_digits = true;
-          else if(c == '.')
+          }
+          else if (c == '.')
+          {
             ++have_floating_point;
-          else if(isalnum(c) || c == '_')
+          }
+          else if (isalnum(c) || c == '_')
+          {
             have_nondigits = true;
+          }
 
           addChar();
-        } while(!isspace(c) && !strchr(delims, c));
+        }
+        while(!isspace(c) && !strchr(delims, c));
 
         // no nextChar
 
-        if(have_nondigits || !have_digits || have_floating_point > 1)
+        if (token_string == ".")
+        {
+          return TOKEN_DOT;
+        }
+        else if (have_nondigits || !have_digits || have_floating_point > 1)
+        {
           return TOKEN_SYMBOL;
-        else if(have_floating_point == 1)
+        }
+        else if (have_floating_point == 1)
+        {
           return TOKEN_REAL;
+        }
         else
+        {
           return TOKEN_INTEGER;
-      } else {
+        }
+      }
+      else
+      {
         do {
           addChar();
         } while(!isspace(c) && !strchr(delims, c));
