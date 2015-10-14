@@ -6,13 +6,14 @@
 
 TEST(LexerTest, simple_tokens)
 {
-  std::istringstream out("(foo bar)");
+  std::istringstream out("(foo . bar)");
   lisp::Lexer lexer(out);
   ASSERT_EQ(lisp::Lexer::TOKEN_OPEN_PAREN, lexer.getNextToken());
   ASSERT_EQ(lisp::Lexer::TOKEN_SYMBOL, lexer.getNextToken());
-  ASSERT_STREQ("foo", lexer.getString());
+  ASSERT_EQ("foo", lexer.getString());
+  ASSERT_EQ(lisp::Lexer::TOKEN_DOT, lexer.getNextToken());
   ASSERT_EQ(lisp::Lexer::TOKEN_SYMBOL, lexer.getNextToken());
-  ASSERT_STREQ("bar", lexer.getString());
+  ASSERT_EQ("bar", lexer.getString());
   ASSERT_EQ(lisp::Lexer::TOKEN_CLOSE_PAREN, lexer.getNextToken());
   ASSERT_EQ(lisp::Lexer::TOKEN_EOF, lexer.getNextToken());
 }
