@@ -6,7 +6,7 @@
 #include <sstream>
 #include <streambuf>
 
-#include "lisp/parser.hpp"
+#include "sexp/parser.hpp"
 
 static void BM_parser(benchmark::State& state)
 {
@@ -19,7 +19,7 @@ static void BM_parser(benchmark::State& state)
     }
     else
     {
-      lisp::SExpr sexpr = lisp::Parser::from_stream(fin);
+      sexp::SExpr sexpr = sexp::Parser::from_stream(fin);
     }
   }
 }

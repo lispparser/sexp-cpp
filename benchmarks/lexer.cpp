@@ -6,7 +6,7 @@
 #include <sstream>
 #include <streambuf>
 
-#include "lisp/lexer.hpp"
+#include "sexp/lexer.hpp"
 
 static void BM_lexer(benchmark::State& state)
 {
@@ -19,8 +19,8 @@ static void BM_lexer(benchmark::State& state)
     }
     else
     {
-      lisp::Lexer lexer(fin);
-      while(lexer.getNextToken() != lisp::Lexer::TOKEN_EOF);
+      sexp::Lexer lexer(fin);
+      while(lexer.getNextToken() != sexp::Lexer::TOKEN_EOF);
     }
   }
 }

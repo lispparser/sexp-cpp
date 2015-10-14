@@ -2,12 +2,12 @@
 
 #include <sstream>
 
-#include "lisp/sexpr.hpp"
+#include "sexp/sexpr.hpp"
 
 TEST(SExprTest, simple)
 {
-  using lisp::SExpr;
-  using lisp::SExprImpl;
+  using sexp::SExpr;
+  using sexp::SExprImpl;
 
   auto sexpr_bool = SExpr::boolean(true);
   auto sexpr_int = SExpr::integer(5);

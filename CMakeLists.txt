@@ -29,9 +29,9 @@ add_compile_options(-std=c++1y)
 # add_library(pingus-lisp ${PINGUS_LISP_SOURCES})
 # target_include_directories(pingus-lisp SYSTEM PUBLIC pingus)
 
-file(GLOB LISPPARSER_SOURCES src/lisp/*.cpp)
+file(GLOB LISPPARSER_SOURCES src/*.cpp)
 add_library(lispparser ${LISPPARSER_SOURCES})
-target_include_directories(lispparser SYSTEM PUBLIC src)
+target_include_directories(lispparser SYSTEM PUBLIC include)
 
 if(BUILD_TESTS)
   # build gtest
