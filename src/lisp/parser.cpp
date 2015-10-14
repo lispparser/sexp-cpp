@@ -19,31 +19,33 @@
 #include <string.h>
 #include <iostream>
 
-#include "lisp/lisp.hpp"
 #include "lisp/parser.hpp"
 
 namespace lisp {
 
-Parser::Parser() :
-  lexer(),
-  token()
+SExpr
+Parser::from_string(std::string const& str)
+{
+  std::istringstream is(str);
+  Parser parser(is);
+  return parser.read();
+}
+
+SExpr
+Parser::from_stream(std::istream& stream)
+{
+  Parser parser(stream);
+  return parser.read();
+}
+
+Parser::Parser(std::istream& stream) :
+  lexer(std::make_unique<Lexer>(stream)),
+  token(lexer->getNextToken())
 {
 }
 
 Parser::~Parser()
 {
-}
-
-SExpr
-Parser::parse(std::istream& stream)
-{
-  lexer = std::make_unique<Lexer>(stream);
-
-  token = lexer->getNextToken();
-
-  SExpr result = read();
-
-  return result;
 }
 
 void

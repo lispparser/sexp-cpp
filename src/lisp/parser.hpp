@@ -20,7 +20,6 @@
 #include <memory>
 
 #include "lisp/lexer.hpp"
-#include "lisp/lisp.hpp"
 #include "lisp/sexpr.hpp"
 
 namespace lisp {
@@ -30,14 +29,12 @@ class Lisp;
 class Parser
 {
 public:
-  Parser();
-  ~Parser();
+  static SExpr from_string(std::string const& str);
+  static SExpr from_stream(std::istream& stream);
 
-  /**
-   * Same as parse but reads from a generic std::istream. The sourcename is
-   * used for errormessages to indicate the source of the data.
-   */
-  SExpr parse(std::istream& stream);
+public:
+  Parser(std::istream& stream);
+  ~Parser();
 
 private:
   void parse_error(const char* msg) const __attribute__((__noreturn__));
