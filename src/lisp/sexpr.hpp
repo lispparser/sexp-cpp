@@ -1,6 +1,8 @@
 #ifndef HEADER_LISPPARSER_LISP_HPP
 #define HEADER_LISPPARSER_LISP_HPP
 
+#include <assert.h>
+
 namespace lisp {
 
 class SExprImpl;
