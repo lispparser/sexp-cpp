@@ -30,6 +30,7 @@ public:
   static SExpr string(std::string const& v) { return SExpr(std::make_unique<SExprImpl>(TYPE_STRING, v)); }
   static SExpr symbol(std::string const& v) { return SExpr(std::make_unique<SExprImpl>(TYPE_SYMBOL, v)); }
   static SExpr cons(SExpr&& car, SExpr&& cdr) { return SExpr(std::make_unique<SExprImpl>(std::move(car), std::move(cdr))); }
+  static SExpr cons() { return SExpr(std::make_unique<SExprImpl>(SExpr::nil(), SExpr::nil())); }
 
 public:
   SExpr(SExpr&& other) :
@@ -47,7 +48,18 @@ public:
   ~SExpr()
   {}
 
+  SExpr& operator=(SExpr&& other)
+  {
+    m_impl = std::move(other.m_impl);
+    return *this;
+  }
+
   Type get_type() const;
+
+  explicit operator bool() const
+  {
+    return static_cast<bool>(m_impl);
+  }
 
   bool is_nil() const;
   bool is_cons() const;
@@ -56,8 +68,14 @@ public:
   bool is_integer() const;
   bool is_real() const;
 
-  SExpr const& car() const;
-  SExpr const& cdr() const;
+  SExpr const& get_car() const;
+  SExpr const& get_cdr() const;
+
+  SExpr& get_car();
+  SExpr& get_cdr();
+
+  void set_car(SExpr&& sexpr);
+  void set_cdr(SExpr&& sexpr);
 
   bool as_bool() const;
   int as_int() const;
@@ -143,78 +161,106 @@ public:
   }
 };
 
-SExpr::Type
+inline SExpr::Type
 SExpr::get_type() const
 {
   return (m_impl ? m_impl->m_type : SExpr::TYPE_NIL);
 }
 
-bool
+inline bool
 SExpr::is_nil() const
 {
   return m_impl == nullptr;
 }
 
-bool
+inline bool
 SExpr::is_cons() const
 {
   return m_impl && m_impl->m_type == SExpr::TYPE_CONS;
 }
 
-bool
+inline bool
 SExpr::is_symbol() const
 {
   return m_impl && m_impl->m_type == SExpr::TYPE_SYMBOL;
 }
 
-bool
+inline bool
 SExpr::is_string() const
 {
   return m_impl && m_impl->m_type == SExpr::TYPE_STRING;
 }
 
-bool
+inline bool
 SExpr::is_integer() const
 {
   return m_impl && m_impl->m_type == SExpr::TYPE_INTEGER;
 }
 
-bool
+inline bool
 SExpr::is_real() const
 {
   return m_impl && (m_impl->m_type == SExpr::TYPE_REAL ||
                     m_impl->m_type == SExpr::TYPE_INTEGER);
 }
 
-SExpr const&
-SExpr::car() const
+inline SExpr const&
+SExpr::get_car() const
 {
   assert(m_impl->m_type == SExpr::TYPE_CONS);
   return m_impl->m_cons.car;
 }
 
-SExpr const&
-SExpr::cdr() const
+inline SExpr const&
+SExpr::get_cdr() const
 {
   assert(m_impl->m_type == SExpr::TYPE_CONS);
   return m_impl->m_cons.cdr;
 }
 
-bool
+inline SExpr&
+SExpr::get_car()
+{
+  assert(m_impl->m_type == SExpr::TYPE_CONS);
+  return m_impl->m_cons.car;
+}
+
+inline SExpr&
+SExpr::get_cdr()
+{
+  assert(m_impl->m_type == SExpr::TYPE_CONS);
+  return m_impl->m_cons.cdr;
+}
+
+inline void
+SExpr::set_car(SExpr&& sexpr)
+{
+  assert(m_impl->m_type == SExpr::TYPE_CONS);
+  m_impl->m_cons.car = std::move(sexpr);
+}
+
+inline void
+SExpr::set_cdr(SExpr&& sexpr)
+{
+  assert(m_impl->m_type == SExpr::TYPE_CONS);
+  m_impl->m_cons.cdr = std::move(sexpr);
+}
+
+inline bool
 SExpr::as_bool() const
 {
   assert(m_impl->m_type == SExpr::TYPE_BOOLEAN);
   return m_impl->m_bool;
 }
 
-int
+inline int
 SExpr::as_int() const
 {
   assert(m_impl->m_type == SExpr::TYPE_INTEGER);
   return m_impl->m_int;
 }
 
-float
+inline float
 SExpr::as_float() const
 {
   if (m_impl->m_type == SExpr::TYPE_REAL)
@@ -231,7 +277,7 @@ SExpr::as_float() const
   }
 }
 
-std::string const&
+inline std::string const&
 SExpr::as_string() const
 {
   assert(m_impl->m_type == SExpr::TYPE_SYMBOL ||
