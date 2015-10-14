@@ -72,6 +72,10 @@ Parser::read()
       parse_error("Unexpected ')'.");
       break;
 
+    case Lexer::TOKEN_DOT:
+      parse_error("Unexpected '.'.");
+      break;
+
     case Lexer::TOKEN_OPEN_PAREN:
       token = lexer->getNextToken();
       if(token == Lexer::TOKEN_CLOSE_PAREN)
@@ -84,8 +88,21 @@ Parser::read()
         SExpr* cur = &result;
         while(token != Lexer::TOKEN_CLOSE_PAREN)
         {
-          cur->set_cdr(SExpr::cons(read(), SExpr::nil()));
-          cur = &cur->get_cdr();
+          if (token == Lexer::TOKEN_DOT)
+          {
+            token = lexer->getNextToken();
+            cur->set_cdr(read());
+            if (token != Lexer::TOKEN_CLOSE_PAREN)
+            {
+              parse_error("Expected ')'");
+            }
+            break;
+          }
+          else
+          {
+            cur->set_cdr(SExpr::cons(read(), SExpr::nil()));
+            cur = &cur->get_cdr();
+          }
         }
       }
       break;
