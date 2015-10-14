@@ -48,22 +48,20 @@ TEST(ParserTest, parse_symbol)
 TEST(ParserTest, simple_pair)
 {
   lisp::SExpr sexpr = lisp::Parser::from_string("(foo . bar)");
-  std::ostringstream os;
-  os << sexpr;
-  ASSERT_EQ("(foo . bar)", os.str());
+  ASSERT_EQ("(foo . bar)", sexpr.str());
   ASSERT_EQ("foo", sexpr.get_car().as_string());
   ASSERT_EQ("bar", sexpr.get_cdr().as_string());
   ASSERT_EQ(lisp::SExpr::TYPE_CONS, sexpr.get_type());
   ASSERT_EQ(lisp::SExpr::TYPE_SYMBOL, sexpr.get_car().get_type());
   ASSERT_EQ(lisp::SExpr::TYPE_SYMBOL, sexpr.get_cdr().get_type());
+
+  ASSERT_EQ("(foo . bar)", lisp::Parser::from_string("(foo . bar)").str());
 }
 
 TEST(ParserTest, list_pair)
 {
   lisp::SExpr sexpr = lisp::Parser::from_string("(1 2 3 4 5 . 6)");
-  std::ostringstream os;
-  os << sexpr;
-  ASSERT_EQ("(1 2 3 4 5 . 6)", os.str());
+  ASSERT_EQ("(1 2 3 4 5 . 6)", sexpr.str());
 }
 
 /* EOF */

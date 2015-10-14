@@ -7,7 +7,7 @@
 
 namespace lisp {
 
-std::ostream&
+inline std::ostream&
 operator<<(std::ostream& os, SExpr const& sexpr)
 {
   switch(sexpr.get_type())
@@ -18,11 +18,9 @@ operator<<(std::ostream& os, SExpr const& sexpr)
 
     case SExpr::TYPE_CONS:
       {
-        os << "(";
-        os << sexpr.get_car() << ' ';
-
-        SExpr const* cur = &sexpr.get_cdr();
-        while(*cur)
+        os << '(';
+        SExpr const* cur = &sexpr;
+        do
         {
           if (cur->get_type() != SExpr::TYPE_CONS)
           {
@@ -39,6 +37,7 @@ operator<<(std::ostream& os, SExpr const& sexpr)
             }
           }
         }
+        while(*cur);
         os << ')';
       }
       break;

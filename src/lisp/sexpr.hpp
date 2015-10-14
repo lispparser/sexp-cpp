@@ -2,6 +2,7 @@
 #define HEADER_LISPPARSER_LISP_HPP
 
 #include <assert.h>
+#include <memory>
 
 namespace lisp {
 
@@ -97,9 +98,11 @@ public:
       return false;
     }
   }
+
+  std::string str() const;
 };
 
-class SExprImpl 
+class SExprImpl
 {
 public:
   SExpr::Type m_type;
