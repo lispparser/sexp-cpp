@@ -24,7 +24,7 @@
 
 namespace sexp {
 
-SExpr
+Value
 Parser::from_string(std::string const& str)
 {
   std::istringstream is(str);
@@ -32,7 +32,7 @@ Parser::from_string(std::string const& str)
   return parser.read();
 }
 
-SExpr
+Value
 Parser::from_stream(std::istream& stream)
 {
   Parser parser(stream);
@@ -58,10 +58,10 @@ Parser::parse_error(const char* msg) const
   throw std::runtime_error(emsg.str());
 }
 
-SExpr
+Value
 Parser::read()
 {
-  SExpr result;
+  Value result;
 
   switch(token)
   {
@@ -81,12 +81,12 @@ Parser::read()
       token = lexer->getNextToken();
       if(token == Lexer::TOKEN_CLOSE_PAREN)
       {
-        result = SExpr::nil();
+        result = Value::nil();
       }
       else
       {
-        result = SExpr::cons(read(), SExpr::nil());
-        SExpr* cur = &result;
+        result = Value::cons(read(), Value::nil());
+        Value* cur = &result;
         while(token != Lexer::TOKEN_CLOSE_PAREN)
         {
           if (token == Lexer::TOKEN_DOT)
@@ -101,7 +101,7 @@ Parser::read()
           }
           else
           {
-            cur->set_cdr(SExpr::cons(read(), SExpr::nil()));
+            cur->set_cdr(Value::cons(read(), Value::nil()));
             cur = &cur->get_cdr();
           }
         }
@@ -109,27 +109,27 @@ Parser::read()
       break;
 
     case Lexer::TOKEN_SYMBOL:
-      result = SExpr::symbol(lexer->getString());
+      result = Value::symbol(lexer->getString());
       break;
 
     case Lexer::TOKEN_STRING:
-      result = SExpr::string(lexer->getString());
+      result = Value::string(lexer->getString());
       break;
 
     case Lexer::TOKEN_INTEGER:
-      result = SExpr::integer(stoi(lexer->getString()));
+      result = Value::integer(stoi(lexer->getString()));
       break;
 
     case Lexer::TOKEN_REAL:
-      result = SExpr::real(stof(lexer->getString()));
+      result = Value::real(stof(lexer->getString()));
       break;
 
     case Lexer::TOKEN_TRUE:
-      result = SExpr::boolean(true);
+      result = Value::boolean(true);
       break;
 
     case Lexer::TOKEN_FALSE:
-      result = SExpr::boolean(false);
+      result = Value::boolean(false);
       break;
 
     default:

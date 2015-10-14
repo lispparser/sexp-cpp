@@ -19,21 +19,21 @@
 
 namespace sexp {
 
-std::ostream& operator<<(std::ostream& os, SExpr const& sexpr)
+std::ostream& operator<<(std::ostream& os, Value const& sexpr)
 {
   switch(sexpr.get_type())
   {
-    case SExpr::TYPE_NIL:
+    case Value::TYPE_NIL:
       os << "()";
       break;
 
-    case SExpr::TYPE_CONS:
+    case Value::TYPE_CONS:
       {
         os << '(';
-        SExpr const* cur = &sexpr;
+        Value const* cur = &sexpr;
         do
         {
-          if (cur->get_type() != SExpr::TYPE_CONS)
+          if (cur->get_type() != Value::TYPE_CONS)
           {
             os << ". " << *cur;
             break;
@@ -53,23 +53,23 @@ std::ostream& operator<<(std::ostream& os, SExpr const& sexpr)
       }
       break;
 
-    case SExpr::TYPE_STRING:
+    case Value::TYPE_STRING:
       os << '"' << sexpr.as_string() << '"';
       break;
 
-    case SExpr::TYPE_INTEGER:
+    case Value::TYPE_INTEGER:
       os << sexpr.as_int();
       break;
 
-    case SExpr::TYPE_REAL:
+    case Value::TYPE_REAL:
       os << sexpr.as_float();
       break;
 
-    case SExpr::TYPE_SYMBOL:
+    case Value::TYPE_SYMBOL:
       os << sexpr.as_string();
       break;
 
-    case SExpr::TYPE_BOOLEAN:
+    case Value::TYPE_BOOLEAN:
       os << (sexpr.as_bool() ? "#t" : "#f");
       break;
   }

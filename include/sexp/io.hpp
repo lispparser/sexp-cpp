@@ -20,11 +20,11 @@
 
 #include <ostream>
 
-#include "sexp/sexpr.hpp"
+#include "sexp/value.hpp"
 
 namespace sexp {
 
-std::ostream& operator<<(std::ostream& os, SExpr const& sexpr);
+std::ostream& operator<<(std::ostream& os, Value const& sexpr);
 
 } // namespace sexp
 

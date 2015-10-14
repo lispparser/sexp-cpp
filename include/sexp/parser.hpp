@@ -21,15 +21,15 @@
 #include <memory>
 
 #include "sexp/lexer.hpp"
-#include "sexp/sexpr.hpp"
+#include "sexp/value.hpp"
 
 namespace sexp {
 
 class Parser
 {
 public:
-  static SExpr from_string(std::string const& str);
-  static SExpr from_stream(std::istream& stream);
+  static Value from_string(std::string const& str);
+  static Value from_stream(std::istream& stream);
 
 public:
   Parser(std::istream& stream);
@@ -37,7 +37,7 @@ public:
 
 private:
   void parse_error(const char* msg) const __attribute__((__noreturn__));
-  SExpr read();
+  Value read();
 
 private:
   std::unique_ptr<Lexer> lexer;

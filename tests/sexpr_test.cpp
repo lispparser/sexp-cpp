@@ -2,21 +2,21 @@
 
 #include <sstream>
 
-#include "sexp/sexpr.hpp"
+#include "sexp/value.hpp"
 
-TEST(SExprTest, simple)
+TEST(ValueTest, simple)
 {
-  using sexp::SExpr;
-  using sexp::SExprImpl;
+  using sexp::Value;
+  using sexp::ValueImpl;
 
-  auto sexpr_bool = SExpr::boolean(true);
-  auto sexpr_int = SExpr::integer(5);
-  auto sexpr_float = SExpr::real(45.0f);
-  auto sexpr_cons = SExpr::cons(SExpr::integer(5), SExpr::nil());
-  auto sexpr_cons2 = SExpr::cons(std::move(sexpr_int), SExpr::nil());
+  auto sexpr_bool = Value::boolean(true);
+  auto sexpr_int = Value::integer(5);
+  auto sexpr_float = Value::real(45.0f);
+  auto sexpr_cons = Value::cons(Value::integer(5), Value::nil());
+  auto sexpr_cons2 = Value::cons(std::move(sexpr_int), Value::nil());
 
   ASSERT_EQ(5, sexpr_cons2.get_car().as_int());
-  ASSERT_EQ(SExpr::nil(), sexpr_cons2.get_cdr());
+  ASSERT_EQ(Value::nil(), sexpr_cons2.get_cdr());
 }
 
 /* EOF */

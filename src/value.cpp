@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "sexp/sexpr.hpp"
+#include "sexp/value.hpp"
 
 #include <sstream>
 
@@ -24,7 +24,7 @@
 namespace sexp {
 
 std::string
-SExpr::str() const
+Value::str() const
 {
   std::ostringstream os;
   os << *this;
