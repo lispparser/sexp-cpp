@@ -21,6 +21,7 @@
 
 #include "lisp/lexer.hpp"
 #include "lisp/lisp.hpp"
+#include "lisp/sexpr.hpp"
 
 namespace lisp {
 
@@ -36,11 +37,11 @@ public:
    * Same as parse but reads from a generic std::istream. The sourcename is
    * used for errormessages to indicate the source of the data.
    */
-  const Lisp* parse(std::istream& stream);
+  SExpr parse(std::istream& stream);
 
 private:
   void parse_error(const char* msg) const __attribute__((__noreturn__));
-  const Lisp* read();
+  SExpr read();
 
 private:
   std::unique_ptr<Lexer> lexer;
