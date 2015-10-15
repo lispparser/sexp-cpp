@@ -61,4 +61,23 @@ TEST(UtilTest, list_iterator_invalid)
   ASSERT_EQ(expected, result);
 }
 
+TEST(UtilTest, list_length)
+{
+  sexp::Value lst = sexp::Parser::from_string("(1 2 3 4 5 6 7 8 9)");
+  ASSERT_EQ(9, sexp::list_length(lst));
+
+  sexp::Value lst_invalid = sexp::Parser::from_string("(1 2 3 4 5 6 7 8 9 . 10)");
+  ASSERT_EQ(9, sexp::list_length(lst_invalid));
+}
+
+TEST(UtilTest, list_ref)
+{
+  sexp::Value lst = sexp::Parser::from_string("(5 4 3 2 1)");
+  ASSERT_EQ(5, sexp::list_ref(lst, 0).as_int());
+  ASSERT_EQ(4, sexp::list_ref(lst, 1).as_int());
+  ASSERT_EQ(3, sexp::list_ref(lst, 2).as_int());
+  ASSERT_EQ(2, sexp::list_ref(lst, 3).as_int());
+  ASSERT_EQ(1, sexp::list_ref(lst, 4).as_int());
+}
+
 /* EOF */

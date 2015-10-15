@@ -21,6 +21,8 @@ namespace sexp {
 
 class Value;
 
+int list_length(Value const& sx);
+Value const& list_ref(Value const& sx, int index);
 bool is_list(Value const& sx);
 
 class ListIterator
@@ -50,6 +52,8 @@ public:
       cur = &cur->get_cdr();
       if (!cur->is_cons())
       {
+        // if the list is malformed we stop at the last valid element
+        // and silently ignore the rest
         cur = nullptr;
       }
     }

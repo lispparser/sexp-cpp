@@ -40,6 +40,35 @@ is_list(Value const& sx)
   }
 }
 
+int list_length(Value const& sx)
+{
+  if (sx.is_nil())
+  {
+    return 0;
+  }
+  else if (sx.is_cons())
+  {
+    return 1 + list_length(sx.get_cdr());
+  }
+  else
+  {
+    // silently ignoring malformed list content
+    return 0;
+  }
+}
+
+Value const& list_ref(Value const& sx, int index)
+{
+  if (index == 0)
+  {
+    return sx.get_car();
+  }
+  else
+  {
+    list_ref(sx.get_cdr(), index - 1);
+  }
+}
+
 } // namespace sexp
 
 /* EOF */
