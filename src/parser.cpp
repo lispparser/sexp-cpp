@@ -28,20 +28,22 @@ Value
 Parser::from_string(std::string const& str)
 {
   std::istringstream is(str);
-  Parser parser(is);
+  Lexer lexer(is);
+  Parser parser(lexer);
   return parser.read();
 }
 
 Value
-Parser::from_stream(std::istream& stream)
+Parser::from_stream(std::istream& is)
 {
-  Parser parser(stream);
+  Lexer lexer(is);
+  Parser parser(lexer);
   return parser.read();
 }
 
-Parser::Parser(std::istream& stream) :
-  lexer(std::make_unique<Lexer>(stream)),
-  token(lexer->getNextToken())
+Parser::Parser(Lexer& lexer) :
+  m_lexer(lexer),
+  m_token(m_lexer.getNextToken())
 {
 }
 
@@ -53,7 +55,7 @@ void
 Parser::parse_error(const char* msg) const
 {
   std::stringstream emsg;
-  emsg << "Parse Error at line " << lexer->getLineNumber()
+  emsg << "Parse Error at line " << m_lexer.getLineNumber()
        << ": " << msg;
   throw std::runtime_error(emsg.str());
 }
@@ -63,7 +65,7 @@ Parser::read()
 {
   Value result;
 
-  switch(token)
+  switch(m_token)
   {
     case Lexer::TOKEN_EOF:
       parse_error("Unexpected EOF.");
@@ -78,8 +80,8 @@ Parser::read()
       break;
 
     case Lexer::TOKEN_OPEN_PAREN:
-      token = lexer->getNextToken();
-      if(token == Lexer::TOKEN_CLOSE_PAREN)
+      m_token = m_lexer.getNextToken();
+      if(m_token == Lexer::TOKEN_CLOSE_PAREN)
       {
         result = Value::nil();
       }
@@ -87,13 +89,13 @@ Parser::read()
       {
         result = Value::cons(read(), Value::nil());
         Value* cur = &result;
-        while(token != Lexer::TOKEN_CLOSE_PAREN)
+        while(m_token != Lexer::TOKEN_CLOSE_PAREN)
         {
-          if (token == Lexer::TOKEN_DOT)
+          if (m_token == Lexer::TOKEN_DOT)
           {
-            token = lexer->getNextToken();
+            m_token = m_lexer.getNextToken();
             cur->set_cdr(read());
-            if (token != Lexer::TOKEN_CLOSE_PAREN)
+            if (m_token != Lexer::TOKEN_CLOSE_PAREN)
             {
               parse_error("Expected ')'");
             }
@@ -109,19 +111,19 @@ Parser::read()
       break;
 
     case Lexer::TOKEN_SYMBOL:
-      result = Value::symbol(lexer->getString());
+      result = Value::symbol(m_lexer.getString());
       break;
 
     case Lexer::TOKEN_STRING:
-      result = Value::string(lexer->getString());
+      result = Value::string(m_lexer.getString());
       break;
 
     case Lexer::TOKEN_INTEGER:
-      result = Value::integer(stoi(lexer->getString()));
+      result = Value::integer(stoi(m_lexer.getString()));
       break;
 
     case Lexer::TOKEN_REAL:
-      result = Value::real(stof(lexer->getString()));
+      result = Value::real(stof(m_lexer.getString()));
       break;
 
     case Lexer::TOKEN_TRUE:
@@ -137,7 +139,7 @@ Parser::read()
       break;
   }
 
-  token = lexer->getNextToken();
+  m_token = m_lexer.getNextToken();
   return result;
 }
 

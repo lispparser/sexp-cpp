@@ -25,6 +25,8 @@
 
 namespace sexp {
 
+class Lexer;
+
 class Parser
 {
 public:
@@ -32,7 +34,7 @@ public:
   static Value from_stream(std::istream& stream);
 
 public:
-  Parser(std::istream& stream);
+  Parser(Lexer& lexer);
   ~Parser();
 
 private:
@@ -40,8 +42,8 @@ private:
   Value read();
 
 private:
-  std::unique_ptr<Lexer> lexer;
-  Lexer::TokenType token;
+  Lexer& m_lexer;
+  Lexer::TokenType m_token;
 
 private:
   Parser(const Parser&);
