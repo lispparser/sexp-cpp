@@ -61,6 +61,18 @@ TEST(UtilTest, list_iterator_invalid)
   ASSERT_EQ(expected, result);
 }
 
+TEST(UtilTest, list_adapter)
+{
+  sexp::Value lst = sexp::Parser::from_string("(1 2 3 4 5 6 7 8 9)");
+  std::vector<int> result;
+  for(auto const& sx : sexp::ListAdapter(lst))
+  {
+    result.push_back(sx.as_int());
+  }
+  std::vector<int> expected{1, 2, 3, 4, 5, 6, 7, 8, 9};
+  ASSERT_EQ(expected, result);
+}
+
 TEST(UtilTest, list_length)
 {
   sexp::Value lst = sexp::Parser::from_string("(1 2 3 4 5 6 7 8 9)");

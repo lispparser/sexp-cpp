@@ -69,6 +69,20 @@ public:
   }
 };
 
+class ListAdapter
+{
+private:
+  Value const& m_sx;
+
+public:
+  ListAdapter(Value const& sx) :
+    m_sx(sx)
+  {}
+
+  ListIterator begin() const { return ListIterator(m_sx); }
+  ListIterator end() const { return ListIterator(); }
+};
+
 } // namespace sexp
 
 #endif
