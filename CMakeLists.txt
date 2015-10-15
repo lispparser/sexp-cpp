@@ -47,6 +47,7 @@ add_compile_options(-std=c++1y)
 
 file(GLOB SEXP_SOURCES src/*.cpp)
 add_library(sexp ${SEXP_SOURCES})
+target_compile_options(sexp PRIVATE ${WARNINGS_CXX_FLAGS})
 target_include_directories(sexp SYSTEM PUBLIC include)
 
 if(BUILD_TESTS)
