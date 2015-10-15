@@ -47,10 +47,8 @@ public:
   { return linenumber; }
 
 private:
-  enum {
-    MAX_TOKEN_LENGTH = 16384,
-    BUFFER_SIZE = 16384
-  };
+  static const int MAX_TOKEN_LENGTH = 16384;
+  static const int BUFFER_SIZE = 16384;
 
   inline void nextChar();
   inline void addChar();
