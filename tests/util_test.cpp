@@ -36,4 +36,29 @@ TEST(UtilTest, is_list)
   EXPECT_FALSE(sexp::is_list(sexp::Parser::from_string("(1 . (2 . (3 . 5)))")));
 }
 
+TEST(UtilTest, list_iterator)
+{
+  sexp::Value lst = sexp::Parser::from_string("(1 2 3 4 5 6 7 8 9)");
+  std::vector<int> result;
+  for(sexp::ListIterator it(lst); it != sexp::ListIterator(); ++it)
+  {
+    result.push_back(it->as_int());
+  }
+  std::vector<int> expected{1, 2, 3, 4, 5, 6, 7, 8, 9};
+  ASSERT_EQ(expected, result);
+}
+
+TEST(UtilTest, list_iterator_invalid)
+{
+  // the list isn't terminated with (), but with 10, it should get silently ignored
+  sexp::Value lst = sexp::Parser::from_string("(1 2 3 4 5 6 7 8 9 . 10)");
+  std::vector<int> result;
+  for(sexp::ListIterator it(lst); it != sexp::ListIterator(); ++it)
+  {
+    result.push_back(it->as_int());
+  }
+  std::vector<int> expected{1, 2, 3, 4, 5, 6, 7, 8, 9};
+  ASSERT_EQ(expected, result);
+}
+
 /* EOF */
