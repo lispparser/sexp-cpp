@@ -80,4 +80,13 @@ TEST(UtilTest, list_ref)
   ASSERT_EQ(1, sexp::list_ref(lst, 4).as_int());
 }
 
+TEST(UtilTest, assoc_ref)
+{
+  sexp::Value alist = sexp::Parser::from_string("((foo . 1) (bar . 2) (baz . 3))");
+  ASSERT_EQ(1, sexp::assoc_ref(alist, "foo").as_int());
+  ASSERT_EQ(2, sexp::assoc_ref(alist, "bar").as_int());
+  ASSERT_EQ(3, sexp::assoc_ref(alist, "baz").as_int());
+  ASSERT_EQ(sexp::Value::nil(), sexp::assoc_ref(alist, "foobar"));
+}
+
 /* EOF */

@@ -40,7 +40,8 @@ is_list(Value const& sx)
   }
 }
 
-int list_length(Value const& sx)
+int
+list_length(Value const& sx)
 {
   if (sx.is_nil())
   {
@@ -57,7 +58,8 @@ int list_length(Value const& sx)
   }
 }
 
-Value const& list_ref(Value const& sx, int index)
+Value const&
+list_ref(Value const& sx, int index)
 {
   if (index == 0)
   {
@@ -65,7 +67,30 @@ Value const& list_ref(Value const& sx, int index)
   }
   else
   {
-    list_ref(sx.get_cdr(), index - 1);
+    return list_ref(sx.get_cdr(), index - 1);
+  }
+}
+
+Value const&
+assoc_ref(Value const& sx, std::string const& key)
+{
+  if (sx.is_nil())
+  {
+    return sx;
+  }
+  else
+  {
+    Value const& pair = sx.get_car();
+    if (pair.is_cons() &&
+        pair.get_car().is_symbol() &&
+        pair.get_car().as_string() == key)
+    {
+      return pair.get_cdr();
+    }
+    else
+    {
+      return assoc_ref(sx.get_cdr(), key);
+    }
   }
 }
 

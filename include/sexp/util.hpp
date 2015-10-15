@@ -24,6 +24,7 @@ class Value;
 int list_length(Value const& sx);
 Value const& list_ref(Value const& sx, int index);
 bool is_list(Value const& sx);
+Value const& assoc_ref(Value const& sx, std::string const& key);
 
 class ListIterator
 {
