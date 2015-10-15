@@ -40,9 +40,9 @@ void escape_string(std::ostream& os, std::string const& text)
   os << '"';
 }
 
-std::ostream& operator<<(std::ostream& os, Value const& sexpr)
+std::ostream& operator<<(std::ostream& os, Value const& sx)
 {
-  switch(sexpr.get_type())
+  switch(sx.get_type())
   {
     case Value::TYPE_NIL:
       os << "()";
@@ -51,7 +51,7 @@ std::ostream& operator<<(std::ostream& os, Value const& sexpr)
     case Value::TYPE_CONS:
       {
         os << '(';
-        Value const* cur = &sexpr;
+        Value const* cur = &sx;
         do
         {
           if (cur->get_type() != Value::TYPE_CONS)
@@ -75,23 +75,23 @@ std::ostream& operator<<(std::ostream& os, Value const& sexpr)
       break;
 
     case Value::TYPE_STRING:
-      escape_string(os, sexpr.as_string());
+      escape_string(os, sx.as_string());
       break;
 
     case Value::TYPE_INTEGER:
-      os << sexpr.as_int();
+      os << sx.as_int();
       break;
 
     case Value::TYPE_REAL:
-      os << sexpr.as_float();
+      os << sx.as_float();
       break;
 
     case Value::TYPE_SYMBOL:
-      os << sexpr.as_string();
+      os << sx.as_string();
       break;
 
     case Value::TYPE_BOOLEAN:
-      os << (sexpr.as_bool() ? "#t" : "#f");
+      os << (sx.as_bool() ? "#t" : "#f");
       break;
   }
 

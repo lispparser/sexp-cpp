@@ -35,7 +35,7 @@ static void BM_parser(benchmark::State& state)
     }
     else
     {
-      sexp::Value sexpr = sexp::Parser::from_stream(fin);
+      sexp::Value sx = sexp::Parser::from_stream(fin);
     }
   }
 }
