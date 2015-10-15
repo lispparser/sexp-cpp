@@ -29,6 +29,7 @@ TEST(IOTest, roundtrip)
       "(1 0.25 foobar)",
       "((1) (0.25) (foobar))",
       "((1 ()) ((0.25)) (1 . 5) (foobar))",
+      "(\">>\\\"str\\\\ing\\\"<<\")"
       };
 
   for(auto const& text : data)

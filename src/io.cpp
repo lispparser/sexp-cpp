@@ -19,6 +19,27 @@
 
 namespace sexp {
 
+void escape_string(std::ostream& os, std::string const& text)
+{
+  os << '"';
+  for(size_t i = 0; i < text.size(); ++i)
+  {
+    if (text[i] == '"')
+    {
+      os << "\\\"";
+    }
+    else if (text[i] == '\\')
+    {
+      os << "\\\\";
+    }
+    else
+    {
+      os << text[i];
+    }
+  }
+  os << '"';
+}
+
 std::ostream& operator<<(std::ostream& os, Value const& sexpr)
 {
   switch(sexpr.get_type())
@@ -54,7 +75,7 @@ std::ostream& operator<<(std::ostream& os, Value const& sexpr)
       break;
 
     case Value::TYPE_STRING:
-      os << '"' << sexpr.as_string() << '"';
+      escape_string(os, sexpr.as_string());
       break;
 
     case Value::TYPE_INTEGER:
