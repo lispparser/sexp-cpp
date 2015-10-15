@@ -78,7 +78,7 @@ Lexer::nextChar()
 void
 Lexer::addChar()
 {
-  token_string += c;
+  token_string += static_cast<char>(c);
   nextChar();
 }
 
@@ -141,7 +141,7 @@ Lexer::getNextToken()
           default:
             break;
         }
-        token_string += c;
+        token_string += static_cast<char>(c);
       }
       string_finished:
       return TOKEN_STRING;
