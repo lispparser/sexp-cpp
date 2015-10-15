@@ -34,8 +34,8 @@ Lexer::Lexer(std::istream& newstream) :
   token_string()
 {
   // trigger a refill of the buffer
-  bufpos = NULL;
-  bufend = NULL;
+  bufpos = nullptr;
+  bufend = nullptr;
   nextChar();
 }
 
@@ -46,7 +46,7 @@ Lexer::~Lexer()
 void
 Lexer::nextChar()
 {
-  if(bufpos >= bufend || (bufpos == NULL && bufend == NULL) /* Initial refill trigger */) {
+  if(bufpos >= bufend || (bufpos == nullptr && bufend == nullptr) /* Initial refill trigger */) {
     if(eof) {
       c = EOF;
       return;
@@ -67,7 +67,7 @@ Lexer::nextChar()
     }
   }
 
-  if(bufpos == NULL)
+  if(bufpos == nullptr)
     return;
 
   c = *bufpos++;
