@@ -76,7 +76,7 @@ assoc_ref(Value const& sx, std::string const& key)
 {
   if (sx.is_nil())
   {
-    return sx;
+    return Value::nil_ref();
   }
   else
   {

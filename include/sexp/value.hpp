@@ -43,6 +43,9 @@ private:
   std::unique_ptr<ValueImpl> m_impl;
 
 public:
+  /** Returns a reference to a nil value for use in functions that
+      return a reference and need to return a nil value */
+  static Value const& nil_ref() { static Value const s_nil; return s_nil; }
   static Value nil() { return Value(); }
   static Value boolean(bool v) { return Value(std::make_unique<ValueImpl>(v)); }
   static Value integer(int v) { return Value(std::make_unique<ValueImpl>(v)); }
