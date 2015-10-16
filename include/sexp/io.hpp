@@ -24,7 +24,11 @@
 
 namespace sexp {
 
-std::ostream& operator<<(std::ostream& os, Value const& sexpr);
+void escape_string(std::ostream& os, std::string const& text);
+
+std::ostream& operator<<(std::ostream& os, Value const& sx);
+
+std::string to_string(Value const& sx);
 
 } // namespace sexp
 
