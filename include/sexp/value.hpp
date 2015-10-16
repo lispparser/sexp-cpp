@@ -31,12 +31,12 @@ public:
   enum Type
   {
     TYPE_NIL,
-    TYPE_CONS,
-    TYPE_SYMBOL,
+    TYPE_BOOLEAN,
     TYPE_INTEGER,
-    TYPE_STRING,
     TYPE_REAL,
-    TYPE_BOOLEAN
+    TYPE_STRING,
+    TYPE_SYMBOL,
+    TYPE_CONS
   };
 
 private:
@@ -56,6 +56,10 @@ public:
   static Value cons() { return Value(std::make_unique<ValueImpl>(Value::nil(), Value::nil())); }
 
 public:
+  explicit Value(Value const& other) :
+    m_impl(other.is_nil() ? nullptr : std::make_unique<ValueImpl>(*other.m_impl))
+  {}
+
   Value(Value&& other) :
     m_impl(std::move(other.m_impl))
   {}
@@ -106,18 +110,7 @@ public:
   std::string const& as_symbol() const;
   std::string const& as_string() const;
 
-  bool operator==(Value const& other) const
-  {
-    if (m_impl == other.m_impl)
-    {
-      return true;
-    }
-    else
-    {
-      // FIXME: Implement some tree traversal
-      return false;
-    }
-  }
+  bool operator==(Value const& other) const;
 
   std::string str() const;
 };
@@ -139,6 +132,39 @@ public:
     int m_int;
     float m_float;
   };
+
+  ValueImpl(ValueImpl const& other) :
+    m_type(other.m_type)
+  {
+    switch(m_type)
+    {
+      case Value::TYPE_NIL:
+        assert(false && "ValueImpl can't be TYPE_NIL");
+        break;
+
+      case Value::TYPE_BOOLEAN:
+        m_bool = other.m_bool;
+        break;
+
+      case Value::TYPE_INTEGER:
+        m_int = other.m_int;
+        break;
+
+      case Value::TYPE_REAL:
+        m_float = other.m_float;
+        break;
+
+      case Value::TYPE_CONS:
+        new (&m_cons.car) Value(other.m_cons.car);
+        new (&m_cons.cdr) Value(other.m_cons.cdr);
+        break;
+
+      case Value::TYPE_SYMBOL:
+      case Value::TYPE_STRING:
+        m_string = new std::string(*other.m_string);
+        break;
+    }
+  }
 
   ValueImpl(Value&& car, Value&& cdr) :
     m_type(Value::TYPE_CONS),
@@ -184,7 +210,56 @@ public:
         break;
     }
   }
+
+  bool operator==(ValueImpl const& rhs) const
+  {
+    if (m_type != rhs.m_type)
+    {
+      return false;
+    }
+    else
+    {
+      switch(m_type)
+      {
+        case Value::TYPE_BOOLEAN:
+          return m_bool == rhs.m_bool;
+
+        case Value::TYPE_INTEGER:
+          return m_int == rhs.m_int;
+
+        case Value::TYPE_REAL:
+          return m_float == rhs.m_float;
+
+        case Value::TYPE_STRING:
+        case Value::TYPE_SYMBOL:
+
+        case Value::TYPE_CONS:
+          return (m_cons.car == m_cons.car &&
+                  m_cons.cdr == m_cons.cdr);
+
+        default:
+          assert(false && "should never be reached");
+      }
+    }
+  }
 };
+
+inline bool
+Value::operator==(Value const& other) const
+{
+  if (m_impl == other.m_impl)
+  {
+    return true;
+  }
+  else if (m_impl)
+  {
+    return *m_impl == *other.m_impl;
+  }
+  else
+  {
+    return false;
+  }
+}
 
 inline Value::Type
 Value::get_type() const

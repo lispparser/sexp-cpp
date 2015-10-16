@@ -19,20 +19,40 @@
 #include <sstream>
 
 #include "sexp/value.hpp"
+#include "sexp/parser.hpp"
+#include "sexp/io.hpp"
 
-TEST(ValueTest, simple)
+TEST(ValueTest, construct)
 {
   using sexp::Value;
-  using sexp::ValueImpl;
 
   auto sx_bool = Value::boolean(true);
-  auto sx_int = Value::integer(5);
-  auto sx_float = Value::real(45.0f);
-  auto sx_cons = Value::cons(Value::integer(5), Value::nil());
-  auto sx_cons2 = Value::cons(std::move(sx_int), Value::nil());
+  ASSERT_EQ(true, sx_bool.as_bool());
 
-  ASSERT_EQ(5, sx_cons2.get_car().as_int());
+  auto sx_integer = Value::integer(12345789);
+  ASSERT_EQ(12345789, sx_integer.as_int());
+
+  auto sx_real = Value::real(12345.0f);
+  ASSERT_EQ(12345.0f, sx_real.as_float());
+
+  auto sx_symbol = Value::symbol("Symbol");
+  ASSERT_EQ("Symbol", sx_symbol.as_string());
+
+  auto sx_string = Value::string("HelloWorld");
+  ASSERT_EQ("HelloWorld", sx_string.as_string());
+
+  auto sx_cons = Value::cons(Value::integer(5), Value::nil());
+  auto sx_cons2 = Value::cons(std::move(sx_integer), Value::nil());
+
+  ASSERT_EQ(12345789, sx_cons2.get_car().as_int());
   ASSERT_EQ(Value::nil(), sx_cons2.get_cdr());
+}
+
+TEST(ValueTest, copy)
+{
+  sexp::Value sx = sexp::Parser::from_string("(a-symbol #f #t 1 2 3 (4 5 (6 7 8) (9 . 10) \"Hello world\"))");
+  sexp::Value sx_copy = sexp::Value(sx);
+  ASSERT_EQ(sx, sx_copy);
 }
 
 /* EOF */
