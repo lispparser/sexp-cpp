@@ -239,6 +239,7 @@ public:
 
         default:
           assert(false && "should never be reached");
+          return false;
       }
     }
   }
@@ -374,6 +375,7 @@ Value::as_float() const
   else
   {
     assert(false && "type missmatch");
+    return 0.0f;
   }
 }
 
