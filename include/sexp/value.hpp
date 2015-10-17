@@ -65,21 +65,21 @@ public:
   static Value cons() { return Value(Value::nil(), Value::nil()); }
 
 private:
-  Value(bool value) : m_type(TYPE_BOOLEAN), m_bool(value) {}
-  Value(int value) : m_type(TYPE_INTEGER), m_int(value) {}
-  Value(float value) : m_type(TYPE_REAL), m_float(value) {}
-  Value(Type type, std::string const& value) :
+  inline Value(bool value) : m_type(TYPE_BOOLEAN), m_bool(value) {}
+  inline Value(int value) : m_type(TYPE_INTEGER), m_int(value) {}
+  inline Value(float value) : m_type(TYPE_REAL), m_float(value) {}
+  inline Value(Type type, std::string const& value) :
     m_type(type),
     m_string(new std::string(value))
   {}
-  Value(Value&& car, Value&& cdr);
+  inline Value(Value&& car, Value&& cdr);
 
   void destroy();
 
 public:
   explicit Value(Value const& other);
 
-  Value(Value&& other) :
+  inline Value(Value&& other) :
     m_type(other.m_type)
   {
     switch(m_type)
@@ -112,16 +112,16 @@ public:
     other.m_type = TYPE_NIL;
   }
 
-  Value() :
+  inline Value() :
     m_type(TYPE_NIL)
   {}
 
-  ~Value()
+  inline ~Value()
   {
     destroy();
   }
 
-  Value& operator=(Value&& other)
+  inline Value& operator=(Value&& other)
   {
     destroy();
 
@@ -158,19 +158,17 @@ public:
     return *this;
   }
 
-  Type get_type() const;
+  inline Type get_type() const { return m_type; }
 
-  explicit operator bool() const
-  {
-    return m_type != TYPE_NIL;
-  }
+  inline explicit operator bool() const { return m_type != TYPE_NIL; }
 
-  bool is_nil() const;
-  bool is_cons() const;
-  bool is_symbol() const;
-  bool is_string() const;
-  bool is_integer() const;
-  bool is_real() const;
+  inline bool is_nil() const { return m_type == TYPE_NIL; }
+  inline bool is_boolean() const { return m_type == TYPE_BOOLEAN; }
+  inline bool is_integer() const { return m_type == TYPE_INTEGER; }
+  inline bool is_real() const { return (m_type == TYPE_REAL || m_type == TYPE_INTEGER); }
+  inline bool is_string() const { return m_type == TYPE_STRING; }
+  inline bool is_symbol() const { return m_type == TYPE_SYMBOL; }
+  inline bool is_cons() const { return m_type == TYPE_CONS; }
 
   Value const& get_car() const;
   Value const& get_cdr() const;
@@ -290,49 +288,6 @@ Value::operator==(Value const& rhs) const
   {
     return false;
   }
-}
-
-inline Value::Type
-Value::get_type() const
-{
-  return m_type;
-}
-
-inline bool
-Value::is_nil() const
-{
-  return m_type == TYPE_NIL;
-}
-
-inline bool
-Value::is_cons() const
-{
-  return m_type == TYPE_CONS;
-}
-
-inline bool
-Value::is_symbol() const
-{
-  return m_type == TYPE_SYMBOL;
-}
-
-inline bool
-Value::is_string() const
-{
-  return m_type == TYPE_STRING;
-}
-
-inline bool
-Value::is_integer() const
-{
-  return m_type == TYPE_INTEGER;
-}
-
-inline bool
-Value::is_real() const
-{
-  return (m_type == TYPE_REAL ||
-          m_type == TYPE_INTEGER);
 }
 
 inline Value const&
