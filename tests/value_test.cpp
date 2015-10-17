@@ -52,7 +52,14 @@ TEST(ValueTest, copy)
 {
   sexp::Value sx = sexp::Parser::from_string("(a-symbol #f #t 1 2 3 (4 5 (6 7 8) (9 . 10) \"Hello world\"))");
   sexp::Value sx_copy = sexp::Value(sx);
-  ASSERT_EQ(sx, sx_copy);
+  ASSERT_EQ(sx.str(), sx_copy.str());
+}
+
+TEST(ValueTest, equal)
+{
+  sexp::Value lhs = sexp::Parser::from_string("(a-symbol #f #t 1 2 3 (4 5 (6 7 8) (9 . 10) \"Hello world\"))");
+  sexp::Value rhs = sexp::Parser::from_string("(a-symbol #f #t 1 2 3 (4 5 (6 7 8) (9 . 10) \"Hello world\"))");
+  ASSERT_TRUE(lhs == rhs);
 }
 
 /* EOF */
