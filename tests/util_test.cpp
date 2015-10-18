@@ -61,6 +61,16 @@ TEST(UtilTest, list_iterator_invalid)
   ASSERT_EQ(expected, result);
 }
 
+TEST(UtilTest, list_iterator_nil)
+{
+  sexp::Value sx = sexp::Value::nil();
+  for(sexp::ListIterator it(sx); it != sexp::ListIterator(); ++it)
+  {
+    (void)it;
+    ASSERT_TRUE(false);
+  }
+}
+
 TEST(UtilTest, list_adapter)
 {
   sexp::Value lst = sexp::Parser::from_string("(1 2 3 4 5 6 7 8 9)");
@@ -73,6 +83,16 @@ TEST(UtilTest, list_adapter)
   ASSERT_EQ(expected, result);
 }
 
+TEST(UtilTest, list_adapter_nil)
+{
+  sexp::Value lst = sexp::Value::nil();
+  for(auto const& sx : sexp::ListAdapter(lst))
+  {
+    (void)sx;
+    ASSERT_TRUE(false);
+  }
+}
+
 TEST(UtilTest, list_length)
 {
   sexp::Value lst = sexp::Parser::from_string("(1 2 3 4 5 6 7 8 9)");
@@ -80,6 +100,9 @@ TEST(UtilTest, list_length)
 
   sexp::Value lst_invalid = sexp::Parser::from_string("(1 2 3 4 5 6 7 8 9 . 10)");
   ASSERT_EQ(9, sexp::list_length(lst_invalid));
+
+  sexp::Value lst_nil = sexp::Value::nil();
+  ASSERT_EQ(0, sexp::list_length(lst_nil));
 }
 
 TEST(UtilTest, list_ref)

@@ -37,7 +37,7 @@ public:
   {}
 
   ListIterator(Value const& sx) :
-    cur(&sx)
+    cur(!sx.is_cons() ? nullptr : &sx)
   {}
 
   bool operator==(ListIterator const& rhs) const { return cur == rhs.cur; }
