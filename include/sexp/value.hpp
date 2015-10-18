@@ -20,6 +20,8 @@
 
 #include <assert.h>
 #include <memory>
+#include <string.h>
+#include <string>
 
 namespace sexp {
 
@@ -88,38 +90,12 @@ private:
   void destroy();
 
 public:
-  explicit Value(Value const& other);
+  Value(Value const& other);
 
   inline Value(Value&& other) :
-    m_type(other.m_type)
+    m_type()
   {
-    switch(m_type)
-    {
-      case TYPE_NIL:
-        break;
-
-      case TYPE_BOOLEAN:
-        m_bool = other.m_bool;
-        break;
-
-      case TYPE_INTEGER:
-        m_int = other.m_int;
-        break;
-
-      case TYPE_REAL:
-        m_float = other.m_float;
-        break;
-
-      case TYPE_STRING:
-      case TYPE_SYMBOL:
-        m_string = other.m_string;
-        break;
-
-      case TYPE_CONS:
-        m_cons = other.m_cons;
-        break;
-    }
-
+    memcpy(this, &other, sizeof(Value));
     other.m_type = TYPE_NIL;
   }
 
@@ -135,37 +111,15 @@ public:
   inline Value& operator=(Value&& other)
   {
     destroy();
-
-    m_type = other.m_type;
+    memcpy(this, &other, sizeof(Value));
     other.m_type = TYPE_NIL;
+    return *this;
+  }
 
-    switch(m_type)
-    {
-      case TYPE_NIL:
-        break;
-
-      case TYPE_BOOLEAN:
-        m_bool = other.m_bool;
-        break;
-
-      case TYPE_INTEGER:
-        m_int = other.m_int;
-        break;
-
-      case TYPE_REAL:
-        m_float = other.m_float;
-        break;
-
-      case TYPE_STRING:
-      case TYPE_SYMBOL:
-        m_string = other.m_string;
-        break;
-
-      case TYPE_CONS:
-        m_cons = other.m_cons;
-        break;
-    }
-
+  inline Value& operator=(Value const& other)
+  {
+    destroy();
+    new (this) Value(other);
     return *this;
   }
 

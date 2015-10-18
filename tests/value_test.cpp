@@ -62,4 +62,15 @@ TEST(ValueTest, equal)
   ASSERT_TRUE(lhs == rhs);
 }
 
+TEST(ValueTest, assignment)
+{
+  sexp::Value lhs = sexp::Parser::from_string("(a-symbol #f #t 1 2 3 (4 5 (6 7 8) (9 . 10) \"Hello world\"))");
+  sexp::Value rhs = sexp::Parser::from_string("(a-symbol #f #t 1 2 3 (4 5 (6 7 8) (9 . 10) \"Hello world\"))");
+  ASSERT_EQ(lhs, rhs);
+  sexp::Value tmp = lhs;
+  lhs = rhs;
+  rhs = tmp;
+  ASSERT_EQ(lhs, rhs);
+}
+
 /* EOF */
