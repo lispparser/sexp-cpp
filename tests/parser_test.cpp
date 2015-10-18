@@ -24,7 +24,14 @@
 
 TEST(ParserTest, single)
 {
-  sexp::Value cons = sexp::Parser::from_string("(1 2.5 foo \"TEXT\" bar bar)");
+  using sexp::Value;
+  auto result = sexp::Parser::from_string("(1 2.5 foo \"TEXT\" bar)");
+  auto expected = Value::list(Value::integer(1),
+                              Value::real(2.5),
+                              Value::symbol("foo"),
+                              Value::string("TEXT"),
+                              Value::symbol("bar"));
+  ASSERT_EQ(expected, result);
 }
 
 TEST(ParserTest, single_fail)

@@ -64,6 +64,17 @@ public:
   static Value cons(Value&& car, Value&& cdr) { return Value(std::move(car), std::move(cdr)); }
   static Value cons() { return Value(Value::nil(), Value::nil()); }
 
+  static Value list()
+  {
+    return Value::nil();
+  }
+
+  template<typename... Args>
+  static Value list(Value&& head, Args&&... rest)
+  {
+    return Value::cons(std::move(head), list(std::move(rest)...));
+  }
+
 private:
   inline Value(bool value) : m_type(TYPE_BOOLEAN), m_bool(value) {}
   inline Value(int value) : m_type(TYPE_INTEGER), m_int(value) {}
