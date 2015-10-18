@@ -52,7 +52,7 @@ Lexer::nextChar()
       return;
     }
     stream.read(buffer, BUFFER_SIZE);
-    size_t bytes_read = stream.gcount();
+    std::streamsize bytes_read = stream.gcount();
 
     bufpos = buffer;
     bufend = buffer + bytes_read;
