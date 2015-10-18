@@ -78,9 +78,9 @@ public:
   }
 
 private:
-  inline Value(bool value) : m_type(TYPE_BOOLEAN), m_bool(value) {}
-  inline Value(int value) : m_type(TYPE_INTEGER), m_int(value) {}
-  inline Value(float value) : m_type(TYPE_REAL), m_float(value) {}
+  inline explicit Value(bool value) : m_type(TYPE_BOOLEAN), m_bool(value) {}
+  inline explicit Value(int value) : m_type(TYPE_INTEGER), m_int(value) {}
+  inline explicit Value(float value) : m_type(TYPE_REAL), m_float(value) {}
   inline Value(Type type, std::string const& value) :
     m_type(type),
     m_string(new std::string(value))
