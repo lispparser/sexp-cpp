@@ -147,7 +147,6 @@ public:
   bool as_bool() const;
   int as_int() const;
   float as_float() const;
-  std::string const& as_symbol() const;
   std::string const& as_string() const;
 
   bool operator==(Value const& other) const;
