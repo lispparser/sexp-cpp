@@ -86,7 +86,7 @@ Parser::read_many()
   {
     results.push_back(read());
   }
-  return std::move(results);
+  return results;
 }
 
 Value
