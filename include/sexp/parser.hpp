@@ -19,6 +19,7 @@
 #define HEADER_SEXP_PARSER_HPP
 
 #include <memory>
+#include <vector>
 
 #include "sexp/lexer.hpp"
 #include "sexp/value.hpp"
@@ -33,12 +34,16 @@ public:
   static Value from_string(std::string const& str);
   static Value from_stream(std::istream& stream);
 
+  static std::vector<Value> from_string_many(std::string const& str);
+  static std::vector<Value> from_stream_many(std::istream& stream);
+
 public:
   Parser(Lexer& lexer);
   ~Parser();
 
 private:
   void parse_error(const char* msg) const __attribute__((__noreturn__));
+  std::vector<Value> read_many();
   Value read();
 
 private:

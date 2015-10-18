@@ -22,10 +22,30 @@
 #include "sexp/value.hpp"
 #include "sexp/parser.hpp"
 
-TEST(ParserTest, simple)
+TEST(ParserTest, single)
 {
-  std::istringstream in("(1 2.5 foo \"TEXT\" bar bar)");
-  sexp::Value cons = sexp::Parser::from_stream(in);
+  sexp::Value cons = sexp::Parser::from_string("(1 2.5 foo \"TEXT\" bar bar)");
+}
+
+TEST(ParserTest, single_fail)
+{
+  std::istringstream in("(1 2.5 foo \"TEXT\" bar bar) 5");
+  EXPECT_THROW({
+      sexp::Value cons = sexp::Parser::from_stream(in);
+    },
+    std::runtime_error);
+}
+
+TEST(ParserTest, parse_many)
+{
+  std::istringstream in("1 2.5 foo \"TEXT\" bar");
+  std::vector<sexp::Value> value = sexp::Parser::from_stream_many(in);
+  ASSERT_EQ(5, value.size());
+  ASSERT_EQ(value[0].get_type(), sexp::Value::TYPE_INTEGER);
+  ASSERT_EQ(value[1].get_type(), sexp::Value::TYPE_REAL);
+  ASSERT_EQ(value[2].get_type(), sexp::Value::TYPE_SYMBOL);
+  ASSERT_EQ(value[3].get_type(), sexp::Value::TYPE_STRING);
+  ASSERT_EQ(value[4].get_type(), sexp::Value::TYPE_SYMBOL);
 }
 
 TEST(ParserTest, parse_integer)

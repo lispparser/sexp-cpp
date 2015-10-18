@@ -28,9 +28,7 @@ Value
 Parser::from_string(std::string const& str)
 {
   std::istringstream is(str);
-  Lexer lexer(is);
-  Parser parser(lexer);
-  return parser.read();
+  return from_stream(is);
 }
 
 Value
@@ -38,7 +36,27 @@ Parser::from_stream(std::istream& is)
 {
   Lexer lexer(is);
   Parser parser(lexer);
-  return parser.read();
+  Value result = parser.read();
+  if (parser.m_token != Lexer::TOKEN_EOF)
+  {
+    parser.parse_error("trailing garbage in stream");
+  }
+  return result;
+}
+
+std::vector<Value>
+Parser::from_string_many(std::string const& str)
+{
+  std::istringstream is(str);
+  return from_stream_many(is);
+}
+
+std::vector<Value>
+Parser::from_stream_many(std::istream& is)
+{
+  Lexer lexer(is);
+  Parser parser(lexer);
+  return parser.read_many();
 }
 
 Parser::Parser(Lexer& lexer) :
@@ -58,6 +76,17 @@ Parser::parse_error(const char* msg) const
   emsg << "Parse Error at line " << m_lexer.getLineNumber()
        << ": " << msg;
   throw std::runtime_error(emsg.str());
+}
+
+std::vector<Value>
+Parser::read_many()
+{
+  std::vector<Value> results;
+  while(m_token != Lexer::TOKEN_EOF)
+  {
+    results.push_back(read());
+  }
+  return std::move(results);
 }
 
 Value
