@@ -86,6 +86,14 @@ TEST(ParserTest, parse_symbol)
   ASSERT_EQ("HelloWorld", sx.as_string());
 }
 
+TEST(ParserTest, parse_array)
+{
+  char const* sx_str = "#(1 \"foo\" #(bar))";
+  auto sx = sexp::Parser::from_string(sx_str);
+  ASSERT_EQ(sexp::Value::TYPE_ARRAY, sx.get_type());
+  ASSERT_EQ(sx_str, sx.str());
+}
+
 // FIXME: Compare data structure or use simple strings?!
 // "(foo . bar)" as string is ambigous in the current parser as . can be handled as symbol, not pair
 TEST(ParserTest, simple_pair)

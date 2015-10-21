@@ -41,6 +41,9 @@ TEST(ValueTest, construct)
   auto sx_string = Value::string("HelloWorld");
   ASSERT_EQ("HelloWorld", sx_string.as_string());
 
+  auto sx_array = Value::array(Value::integer(1), Value::integer(2), Value::integer(3), Value::integer(4));
+  ASSERT_EQ("#(1 2 3 4)", sx_array.str());
+
   auto sx_cons = Value::cons(Value::integer(5), Value::nil());
   auto sx_cons2 = Value::cons(std::move(sx_integer), Value::nil());
 

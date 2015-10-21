@@ -35,7 +35,8 @@ public:
     TOKEN_INTEGER,
     TOKEN_REAL,
     TOKEN_TRUE,
-    TOKEN_FALSE
+    TOKEN_FALSE,
+    TOKEN_ARRAY_START
   };
 
   Lexer(std::istream& stream);

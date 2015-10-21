@@ -22,6 +22,7 @@
 #include <memory>
 #include <string.h>
 #include <string>
+#include <vector>
 
 namespace sexp {
 
@@ -36,7 +37,8 @@ public:
     TYPE_REAL,
     TYPE_STRING,
     TYPE_SYMBOL,
-    TYPE_CONS
+    TYPE_CONS,
+    TYPE_ARRAY
   };
 
 private:
@@ -51,20 +53,33 @@ private:
 
     std::string* m_string;
     Cons* m_cons;
+    std::vector<Value>* m_array;
   };
+
+  struct BooleanDummy {};
+  struct IntegerDummy {};
+  struct RealDummy {};
+  struct StringDummy {};
+  struct SymbolDummy {};
+  struct ConsDummy {};
+  struct ArrayDummy {};
 
 public:
   /** Returns a reference to a nil value for use in functions that
       return a reference and need to return a nil value */
   static Value const& nil_ref() { static Value const s_nil; return s_nil; }
   static Value nil() { return Value(); }
-  static Value boolean(bool v) { return Value(v); }
-  static Value integer(int v) { return Value(v); }
-  static Value real(float v) { return Value(v); }
-  static Value string(std::string const& v) { return Value(TYPE_STRING, v); }
-  static Value symbol(std::string const& v) { return Value(TYPE_SYMBOL, v); }
-  static Value cons(Value&& car, Value&& cdr) { return Value(std::move(car), std::move(cdr)); }
-  static Value cons() { return Value(Value::nil(), Value::nil()); }
+  static Value boolean(bool v) { return Value(BooleanDummy(), v); }
+  static Value integer(int v) { return Value(IntegerDummy(), v); }
+  static Value real(float v) { return Value(RealDummy(), v); }
+  static Value string(std::string const& v) { return Value(StringDummy(), v); }
+  static Value symbol(std::string const& v) { return Value(SymbolDummy(), v); }
+  static Value cons(Value&& car, Value&& cdr) { return Value(ConsDummy(), std::move(car), std::move(cdr)); }
+  static Value cons() { return Value(ConsDummy(), Value::nil(), Value::nil()); }
+
+  static Value array(std::vector<Value> arr) { return Value(ArrayDummy(), std::move(arr)); }
+  template<typename... Args>
+  static Value array(Args&&... args) { return Value(ArrayDummy(), std::move(args)...); }
 
   static Value list()
   {
@@ -78,14 +93,27 @@ public:
   }
 
 private:
-  inline explicit Value(bool value) : m_type(TYPE_BOOLEAN), m_bool(value) {}
-  inline explicit Value(int value) : m_type(TYPE_INTEGER), m_int(value) {}
-  inline explicit Value(float value) : m_type(TYPE_REAL), m_float(value) {}
-  inline Value(Type type, std::string const& value) :
-    m_type(type),
+  inline explicit Value(BooleanDummy, bool value) : m_type(TYPE_BOOLEAN), m_bool(value) {}
+  inline explicit Value(IntegerDummy, int value) : m_type(TYPE_INTEGER), m_int(value) {}
+  inline explicit Value(RealDummy, float value) : m_type(TYPE_REAL), m_float(value) {}
+  inline Value(StringDummy, std::string const& value) :
+    m_type(TYPE_STRING),
     m_string(new std::string(value))
   {}
-  inline Value(Value&& car, Value&& cdr);
+  inline Value(SymbolDummy, std::string const& value) :
+    m_type(TYPE_SYMBOL),
+    m_string(new std::string(value))
+  {}
+  inline Value(ConsDummy, Value&& car, Value&& cdr);
+  inline Value(ArrayDummy, std::vector<Value> arr) :
+    m_type(TYPE_ARRAY),
+    m_array(new std::vector<Value>(std::move(arr)))
+  {}
+  template<typename... Args>
+  inline Value(ArrayDummy, Args&&... args) :
+    m_type(TYPE_ARRAY),
+    m_array(new std::vector<Value>{std::move(args)...})
+  {}
 
   void destroy();
 
@@ -148,6 +176,7 @@ public:
   int as_int() const;
   float as_float() const;
   std::string const& as_string() const;
+  std::vector<Value> const& as_array() const;
 
   bool operator==(Value const& other) const;
 
@@ -161,7 +190,7 @@ struct Value::Cons
 };
 
 inline
-Value::Value(Value&& car, Value&& cdr) :
+Value::Value(ConsDummy, Value&& car, Value&& cdr) :
   m_type(TYPE_CONS),
   m_cons(new Cons{std::move(car), std::move(cdr)})
 {}
@@ -178,6 +207,10 @@ Value::destroy()
 
     case Value::TYPE_CONS:
       delete m_cons;
+      break;
+
+    case Value::TYPE_ARRAY:
+      delete m_array;
       break;
 
     default:
@@ -215,6 +248,10 @@ Value::Value(Value const& other) :
     case TYPE_CONS:
       m_cons = new Cons(*other.m_cons);
       break;
+
+    case TYPE_ARRAY:
+      m_array = new std::vector<Value>(*other.m_array);
+      break;
   }
 }
 
@@ -244,6 +281,9 @@ Value::operator==(Value const& rhs) const
       case Value::TYPE_CONS:
         return (m_cons->car == rhs.m_cons->car &&
                 m_cons->cdr == rhs.m_cons->cdr);
+
+      case Value::TYPE_ARRAY:
+        return *m_array == *rhs.m_array;
     }
     assert(false && "should never be reached");
     return false;
@@ -334,6 +374,13 @@ Value::as_string() const
   assert(m_type == TYPE_SYMBOL ||
          m_type == TYPE_STRING);
   return *m_string;
+}
+
+inline std::vector<Value> const&
+Value::as_array() const
+{
+  assert(m_type == TYPE_ARRAY);
+  return *m_array;
 }
 
 } // namespace sexp

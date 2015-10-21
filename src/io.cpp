@@ -102,6 +102,19 @@ std::ostream& operator<<(std::ostream& os, Value const& sx)
     case Value::TYPE_BOOLEAN:
       os << (sx.as_bool() ? "#t" : "#f");
       break;
+
+    case Value::TYPE_ARRAY:
+      {
+        os << "#(";
+        auto const& arr = sx.as_array();
+        for(size_t i = 0; i != arr.size(); ++i)
+        {
+          if (i != 0) os << ' ';
+          os << arr[i];
+        }
+        os << ")";
+      }
+      break;
   }
 
   return os;

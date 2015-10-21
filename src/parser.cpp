@@ -139,6 +139,19 @@ Parser::read()
       }
       break;
 
+    case Lexer::TOKEN_ARRAY_START:
+      {
+        m_token = m_lexer.getNextToken();
+        std::vector<Value> arr;
+        do
+        {
+          arr.push_back(read());
+        }
+        while(m_token != Lexer::TOKEN_CLOSE_PAREN);
+        result = Value::array(std::move(arr));
+      }
+      break;
+
     case Lexer::TOKEN_SYMBOL:
       result = Value::symbol(m_lexer.getString());
       break;

@@ -22,7 +22,7 @@
 
 TEST(LexerTest, simple_tokens)
 {
-  std::istringstream is("(foo . bar)");
+  std::istringstream is("(foo . bar #())");
   sexp::Lexer lexer(is);
   ASSERT_EQ(sexp::Lexer::TOKEN_OPEN_PAREN, lexer.getNextToken());
   ASSERT_EQ(sexp::Lexer::TOKEN_SYMBOL, lexer.getNextToken());
@@ -30,6 +30,8 @@ TEST(LexerTest, simple_tokens)
   ASSERT_EQ(sexp::Lexer::TOKEN_DOT, lexer.getNextToken());
   ASSERT_EQ(sexp::Lexer::TOKEN_SYMBOL, lexer.getNextToken());
   ASSERT_EQ("bar", lexer.getString());
+  ASSERT_EQ(sexp::Lexer::TOKEN_ARRAY_START, lexer.getNextToken());
+  ASSERT_EQ(sexp::Lexer::TOKEN_CLOSE_PAREN, lexer.getNextToken());
   ASSERT_EQ(sexp::Lexer::TOKEN_CLOSE_PAREN, lexer.getNextToken());
   ASSERT_EQ(sexp::Lexer::TOKEN_EOF, lexer.getNextToken());
 }
