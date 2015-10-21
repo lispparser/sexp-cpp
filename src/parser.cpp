@@ -96,18 +96,6 @@ Parser::read()
 
   switch(m_token)
   {
-    case Lexer::TOKEN_EOF:
-      parse_error("Unexpected EOF.");
-      break;
-
-    case Lexer::TOKEN_CLOSE_PAREN:
-      parse_error("Unexpected ')'.");
-      break;
-
-    case Lexer::TOKEN_DOT:
-      parse_error("Unexpected '.'.");
-      break;
-
     case Lexer::TOKEN_OPEN_PAREN:
       m_token = m_lexer.getNextToken();
       if(m_token == Lexer::TOKEN_CLOSE_PAREN)
@@ -139,19 +127,6 @@ Parser::read()
       }
       break;
 
-    case Lexer::TOKEN_ARRAY_START:
-      {
-        m_token = m_lexer.getNextToken();
-        std::vector<Value> arr;
-        do
-        {
-          arr.push_back(read());
-        }
-        while(m_token != Lexer::TOKEN_CLOSE_PAREN);
-        result = Value::array(std::move(arr));
-      }
-      break;
-
     case Lexer::TOKEN_SYMBOL:
       result = Value::symbol(m_lexer.getString());
       break;
@@ -174,6 +149,31 @@ Parser::read()
 
     case Lexer::TOKEN_FALSE:
       result = Value::boolean(false);
+      break;
+
+    case Lexer::TOKEN_ARRAY_START:
+      {
+        m_token = m_lexer.getNextToken();
+        std::vector<Value> arr;
+        do
+        {
+          arr.push_back(read());
+        }
+        while(m_token != Lexer::TOKEN_CLOSE_PAREN);
+        result = Value::array(std::move(arr));
+      }
+      break;
+
+    case Lexer::TOKEN_EOF:
+      parse_error("Unexpected EOF.");
+      break;
+
+    case Lexer::TOKEN_CLOSE_PAREN:
+      parse_error("Unexpected ')'.");
+      break;
+
+    case Lexer::TOKEN_DOT:
+      parse_error("Unexpected '.'.");
       break;
 
     default:
