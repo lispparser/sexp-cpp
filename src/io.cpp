@@ -42,13 +42,6 @@ void escape_string(std::ostream& os, std::string const& text)
   os << '"';
 }
 
-std::string to_string(Value const& sx)
-{
-  std::ostringstream os;
-  os << sx;
-  return os.str();
-}
-
 std::ostream& operator<<(std::ostream& os, Value const& sx)
 {
   switch(sx.get_type())
