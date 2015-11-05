@@ -115,4 +115,33 @@ TEST(ParserTest, list_pair)
   ASSERT_EQ("(1 2 3 4 5 . 6)", sx.str());
 }
 
+class ParserLocaleTest : public ::testing::Test
+{
+private:
+  std::locale m_oldlocale;
+
+protected:
+  virtual void SetUp()
+  {
+    std::locale::global(std::locale("de_DE.UTF-8"));
+  }
+
+  virtual void TearDown()
+  {
+    std::locale::global(m_oldlocale);
+  }
+};
+
+TEST_F(ParserLocaleTest, locale_safe_input)
+{
+  sexp::Value sx = sexp::Parser::from_string("0.015625");
+  ASSERT_EQ(0.015625f, sx.as_float());
+}
+
+TEST_F(ParserLocaleTest, locale_safe_output)
+{
+  sexp::Value sx = sexp::Value::real(0.015625f);
+  ASSERT_EQ("0.015625", sx.str());
+}
+
 /* EOF */
