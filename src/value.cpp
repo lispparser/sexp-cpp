@@ -27,6 +27,7 @@ std::string
 Value::str() const
 {
   std::ostringstream os;
+  os.imbue(std::locale::classic());
   os << *this;
   return os.str();
 }
