@@ -136,11 +136,11 @@ Parser::read()
       break;
 
     case Lexer::TOKEN_INTEGER:
-      result = Value::integer(stoi(m_lexer.getString()));
+      result = Value::integer(m_lexer.getInteger());
       break;
 
     case Lexer::TOKEN_REAL:
-      result = Value::real(stof(m_lexer.getString()));
+      result = Value::real(m_lexer.getReal());
       break;
 
     case Lexer::TOKEN_TRUE:

@@ -239,6 +239,67 @@ Lexer::getNextToken()
   }
 }
 
+int
+Lexer::getInteger() const
+{
+  int result = 0;
+  if (token_string[0] == '-')
+  {
+    result += token_string[1] - '0';
+    for(size_t i = 2; i < token_string.size(); ++i)
+    {
+      result *= 10;
+      result += token_string[i] - '0';
+    }
+    return -result;
+  }
+  else
+  {
+    result += token_string[0] - '0';
+    for(size_t i = 1; i < token_string.size(); ++i)
+    {
+      result *= 10;
+      result += token_string[i] - '0';
+    }
+    return result;
+  }
+}
+
+float
+Lexer::getReal() const
+{
+  float result = 0.0f;
+  float sign = 1.0f;
+
+  // sign
+  size_t i = 0;
+  if (token_string[i] == '-')
+  {
+    i += 1;
+    sign = -1;
+  }
+
+  // integer part
+  for(; token_string[i] != '.'; ++i)
+  {
+    result *= 10.0f;
+    result += static_cast<float>(token_string[i] - '0');
+  }
+
+  i += 1;
+
+  // fractional part
+  float fraction = 0.1f;
+  for(; i < token_string.size(); ++i)
+  {
+    result += static_cast<float>(token_string[i] - '0') * fraction;
+    fraction *= 0.1f;
+  }
+
+  return sign * result;
+}
+
+
 } // namespace sexp
 
 /* EOF */

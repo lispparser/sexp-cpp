@@ -44,6 +44,8 @@ public:
 
   TokenType getNextToken();
   std::string const& getString() const { return token_string; }
+  int getInteger() const;
+  float getReal() const;
   int getLineNumber() const
   { return linenumber; }
 
