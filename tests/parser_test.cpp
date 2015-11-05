@@ -104,6 +104,10 @@ TEST(ParserTest, parse_symbol)
   auto sx = sexp::Parser::from_string("HelloWorld");
   ASSERT_EQ(sexp::Value::TYPE_SYMBOL, sx.get_type());
   ASSERT_EQ("HelloWorld", sx.as_string());
+
+  auto sx2 = sexp::Parser::from_string("5.6.7");
+  ASSERT_EQ(sexp::Value::TYPE_SYMBOL, sx2.get_type());
+  ASSERT_EQ("5.6.7", sx2.as_string());
 }
 
 TEST(ParserTest, parse_array)
