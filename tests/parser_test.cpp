@@ -55,13 +55,22 @@ TEST(ParserTest, parse_many)
   ASSERT_EQ(value[4].get_type(), sexp::Value::TYPE_SYMBOL);
 }
 
-TEST(ParserTest, parse_integer)
+TEST(ParserTest, parse_positive_integer)
 {
   auto sx = sexp::Parser::from_string("12345");
   ASSERT_EQ(12345, sx.as_int());
 }
 
-TEST(ParserTest, parse_real)
+TEST(ParserTest, parse_negative_integer)
+{
+  auto sx = sexp::Parser::from_string("-12345");
+  ASSERT_EQ(-12345, sx.as_int());
+
+  sexp::Value symbol = sexp::Parser::from_string("-");
+  ASSERT_TRUE(symbol.is_symbol());
+}
+
+TEST(ParserTest, parse_positive_real)
 {
   auto sx = sexp::Parser::from_string("0.125");
   ASSERT_EQ(sexp::Value::TYPE_REAL, sx.get_type());
@@ -70,6 +79,17 @@ TEST(ParserTest, parse_real)
   sx = sexp::Parser::from_string(".125");
   ASSERT_EQ(sexp::Value::TYPE_REAL, sx.get_type());
   ASSERT_EQ(0.125f, sx.as_float());
+}
+
+TEST(ParserTest, parse_negative_real)
+{
+  auto sx = sexp::Parser::from_string("-0.125");
+  ASSERT_EQ(sexp::Value::TYPE_REAL, sx.get_type());
+  ASSERT_EQ(-0.125f, sx.as_float());
+
+  sx = sexp::Parser::from_string("-.125");
+  ASSERT_EQ(sexp::Value::TYPE_REAL, sx.get_type());
+  ASSERT_EQ(-0.125f, sx.as_float());
 }
 
 TEST(ParserTest, parse_string)
@@ -115,6 +135,9 @@ TEST(ParserTest, list_pair)
   ASSERT_EQ("(1 2 3 4 5 . 6)", sx.str());
 }
 
+// C++ locale support comes in the form of ugly global state that
+// spreads over most string formating functions, changing locale can
+// break a lot of stuff.
 class ParserLocaleTest : public ::testing::Test
 {
 private:
