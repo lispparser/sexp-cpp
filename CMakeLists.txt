@@ -36,7 +36,7 @@ endif()
 
 find_package(Threads REQUIRED)
 
-add_compile_options(-std=c++1y)
+add_compile_options(-std=c++11)
 
 if(USE_LOCALE)
   add_definitions(-DSEXP_USE_LOCALE)
