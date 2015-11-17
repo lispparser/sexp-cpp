@@ -1,0 +1,61 @@
+# SExp - A S-Expression Parser for C++
+# Copyright (C) 2015 Ingo Ruhnke <grumbel@gmail.com>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Build file for https://travis-ci.org/
+#
+# Configuration manual:
+# http://docs.travis-ci.com/user/build-configuration/
+#
+# Based on:
+# https://github.com/supertuxkart/stk-code/blob/master/.travis.yml
+# https://github.com/SuperTux/supertux/blob/master/.travis.yml
+
+sudo: false
+
+language: cpp
+
+compiler:
+  - gcc
+  - clang
+
+matrix:
+  fast_finish: true
+
+env:
+  matrix:
+    - BUILD_TYPE="Debug" USE_LOCALE="OFF"
+    - BUILD_TYPE="Release" USE_LOCALE="OFF"
+    - BUILD_TYPE="Debug" USE_LOCALE="ON"
+    - BUILD_TYPE="Release" USE_LOCALE="ON"
+
+addons:
+  apt:
+    packages:
+    - build-essential
+    - cmake
+
+script:
+  # Clean from previous Travis build
+  - git clean -f
+  # Then build:
+  - mkdir "build-${BUILD_TYPE}-LOC${USE_LOCALE}"
+  - cd "build-${BUILD_TYPE}-LOC${USE_LOCALE}"
+  - cmake .. -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DUSE_LOCALE="$USE_LOCALE" -DWARNINGS=ON -DWERROR=ON -DBUILD_TESTS=ON
+  - make VERBOSE=1 -k
+  - cd ..
+  - "build-${BUILD_TYPE}-LOC${USE_LOCALE}"/test_exp
+
+# EOF #
