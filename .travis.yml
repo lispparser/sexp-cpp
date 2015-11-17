@@ -53,7 +53,7 @@ before_install:
   - export PATH=$PATH:$HOME/root/bin
 
   # CMake
-  - wget --no-check-certificate http://www.cmake.org/files/v3.3/cmake-$CMAKE_VERSION.tar.gz -O - | tar xz
+  - wget --no-check-certificate http://www.cmake.org/files/v3.4/cmake-$CMAKE_VERSION.tar.gz -O - | tar xz
   - (cd cmake-$CMAKE_VERSION && cmake -DCMAKE_INSTALL_PREFIX:PATH=$HOME/root . && make && make install)
 
 script:
