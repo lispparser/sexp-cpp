@@ -38,4 +38,13 @@ TEST(IOTest, roundtrip)
   }
 }
 
+TEST(IOLocaleTest, locale_safe_output)
+{
+  auto sx = sexp::Value::real(0.015625f);
+  std::stringstream out;
+  out.imbue(std::locale("de_DE.UTF-8"));
+  out << sx;
+  ASSERT_EQ("0.015625", out.str());
+}
+
 /* EOF */

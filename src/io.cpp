@@ -81,11 +81,21 @@ std::ostream& operator<<(std::ostream& os, Value const& sx)
       break;
 
     case Value::TYPE_INTEGER:
-      os << sx.as_int();
+      {
+        auto loc = os.getloc();
+        os.imbue(std::locale::classic());
+        os << sx.as_int();
+        os.imbue(loc);
+      }
       break;
 
     case Value::TYPE_REAL:
-      os << sx.as_float();
+      {
+        auto loc = os.getloc();
+        os.imbue(std::locale::classic());
+        os << sx.as_float();
+        os.imbue(loc);
+      }
       break;
 
     case Value::TYPE_SYMBOL:
