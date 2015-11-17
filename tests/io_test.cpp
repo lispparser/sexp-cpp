@@ -38,6 +38,8 @@ TEST(IOTest, roundtrip)
   }
 }
 
+#ifdef SEXP_USE_LOCALE
+
 TEST(IOLocaleTest, locale_safe_output)
 {
   auto sx = sexp::Value::real(0.015625f);
@@ -46,5 +48,7 @@ TEST(IOLocaleTest, locale_safe_output)
   out << sx;
   ASSERT_EQ("0.015625", out.str());
 }
+
+#endif
 
 /* EOF */

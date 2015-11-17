@@ -19,6 +19,7 @@ project(sexp VERSION 0.1.0)
 
 option(WARNINGS "Switch on extra warnings" OFF)
 option(WERROR "Turn warnings into errors" OFF)
+option(USE_LOCALE "Use C++ locale support" OFF)
 
 if(WARNINGS)
   set(WARNINGS_CXX_FLAGS ${WARNINGS_CXX_FLAGS}
@@ -36,6 +37,10 @@ endif()
 find_package(Threads REQUIRED)
 
 add_compile_options(-std=c++1y)
+
+if(USE_LOCALE)
+  add_definitions(-DSEXP_USE_LOCALE)
+endif()
 
 # file(GLOB SUPERTUX_LISP_SOURCES supertux/lisp/*.cpp)
 # add_library(supertux-lisp ${SUPERTUX_LISP_SOURCES})

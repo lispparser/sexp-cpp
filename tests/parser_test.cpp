@@ -139,6 +139,8 @@ TEST(ParserTest, list_pair)
   ASSERT_EQ("(1 2 3 4 5 . 6)", sx.str());
 }
 
+#ifdef SEXP_USE_LOCALE
+
 // C++ locale support comes in the form of ugly global state that
 // spreads over most string formating functions, changing locale can
 // break a lot of stuff.
@@ -170,5 +172,7 @@ TEST_F(ParserLocaleTest, locale_safe_output)
   sexp::Value sx = sexp::Value::real(0.015625f);
   ASSERT_EQ("0.015625", sx.str());
 }
+
+#endif
 
 /* EOF */

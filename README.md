@@ -13,3 +13,12 @@ Example Code:
        std::cout << head.as_int() << std::endl;
     }
 
+C++ locales
+-----------
+
+If C++ locales are used in your code, compile with:
+
+    cmake -DSEXP_USE_LOCALE=ON
+
+Otherwise the input and output functions will produce incorrect
+results (i.e. "1,5" instead of "1.5").
