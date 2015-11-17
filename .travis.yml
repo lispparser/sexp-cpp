@@ -54,6 +54,7 @@ addons:
 
 before_install:
   - export PATH=$HOME/root/bin:$PATH
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
 
   # CMake
   - wget --no-check-certificate http://www.cmake.org/files/v3.4/cmake-$CMAKE_VERSION.tar.gz -O - | tar xz
