@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/lispparser/sexp-cpp.svg?branch=master)](https://travis-ci.org/lispparser/sexp-cpp)
+
 SExp - A S-Expression Parser for C++
 ====================================
 
