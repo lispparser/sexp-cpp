@@ -150,6 +150,9 @@ private:
   std::locale m_oldlocale;
 
 protected:
+  ParserLocaleTest() : m_oldlocale()
+  {}
+
   virtual void SetUp()
   {
     std::locale::global(std::locale("de_DE.UTF-8"));
