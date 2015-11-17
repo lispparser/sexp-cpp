@@ -48,6 +48,7 @@ addons:
     packages:
     - build-essential
     - cmake
+    - g++-4.8
 
 before_install:
   - export PATH=$HOME/root/bin:$PATH
