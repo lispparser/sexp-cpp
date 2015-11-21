@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "sexp/value.hpp"
+#include "sexp/util.hpp"
 
 #include <sstream>
 
@@ -78,7 +78,7 @@ assoc_ref(Value const& sx, std::string const& key)
   {
     return Value::nil_ref();
   }
-  else
+  else if (sx.is_cons())
   {
     Value const& pair = sx.get_car();
     if (pair.is_cons() &&
@@ -91,6 +91,12 @@ assoc_ref(Value const& sx, std::string const& key)
     {
       return assoc_ref(sx.get_cdr(), key);
     }
+  }
+  else
+  {
+    std::ostringstream msg;
+    msg << "malformed input to sexp::assoc_ref(): sx:\"" << sx << "\" key:\"" << key << "\"";
+    throw std::runtime_error(msg.str());
   }
 }
 
