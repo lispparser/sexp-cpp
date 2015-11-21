@@ -23,6 +23,7 @@
 #include <string.h>
 #include <string>
 #include <vector>
+#include <sexp/error.hpp>
 
 namespace sexp {
 
@@ -297,57 +298,92 @@ Value::operator==(Value const& rhs) const
 inline Value const&
 Value::get_car() const
 {
-  assert(m_type == TYPE_CONS);
-  return m_cons->car;
+  if (m_type == TYPE_CONS)
+  {
+    return m_cons->car;
+  }
+  else
+  {
+    throw TypeError("sexp::Value::get_car(): wrong type, expected TYPE_CONS");
+  }
 }
 
 inline Value const&
 Value::get_cdr() const
 {
-  assert(m_type == TYPE_CONS);
+  if (m_type == TYPE_CONS)
+  {
   return m_cons->cdr;
+  }
+  else
+  {
+    throw TypeError("sexp::Value::get_cdr(): wrong type, expected TYPE_CONS");
+  }
 }
 
 inline Value&
 Value::get_car()
 {
-  assert(m_type == TYPE_CONS);
-  return m_cons->car;
+  return const_cast<Value&>(static_cast<Value const&>(*this).get_car());
 }
 
 inline Value&
 Value::get_cdr()
 {
-  assert(m_type == TYPE_CONS);
-  return m_cons->cdr;
+  return const_cast<Value&>(static_cast<Value const&>(*this).get_cdr());
 }
 
 inline void
 Value::set_car(Value&& sexpr)
 {
-  assert(m_type == TYPE_CONS);
-  m_cons->car = std::move(sexpr);
+  if (m_type == TYPE_CONS)
+  {
+    m_cons->car = std::move(sexpr);
+  }
+  else
+  {
+    throw TypeError("sexp::Value::set_car(): wrong type, expected TYPE_CONS");
+  }
 }
 
 inline void
 Value::set_cdr(Value&& sexpr)
 {
-  assert(m_type == TYPE_CONS);
-  m_cons->cdr = std::move(sexpr);
+  if (m_type == TYPE_CONS)
+  {
+    m_cons->cdr = std::move(sexpr);
+  }
+  else
+  {
+    throw TypeError("sexp::Value::set_cdr(): wrong type, expected TYPE_CONS");
+  }
 }
 
 inline bool
 Value::as_bool() const
 {
-  assert(m_type == TYPE_BOOLEAN);
-  return m_bool;
+  if (m_type == TYPE_BOOLEAN)
+  {
+    return m_bool;
+  }
+  else
+  {
+    throw TypeError("sexp::Value::as_bool(): wrong type, expected TYPE_BOOLEAN");
+  }
 }
 
 inline int
 Value::as_int() const
 {
-  assert(m_type == TYPE_INTEGER);
-  return m_int;
+  if (m_type == TYPE_INTEGER)
+  {
+    return m_int;
+  }
+  else
+  {
+    throw TypeError("sexp::Value::as_int(): wrong type, expected TYPE_INTEGER");
+  }
+
 }
 
 inline float
@@ -363,24 +399,34 @@ Value::as_float() const
   }
   else
   {
-    assert(false && "type missmatch");
-    return 0.0f;
+    throw TypeError("sexp::Value::as_float(): wrong type, expected TYPE_INTEGER or TYPE_REAL");
   }
 }
 
 inline std::string const&
 Value::as_string() const
 {
-  assert(m_type == TYPE_SYMBOL ||
-         m_type == TYPE_STRING);
-  return *m_string;
+  if (m_type == TYPE_SYMBOL || m_type == TYPE_STRING)
+  {
+    return *m_string;
+  }
+  else
+  {
+    throw TypeError("sexp::Value::as_float(): wrong type, expected TYPE_SYMBOL or TYPE_STRING");
+  }
 }
 
 inline std::vector<Value> const&
 Value::as_array() const
 {
-  assert(m_type == TYPE_ARRAY);
-  return *m_array;
+  if (m_type == TYPE_ARRAY)
+  {
+    return *m_array;
+  }
+  else
+  {
+    throw TypeError("sexp::Value::as_array(): wrong type, expected TYPE_ARRAY");
+  }
 }
 
 } // namespace sexp
