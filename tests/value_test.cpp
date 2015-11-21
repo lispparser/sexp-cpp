@@ -76,4 +76,76 @@ TEST(ValueTest, assignment)
   ASSERT_EQ(lhs, rhs);
 }
 
+TEST(ValueTest, type_errors_boolean)
+{
+  sexp::Value sx = sexp::Value::boolean(true);
+  ASSERT_THROW(sx.set_car(sexp::Value::nil()), sexp::TypeError);
+  ASSERT_THROW(sx.set_cdr(sexp::Value::nil()), sexp::TypeError);
+  ASSERT_THROW(sx.get_car(), sexp::TypeError);
+  ASSERT_THROW(sx.get_cdr(), sexp::TypeError);
+
+  ASSERT_THROW(sx.as_int(), sexp::TypeError);
+  ASSERT_THROW(sx.as_float(), sexp::TypeError);
+  ASSERT_THROW(sx.as_string(), sexp::TypeError);
+}
+
+TEST(ValueTest, type_errors_integer)
+{
+  sexp::Value sx = sexp::Value::integer(5);
+  ASSERT_THROW(sx.set_car(sexp::Value::nil()), sexp::TypeError);
+  ASSERT_THROW(sx.set_cdr(sexp::Value::nil()), sexp::TypeError);
+  ASSERT_THROW(sx.get_car(), sexp::TypeError);
+  ASSERT_THROW(sx.get_cdr(), sexp::TypeError);
+
+  ASSERT_THROW(sx.as_bool(), sexp::TypeError);
+  ASSERT_THROW(sx.as_string(), sexp::TypeError);
+}
+
+TEST(ValueTest, type_errors_real)
+{
+  sexp::Value sx = sexp::Value::real(1.125f);
+  ASSERT_THROW(sx.set_car(sexp::Value::nil()), sexp::TypeError);
+  ASSERT_THROW(sx.set_cdr(sexp::Value::nil()), sexp::TypeError);
+  ASSERT_THROW(sx.get_car(), sexp::TypeError);
+  ASSERT_THROW(sx.get_cdr(), sexp::TypeError);
+
+  ASSERT_THROW(sx.as_bool(), sexp::TypeError);
+  ASSERT_THROW(sx.as_string(), sexp::TypeError);
+}
+
+TEST(ValueTest, type_errors_symbol)
+{
+  sexp::Value sx = sexp::Value::symbol("HelloWorld");
+  ASSERT_THROW(sx.set_car(sexp::Value::nil()), sexp::TypeError);
+  ASSERT_THROW(sx.set_cdr(sexp::Value::nil()), sexp::TypeError);
+  ASSERT_THROW(sx.get_car(), sexp::TypeError);
+  ASSERT_THROW(sx.get_cdr(), sexp::TypeError);
+
+  ASSERT_THROW(sx.as_bool(), sexp::TypeError);
+  ASSERT_THROW(sx.as_int(), sexp::TypeError);
+  ASSERT_THROW(sx.as_float(), sexp::TypeError);
+}
+
+TEST(ValueTest, type_errors_string)
+{
+  sexp::Value sx = sexp::Value::string("HelloWorld");
+  ASSERT_THROW(sx.set_car(sexp::Value::nil()), sexp::TypeError);
+  ASSERT_THROW(sx.set_cdr(sexp::Value::nil()), sexp::TypeError);
+  ASSERT_THROW(sx.get_car(), sexp::TypeError);
+  ASSERT_THROW(sx.get_cdr(), sexp::TypeError);
+
+  ASSERT_THROW(sx.as_bool(), sexp::TypeError);
+  ASSERT_THROW(sx.as_int(), sexp::TypeError);
+  ASSERT_THROW(sx.as_float(), sexp::TypeError);
+}
+
+TEST(ValueTest, type_errors_cons)
+{
+  sexp::Value sx = sexp::Value::cons(sexp::Value::integer(5), sexp::Value::integer(5));
+  ASSERT_THROW(sx.as_bool(), sexp::TypeError);
+  ASSERT_THROW(sx.as_int(), sexp::TypeError);
+  ASSERT_THROW(sx.as_float(), sexp::TypeError);
+  ASSERT_THROW(sx.as_string(), sexp::TypeError);
+}
+
 /* EOF */
