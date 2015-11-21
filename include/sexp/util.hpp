@@ -17,6 +17,8 @@
 #ifndef HEADER_SEXP_UTIL_HPP
 #define HEADER_SEXP_UTIL_HPP
 
+#include <sexp/value.hpp>
+
 namespace sexp {
 
 class Value;

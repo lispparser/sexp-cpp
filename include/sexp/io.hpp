@@ -20,7 +20,7 @@
 
 #include <ostream>
 
-#include "sexp/value.hpp"
+#include <sexp/value.hpp>
 
 namespace sexp {
 

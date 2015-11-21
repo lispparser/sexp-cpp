@@ -21,8 +21,8 @@
 #include <memory>
 #include <vector>
 
-#include "sexp/lexer.hpp"
-#include "sexp/value.hpp"
+#include <sexp/lexer.hpp>
+#include <sexp/value.hpp>
 
 namespace sexp {
 
