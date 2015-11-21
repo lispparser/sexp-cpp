@@ -18,6 +18,7 @@
 #include "sexp/util.hpp"
 
 #include <sstream>
+#include <stdexcept>
 
 #include "sexp/io.hpp"
 
