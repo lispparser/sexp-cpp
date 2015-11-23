@@ -23,10 +23,16 @@ namespace sexp {
 
 class TypeError : public std::runtime_error
 {
+private:
+  int m_line;
+
 public:
-  TypeError(const char* msg) :
-    std::runtime_error(msg)
+  TypeError(int line, const char* msg) :
+    std::runtime_error(msg),
+    m_line(line)
   {}
+
+  int get_line() const { return m_line; }
 };
 
 } // namespace sexp

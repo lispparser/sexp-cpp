@@ -140,6 +140,12 @@ private:
 
   void destroy();
 
+  [[noreturn]]
+  void type_error(const char* msg) const
+  {
+    throw TypeError(m_line, msg);
+  }
+
 public:
   Value(Value const& other);
 
@@ -331,7 +337,7 @@ Value::get_car() const
   }
   else
   {
-    throw TypeError("sexp::Value::get_car(): wrong type, expected TYPE_CONS");
+    type_error("sexp::Value::get_car(): wrong type, expected TYPE_CONS");
   }
 }
 
@@ -344,7 +350,7 @@ Value::get_cdr() const
   }
   else
   {
-    throw TypeError("sexp::Value::get_cdr(): wrong type, expected TYPE_CONS");
+    type_error("sexp::Value::get_cdr(): wrong type, expected TYPE_CONS");
   }
 }
 
@@ -369,7 +375,7 @@ Value::set_car(Value&& sexpr)
   }
   else
   {
-    throw TypeError("sexp::Value::set_car(): wrong type, expected TYPE_CONS");
+    type_error("sexp::Value::set_car(): wrong type, expected TYPE_CONS");
   }
 }
 
@@ -382,7 +388,7 @@ Value::set_cdr(Value&& sexpr)
   }
   else
   {
-    throw TypeError("sexp::Value::set_cdr(): wrong type, expected TYPE_CONS");
+    type_error("sexp::Value::set_cdr(): wrong type, expected TYPE_CONS");
   }
 }
 
@@ -395,7 +401,7 @@ Value::as_bool() const
   }
   else
   {
-    throw TypeError("sexp::Value::as_bool(): wrong type, expected TYPE_BOOLEAN");
+    type_error("sexp::Value::as_bool(): wrong type, expected TYPE_BOOLEAN");
   }
 }
 
@@ -408,7 +414,7 @@ Value::as_int() const
   }
   else
   {
-    throw TypeError("sexp::Value::as_int(): wrong type, expected TYPE_INTEGER");
+    type_error("sexp::Value::as_int(): wrong type, expected TYPE_INTEGER");
   }
 
 }
@@ -426,7 +432,7 @@ Value::as_float() const
   }
   else
   {
-    throw TypeError("sexp::Value::as_float(): wrong type, expected TYPE_INTEGER or TYPE_REAL");
+    type_error("sexp::Value::as_float(): wrong type, expected TYPE_INTEGER or TYPE_REAL");
   }
 }
 
@@ -439,7 +445,7 @@ Value::as_string() const
   }
   else
   {
-    throw TypeError("sexp::Value::as_float(): wrong type, expected TYPE_SYMBOL or TYPE_STRING");
+    type_error("sexp::Value::as_float(): wrong type, expected TYPE_SYMBOL or TYPE_STRING");
   }
 }
 
@@ -452,7 +458,7 @@ Value::as_array() const
   }
   else
   {
-    throw TypeError("sexp::Value::as_array(): wrong type, expected TYPE_ARRAY");
+    type_error("sexp::Value::as_array(): wrong type, expected TYPE_ARRAY");
   }
 }
 
