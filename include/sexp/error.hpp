@@ -21,7 +21,7 @@
 
 namespace sexp {
 
-class TypeError : std::runtime_error
+class TypeError : public std::runtime_error
 {
 public:
   TypeError(const char* msg) :
