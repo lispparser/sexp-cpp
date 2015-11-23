@@ -39,7 +39,7 @@ public:
     TOKEN_ARRAY_START
   };
 
-  Lexer(std::istream& stream);
+  Lexer(std::istream& stream, bool use_arrays = false);
   ~Lexer();
 
   TokenType getNextToken();
@@ -58,6 +58,7 @@ private:
 
 private:
   std::istream& stream;
+  bool m_use_arrays;
   bool eof;
   int linenumber;
   char buffer[BUFFER_SIZE+1];

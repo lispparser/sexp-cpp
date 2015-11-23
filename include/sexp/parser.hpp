@@ -31,11 +31,13 @@ class Lexer;
 class Parser
 {
 public:
-  static Value from_string(std::string const& str);
-  static Value from_stream(std::istream& stream);
+  enum { USE_ARRAYS = true };
 
-  static std::vector<Value> from_string_many(std::string const& str);
-  static std::vector<Value> from_stream_many(std::istream& stream);
+  static Value from_string(std::string const& str, bool use_arrays = false);
+  static Value from_stream(std::istream& stream, bool use_arrays = false);
+
+  static std::vector<Value> from_string_many(std::string const& str, bool use_arrays =  false);
+  static std::vector<Value> from_stream_many(std::istream& stream, bool use_arrays = false);
 
 public:
   Parser(Lexer& lexer);

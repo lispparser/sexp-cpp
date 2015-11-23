@@ -41,6 +41,23 @@ static void BM_parser(benchmark::State& state)
 }
 BENCHMARK(BM_parser);
 
+static void BM_parser_use_arrays(benchmark::State& state)
+{
+  while (state.KeepRunning())
+  {
+    std::ifstream fin("benchmarks/test.sexp");
+    if (!fin)
+    {
+      throw std::runtime_error("failed to open benchmarks/test.sexp");
+    }
+    else
+    {
+      sexp::Value sx = sexp::Parser::from_stream(fin, sexp::Parser::USE_ARRAYS);
+    }
+  }
+}
+BENCHMARK(BM_parser_use_arrays);
+
 BENCHMARK_MAIN()
 
 /* EOF */

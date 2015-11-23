@@ -24,8 +24,9 @@
 
 namespace sexp {
 
-Lexer::Lexer(std::istream& newstream) :
+Lexer::Lexer(std::istream& newstream, bool use_arrays) :
   stream(newstream),
+  m_use_arrays(use_arrays),
   eof(false),
   linenumber(0),
   bufend(),
@@ -103,8 +104,14 @@ Lexer::getNextToken()
 
     case '(':
       nextChar();
-      return TOKEN_OPEN_PAREN;
-
+      if (m_use_arrays)
+      {
+        return TOKEN_ARRAY_START;
+      }
+      else
+      {
+        return TOKEN_OPEN_PAREN;
+      }
     case ')':
       nextChar();
       return TOKEN_CLOSE_PAREN;

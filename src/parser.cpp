@@ -25,16 +25,16 @@
 namespace sexp {
 
 Value
-Parser::from_string(std::string const& str)
+Parser::from_string(std::string const& str, bool use_arrays)
 {
   std::istringstream is(str);
   return from_stream(is);
 }
 
 Value
-Parser::from_stream(std::istream& is)
+Parser::from_stream(std::istream& is, bool use_arrays)
 {
-  Lexer lexer(is);
+  Lexer lexer(is, use_arrays);
   Parser parser(lexer);
   Value result = parser.read();
   if (parser.m_token != Lexer::TOKEN_EOF)
@@ -45,16 +45,16 @@ Parser::from_stream(std::istream& is)
 }
 
 std::vector<Value>
-Parser::from_string_many(std::string const& str)
+Parser::from_string_many(std::string const& str, bool use_arrays)
 {
   std::istringstream is(str);
   return from_stream_many(is);
 }
 
 std::vector<Value>
-Parser::from_stream_many(std::istream& is)
+Parser::from_stream_many(std::istream& is, bool use_arrays)
 {
-  Lexer lexer(is);
+  Lexer lexer(is, use_arrays);
   Parser parser(lexer);
   return parser.read_many();
 }
