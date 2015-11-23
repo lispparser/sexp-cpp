@@ -93,6 +93,7 @@ Value
 Parser::read()
 {
   Value result;
+  int line_number = m_lexer.getLineNumber();
 
   switch(m_token)
   {
@@ -182,6 +183,8 @@ Parser::read()
   }
 
   m_token = m_lexer.getNextToken();
+
+  result.set_line(line_number);
   return result;
 }
 

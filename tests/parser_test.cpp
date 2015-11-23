@@ -19,8 +19,9 @@
 #include <sstream>
 
 #include "sexp/io.hpp"
-#include "sexp/value.hpp"
 #include "sexp/parser.hpp"
+#include "sexp/util.hpp"
+#include "sexp/value.hpp"
 
 TEST(ParserTest, single)
 {
@@ -139,6 +140,20 @@ TEST(ParserTest, list_pair)
   sexp::Value sx = sexp::Parser::from_string("(1 2 3 4 5 . 6)");
   ASSERT_EQ("(1 2 3 4 5 . 6)", sx.str());
 }
+
+TEST(ParserTest, line_numbers)
+{
+  sexp::Value sx = sexp::Parser::from_string("("
+                                             "line1\n"
+                                             "line2\n"
+                                             "line3\n"
+                                             ")\n");
+
+  ASSERT_EQ(1, sexp::list_ref(sx, 0).get_line());
+  ASSERT_EQ(2, sexp::list_ref(sx, 1).get_line());
+  ASSERT_EQ(3, sexp::list_ref(sx, 2).get_line());
+}
+
 
 #ifdef SEXP_USE_LOCALE
 

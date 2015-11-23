@@ -24,13 +24,14 @@
 #include <string>
 #include <vector>
 #include <sexp/error.hpp>
+#include <stdint.h>
 
 namespace sexp {
 
 class Value
 {
 public:
-  enum Type
+  enum Type : unsigned char
   {
     TYPE_NIL,
     TYPE_BOOLEAN,
@@ -45,7 +46,14 @@ public:
 private:
   struct Cons;
 
+#if INTPTR_MAX == INT32_MAX
+  unsigned m_line : 24 = 0;
+#else
+  int m_line = 0;
+#endif
+
   Value::Type m_type;
+
   union
   {
     bool m_bool;
@@ -91,6 +99,12 @@ public:
   static Value list(Value&& head, Args&&... rest)
   {
     return Value::cons(std::move(head), list(std::move(rest)...));
+  }
+
+  int get_line() const { return static_cast<int>(m_line); }
+  void set_line(int line)
+  {
+    m_line = static_cast<decltype(m_line)>(line);
   }
 
 private:
