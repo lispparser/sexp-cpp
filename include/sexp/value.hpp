@@ -47,9 +47,9 @@ private:
   struct Cons;
 
 #if INTPTR_MAX == INT32_MAX
-  unsigned m_line : 24 = 0;
+  unsigned m_line : 24;
 #else
-  int m_line = 0;
+  int m_line;
 #endif
 
   Value::Type m_type;
@@ -108,24 +108,28 @@ public:
   }
 
 private:
-  inline explicit Value(BooleanDummy, bool value) : m_type(TYPE_BOOLEAN), m_bool(value) {}
-  inline explicit Value(IntegerDummy, int value) : m_type(TYPE_INTEGER), m_int(value) {}
-  inline explicit Value(RealDummy, float value) : m_type(TYPE_REAL), m_float(value) {}
+  inline explicit Value(BooleanDummy, bool value) : m_line(0), m_type(TYPE_BOOLEAN), m_bool(value) {}
+  inline explicit Value(IntegerDummy, int value) : m_line(0), m_type(TYPE_INTEGER), m_int(value) {}
+  inline explicit Value(RealDummy, float value) : m_line(0), m_type(TYPE_REAL), m_float(value) {}
   inline Value(StringDummy, std::string const& value) :
+    m_line(0),
     m_type(TYPE_STRING),
     m_string(new std::string(value))
   {}
   inline Value(SymbolDummy, std::string const& value) :
+    m_line(0),
     m_type(TYPE_SYMBOL),
     m_string(new std::string(value))
   {}
   inline Value(ConsDummy, Value&& car, Value&& cdr);
   inline Value(ArrayDummy, std::vector<Value> arr) :
+    m_line(0),
     m_type(TYPE_ARRAY),
     m_array(new std::vector<Value>(std::move(arr)))
   {}
   template<typename... Args>
   inline Value(ArrayDummy, Args&&... args) :
+    m_line(0),
     m_type(TYPE_ARRAY),
     m_array(new std::vector<Value>{std::move(args)...})
   {}
@@ -136,6 +140,7 @@ public:
   Value(Value const& other);
 
   inline Value(Value&& other) :
+    m_line(0),
     m_type()
   {
     memcpy(this, &other, sizeof(Value));
@@ -143,6 +148,7 @@ public:
   }
 
   inline Value() :
+    m_line(0),
     m_type(TYPE_NIL)
   {}
 
@@ -207,6 +213,7 @@ struct Value::Cons
 
 inline
 Value::Value(ConsDummy, Value&& car, Value&& cdr) :
+  m_line(0),
   m_type(TYPE_CONS),
   m_cons(new Cons{std::move(car), std::move(cdr)})
 {}
@@ -237,6 +244,7 @@ Value::destroy()
 
 inline
 Value::Value(Value const& other) :
+  m_line(0),
   m_type(other.m_type)
 {
   switch(m_type)
