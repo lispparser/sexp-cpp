@@ -114,6 +114,7 @@ TEST(ParserTest, parse_array)
 {
   char const* sx_str = "#(1 \"foo\" #(bar))";
   auto sx = sexp::Parser::from_string(sx_str);
+  ASSERT_TRUE(sx.is_array());
   ASSERT_EQ(sexp::Value::TYPE_ARRAY, sx.get_type());
   ASSERT_EQ(sx_str, sx.str());
 }

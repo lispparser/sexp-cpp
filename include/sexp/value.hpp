@@ -163,6 +163,7 @@ public:
   inline bool is_string() const { return m_type == TYPE_STRING; }
   inline bool is_symbol() const { return m_type == TYPE_SYMBOL; }
   inline bool is_cons() const { return m_type == TYPE_CONS; }
+  inline bool is_array() const { return m_type == TYPE_ARRAY; }
 
   Value const& get_car() const;
   Value const& get_cdr() const;
