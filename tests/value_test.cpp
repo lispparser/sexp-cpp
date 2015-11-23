@@ -17,6 +17,7 @@
 #include <gtest/gtest.h>
 
 #include <sstream>
+#include <stdint.h>
 
 #include "sexp/value.hpp"
 #include "sexp/parser.hpp"
@@ -146,6 +147,19 @@ TEST(ValueTest, type_errors_cons)
   ASSERT_THROW(sx.as_int(), sexp::TypeError);
   ASSERT_THROW(sx.as_float(), sexp::TypeError);
   ASSERT_THROW(sx.as_string(), sexp::TypeError);
+}
+
+TEST(ValueTest, object_size)
+{
+#if INTPTR_MAX == INT32_MAX
+  // on 32bit systems
+  ASSERT_EQ(8, sizeof(sexp::Value));
+#elif INTPTR_MAX == INT64_MAX
+  // on 64bit systems
+  ASSERT_EQ(16, sizeof(sexp::Value));
+#else
+#  error "environment is neither 32 nor 64-bit"
+#endif
 }
 
 /* EOF */
