@@ -84,7 +84,7 @@ Parser::read_many()
   std::vector<Value> results;
   while(m_token != Lexer::TOKEN_EOF)
   {
-    results.push_back(read());
+    results.emplace_back(read());
   }
   return results;
 }
@@ -158,7 +158,7 @@ Parser::read()
         std::vector<Value> arr;
         do
         {
-          arr.push_back(read());
+          arr.emplace_back(read());
         }
         while(m_token != Lexer::TOKEN_CLOSE_PAREN);
         result = Value::array(std::move(arr));
