@@ -104,7 +104,11 @@ public:
   int get_line() const { return static_cast<int>(m_line); }
   void set_line(int line)
   {
-    m_line = static_cast<decltype(m_line)>(line);
+#if INTPTR_MAX == INT32_MAX
+    m_line = static_cast<unsigned int>(line) & 0xffffff;
+#else
+    m_line = line;
+#endif
   }
 
 private:
