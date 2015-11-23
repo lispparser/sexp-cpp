@@ -254,7 +254,7 @@ Value::destroy()
 
 inline
 Value::Value(Value const& other) :
-  m_line(0),
+  m_line(other.m_line),
   m_type(other.m_type)
 {
   switch(m_type)
