@@ -44,7 +44,8 @@ public:
   ~Parser();
 
 private:
-  void parse_error(const char* msg) const __attribute__((__noreturn__));
+  [[noreturn]]
+  void parse_error(const char* msg) const;
   std::vector<Value> read_many();
   Value read();
 
