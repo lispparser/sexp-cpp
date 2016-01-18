@@ -44,6 +44,8 @@ TEST(ValueTest, construct)
 
   auto sx_array = Value::array(Value::integer(1), Value::integer(2), Value::integer(3), Value::integer(4));
   ASSERT_EQ("#(1 2 3 4)", sx_array.str());
+  sx_array.append(Value::integer(5));
+  ASSERT_EQ("#(1 2 3 4 5)", sx_array.str());
 
   auto sx_cons = Value::cons(Value::integer(5), Value::nil());
   auto sx_cons2 = Value::cons(std::move(sx_integer), Value::nil());
@@ -80,6 +82,7 @@ TEST(ValueTest, assignment)
 TEST(ValueTest, type_errors_boolean)
 {
   sexp::Value sx = sexp::Value::boolean(true);
+  ASSERT_THROW(sx.append(sexp::Value::nil()), sexp::TypeError);
   ASSERT_THROW(sx.set_car(sexp::Value::nil()), sexp::TypeError);
   ASSERT_THROW(sx.set_cdr(sexp::Value::nil()), sexp::TypeError);
   ASSERT_THROW(sx.get_car(), sexp::TypeError);
@@ -93,6 +96,7 @@ TEST(ValueTest, type_errors_boolean)
 TEST(ValueTest, type_errors_integer)
 {
   sexp::Value sx = sexp::Value::integer(5);
+  ASSERT_THROW(sx.append(sexp::Value::nil()), sexp::TypeError);
   ASSERT_THROW(sx.set_car(sexp::Value::nil()), sexp::TypeError);
   ASSERT_THROW(sx.set_cdr(sexp::Value::nil()), sexp::TypeError);
   ASSERT_THROW(sx.get_car(), sexp::TypeError);
@@ -105,6 +109,7 @@ TEST(ValueTest, type_errors_integer)
 TEST(ValueTest, type_errors_real)
 {
   sexp::Value sx = sexp::Value::real(1.125f);
+  ASSERT_THROW(sx.append(sexp::Value::nil()), sexp::TypeError);
   ASSERT_THROW(sx.set_car(sexp::Value::nil()), sexp::TypeError);
   ASSERT_THROW(sx.set_cdr(sexp::Value::nil()), sexp::TypeError);
   ASSERT_THROW(sx.get_car(), sexp::TypeError);
@@ -117,6 +122,7 @@ TEST(ValueTest, type_errors_real)
 TEST(ValueTest, type_errors_symbol)
 {
   sexp::Value sx = sexp::Value::symbol("HelloWorld");
+  ASSERT_THROW(sx.append(sexp::Value::nil()), sexp::TypeError);
   ASSERT_THROW(sx.set_car(sexp::Value::nil()), sexp::TypeError);
   ASSERT_THROW(sx.set_cdr(sexp::Value::nil()), sexp::TypeError);
   ASSERT_THROW(sx.get_car(), sexp::TypeError);
@@ -130,6 +136,7 @@ TEST(ValueTest, type_errors_symbol)
 TEST(ValueTest, type_errors_string)
 {
   sexp::Value sx = sexp::Value::string("HelloWorld");
+  ASSERT_THROW(sx.append(sexp::Value::nil()), sexp::TypeError);
   ASSERT_THROW(sx.set_car(sexp::Value::nil()), sexp::TypeError);
   ASSERT_THROW(sx.set_cdr(sexp::Value::nil()), sexp::TypeError);
   ASSERT_THROW(sx.get_car(), sexp::TypeError);

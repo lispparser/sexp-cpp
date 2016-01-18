@@ -204,6 +204,8 @@ public:
   void set_car(Value&& sexpr);
   void set_cdr(Value&& sexpr);
 
+  void append(Value&& sexpr);
+
   bool as_bool() const;
   int as_int() const;
   float as_float() const;
@@ -389,6 +391,19 @@ Value::set_cdr(Value&& sexpr)
   else
   {
     type_error("sexp::Value::set_cdr(): wrong type, expected TYPE_CONS");
+  }
+}
+
+inline void
+Value::append(Value&& sexpr)
+{
+  if (m_type == TYPE_ARRAY)
+  {
+    m_array->push_back(std::move(sexpr));
+  }
+  else
+  {
+    type_error("sexp::Value::append(): wrong type, expected TYPE_ARRAY");
   }
 }
 
