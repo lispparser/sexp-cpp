@@ -83,20 +83,7 @@ endif()
 if(BUILD_BENCHMARKS)
   # build google-benchmark
   include_directories(${PROJECT_SOURCE_DIR}/src)
-  set(BENCHMARK_SOURCES
-    "external/benchmark/src/benchmark.cc"
-    "external/benchmark/src/colorprint.cc"
-    "external/benchmark/src/commandlineflags.cc"
-    "external/benchmark/src/console_reporter.cc"
-    "external/benchmark/src/csv_reporter.cc"
-    "external/benchmark/src/json_reporter.cc"
-    "external/benchmark/src/log.cc"
-    "external/benchmark/src/reporter.cc"
-    "external/benchmark/src/sleep.cc"
-    "external/benchmark/src/string_util.cc"
-    "external/benchmark/src/sysinfo.cc"
-    "external/benchmark/src/walltime.cc"
-    "external/benchmark/src/re_std.cc")
+  file(GLOB BENCHMARK_SOURCES external/benchmark/src/*.cc)
   add_library(benchmark ${BENCHMARK_SOURCES})
   target_compile_definitions(benchmark PRIVATE -DHAVE_STD_REGEX)
   target_compile_options(benchmark PRIVATE -std=c++1y)
