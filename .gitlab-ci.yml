@@ -40,6 +40,9 @@ before_script:
     - cd ${BUILD_DIR}
     - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DWARNINGS=ON -DWERROR=ON -DBUILD_TESTS=ON
     - make VERBOSE=1
+  cache:
+    paths:
+      - build-${CXX}-${BUILD_TYPE}
 
 .test_sexpr_template: &test_sexpr
   stage: test
