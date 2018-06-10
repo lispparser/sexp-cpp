@@ -39,14 +39,6 @@ before_script:
     - cd build
     - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DWARNINGS=ON -DWERROR=ON -DBUILD_TESTS=ON
     - make VERBOSE=1
-  artifacts:
-    paths:
-      - build/
-
-.test_sexpr_template: &test_sexpr
-  stage: test
-  script:
-    - cd build
     - make test VERBOSE=1 ARGS="-V"
 
 build:gcc:release:
@@ -72,25 +64,5 @@ build:clang:debug:
   variables:
     CXX: clang++-6.0
     BUILD_TYPE: Debug
-
-test:gcc:release:
-  <<: *test_sexpr
-  dependencies:
-    - build:gcc:release
-
-test:clang:release:
-  <<: *test_sexpr
-  dependencies:
-    - build:clang:release
-
-test:gcc:debug:
-  <<: *test_sexpr
-  dependencies:
-    - build:gcc:debug
-
-test:clang:debug:
-  <<: *test_sexpr
-  dependencies:
-    - build:clang:debug
 
 # EOF #
