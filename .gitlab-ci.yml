@@ -75,33 +75,21 @@ build:clang:debug:
 
 test:gcc:release:
   <<: *test_sexpr
-  variables:
-    CXX: g++-8
-    BUILD_TYPE: Release
   dependencies:
     - build:gcc:release
 
 test:clang:release:
   <<: *test_sexpr
-  variables:
-    CXX: clang++-6.0
-    BUILD_TYPE: Release
   dependencies:
     - build:clang:release
 
 test:gcc:debug:
   <<: *test_sexpr
-  variables:
-    CXX: g++-8
-    BUILD_TYPE: Debug
   dependencies:
     - build:gcc:debug
 
 test:clang:debug:
   <<: *test_sexpr
-  variables:
-    CXX: clang++-6.0
-    BUILD_TYPE: Debug
   dependencies:
     - build:clang:debug
 
