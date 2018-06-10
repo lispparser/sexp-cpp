@@ -47,7 +47,7 @@ before_script:
   stage: test
   script:
     - cd build
-    - make test ARGS="-V"
+    - make test VERBOSE=1 ARGS="-V"
 
 build:gcc:release:
   <<: *build_sexpr
