@@ -35,20 +35,18 @@ before_script:
 .build_sexpr_template: &build_sexpr
   stage: build
   script:
-    - BUILD_DIR=build-${CXX}-${BUILD_TYPE}
-    - mkdir ${BUILD_DIR}
-    - cd ${BUILD_DIR}
+    - mkdir build
+    - cd build
     - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DWARNINGS=ON -DWERROR=ON -DBUILD_TESTS=ON
     - make VERBOSE=1
-  cache:
+  artifacts:
     paths:
-      - build-${CXX}-${BUILD_TYPE}
+      - build/
 
 .test_sexpr_template: &test_sexpr
   stage: test
   script:
-    - BUILD_DIR=build-${CXX}-${BUILD_TYPE}
-    - mkdir ${BUILD_DIR}
+    - cd build
     - make test ARGS="-V"
 
 build:gcc:release:
@@ -80,23 +78,31 @@ test:gcc:release:
   variables:
     CXX: g++-8
     BUILD_TYPE: Release
+  dependencies:
+    - build:gcc:release
 
 test:clang:release:
   <<: *test_sexpr
   variables:
     CXX: clang++-6.0
     BUILD_TYPE: Release
+  dependencies:
+    - build:clang:release
 
 test:gcc:debug:
   <<: *test_sexpr
   variables:
     CXX: g++-8
     BUILD_TYPE: Debug
+  dependencies:
+    - build:gcc:debug
 
 test:clang:debug:
   <<: *test_sexpr
   variables:
     CXX: clang++-6.0
     BUILD_TYPE: Debug
+  dependencies:
+    - build:clang:debug
 
 # EOF #
