@@ -20,7 +20,6 @@
 
 #include <assert.h>
 #include <memory>
-#include <string.h>
 #include <string>
 #include <vector>
 #include <sexp/error.hpp>
@@ -150,10 +149,10 @@ public:
   Value(Value const& other);
 
   inline Value(Value&& other) :
-    m_line(0),
-    m_type()
+    m_line(other.m_line),
+    m_type(other.m_type),
+    m_data(other.m_data)
   {
-    memcpy(this, &other, sizeof(Value));
     other.m_type = TYPE_NIL;
   }
 
@@ -170,8 +169,13 @@ public:
   inline Value& operator=(Value&& other)
   {
     destroy();
-    memcpy(this, &other, sizeof(Value));
+
+    m_line = other.m_line;
+    m_type = other.m_type;
+    m_data = other.m_data;
+
     other.m_type = TYPE_NIL;
+
     return *this;
   }
 
