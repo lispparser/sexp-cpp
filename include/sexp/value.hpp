@@ -64,30 +64,30 @@ private:
     std::vector<Value>* m_array;
   } m_data;
 
-  struct BooleanDummy {};
-  struct IntegerDummy {};
-  struct RealDummy {};
-  struct StringDummy {};
-  struct SymbolDummy {};
-  struct ConsDummy {};
-  struct ArrayDummy {};
+  struct BooleanTag {};
+  struct IntegerTag {};
+  struct RealTag {};
+  struct StringTag {};
+  struct SymbolTag {};
+  struct ConsTag {};
+  struct ArrayTag {};
 
 public:
   /** Returns a reference to a nil value for use in functions that
       return a reference and need to return a nil value */
   static Value const& nil_ref() { static Value const s_nil; return s_nil; }
   static Value nil() { return Value(); }
-  static Value boolean(bool v) { return Value(BooleanDummy(), v); }
-  static Value integer(int v) { return Value(IntegerDummy(), v); }
-  static Value real(float v) { return Value(RealDummy(), v); }
-  static Value string(std::string const& v) { return Value(StringDummy(), v); }
-  static Value symbol(std::string const& v) { return Value(SymbolDummy(), v); }
-  static Value cons(Value&& car, Value&& cdr) { return Value(ConsDummy(), std::move(car), std::move(cdr)); }
-  static Value cons() { return Value(ConsDummy(), Value::nil(), Value::nil()); }
+  static Value boolean(bool v) { return Value(BooleanTag(), v); }
+  static Value integer(int v) { return Value(IntegerTag(), v); }
+  static Value real(float v) { return Value(RealTag(), v); }
+  static Value string(std::string const& v) { return Value(StringTag(), v); }
+  static Value symbol(std::string const& v) { return Value(SymbolTag(), v); }
+  static Value cons(Value&& car, Value&& cdr) { return Value(ConsTag(), std::move(car), std::move(cdr)); }
+  static Value cons() { return Value(ConsTag(), Value::nil(), Value::nil()); }
 
-  static Value array(std::vector<Value> arr) { return Value(ArrayDummy(), std::move(arr)); }
+  static Value array(std::vector<Value> arr) { return Value(ArrayTag(), std::move(arr)); }
   template<typename... Args>
-  static Value array(Args&&... args) { return Value(ArrayDummy(), std::move(args)...); }
+  static Value array(Args&&... args) { return Value(ArrayTag(), std::move(args)...); }
 
   static Value list()
   {
@@ -111,27 +111,27 @@ public:
   }
 
 private:
-  inline explicit Value(BooleanDummy, bool value) : m_line(0), m_type(TYPE_BOOLEAN), m_data{.m_bool = value} {}
-  inline explicit Value(IntegerDummy, int value) : m_line(0), m_type(TYPE_INTEGER), m_data{.m_int = value} {}
-  inline explicit Value(RealDummy, float value) : m_line(0), m_type(TYPE_REAL), m_data{.m_float = value} {}
-  inline Value(StringDummy, std::string const& value) :
+  inline explicit Value(BooleanTag, bool value) : m_line(0), m_type(TYPE_BOOLEAN), m_data{.m_bool = value} {}
+  inline explicit Value(IntegerTag, int value) : m_line(0), m_type(TYPE_INTEGER), m_data{.m_int = value} {}
+  inline explicit Value(RealTag, float value) : m_line(0), m_type(TYPE_REAL), m_data{.m_float = value} {}
+  inline Value(StringTag, std::string const& value) :
     m_line(0),
     m_type(TYPE_STRING),
     m_data{.m_string = new std::string(value)}
   {}
-  inline Value(SymbolDummy, std::string const& value) :
+  inline Value(SymbolTag, std::string const& value) :
     m_line(0),
     m_type(TYPE_SYMBOL),
     m_data{.m_string = new std::string(value)}
   {}
-  inline Value(ConsDummy, Value&& car, Value&& cdr);
-  inline Value(ArrayDummy, std::vector<Value> arr) :
+  inline Value(ConsTag, Value&& car, Value&& cdr);
+  inline Value(ArrayTag, std::vector<Value> arr) :
     m_line(0),
     m_type(TYPE_ARRAY),
     m_data{.m_array = new std::vector<Value>(std::move(arr))}
   {}
   template<typename... Args>
-  inline Value(ArrayDummy, Args&&... args) :
+  inline Value(ArrayTag, Args&&... args) :
     m_line(0),
     m_type(TYPE_ARRAY),
     m_data{.m_array = new std::vector<Value>{std::move(args)...}}
@@ -228,7 +228,7 @@ struct Value::Cons
 };
 
 inline
-Value::Value(ConsDummy, Value&& car, Value&& cdr) :
+Value::Value(ConsTag, Value&& car, Value&& cdr) :
   m_line(0),
   m_type(TYPE_CONS),
   m_data{.m_cons = new Cons{std::move(car), std::move(cdr)}}
