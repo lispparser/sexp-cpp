@@ -54,7 +54,7 @@ private:
 
   Value::Type m_type;
 
-  union
+  union Data
   {
     bool m_bool;
     int m_int;
@@ -63,7 +63,7 @@ private:
     std::string* m_string;
     Cons* m_cons;
     std::vector<Value>* m_array;
-  };
+  } m_data;
 
   struct BooleanDummy {};
   struct IntegerDummy {};
@@ -112,30 +112,30 @@ public:
   }
 
 private:
-  inline explicit Value(BooleanDummy, bool value) : m_line(0), m_type(TYPE_BOOLEAN), m_bool(value) {}
-  inline explicit Value(IntegerDummy, int value) : m_line(0), m_type(TYPE_INTEGER), m_int(value) {}
-  inline explicit Value(RealDummy, float value) : m_line(0), m_type(TYPE_REAL), m_float(value) {}
+  inline explicit Value(BooleanDummy, bool value) : m_line(0), m_type(TYPE_BOOLEAN), m_data{.m_bool = value} {}
+  inline explicit Value(IntegerDummy, int value) : m_line(0), m_type(TYPE_INTEGER), m_data{.m_int = value} {}
+  inline explicit Value(RealDummy, float value) : m_line(0), m_type(TYPE_REAL), m_data{.m_float = value} {}
   inline Value(StringDummy, std::string const& value) :
     m_line(0),
     m_type(TYPE_STRING),
-    m_string(new std::string(value))
+    m_data{.m_string = new std::string(value)}
   {}
   inline Value(SymbolDummy, std::string const& value) :
     m_line(0),
     m_type(TYPE_SYMBOL),
-    m_string(new std::string(value))
+    m_data{.m_string = new std::string(value)}
   {}
   inline Value(ConsDummy, Value&& car, Value&& cdr);
   inline Value(ArrayDummy, std::vector<Value> arr) :
     m_line(0),
     m_type(TYPE_ARRAY),
-    m_array(new std::vector<Value>(std::move(arr)))
+    m_data{.m_array = new std::vector<Value>(std::move(arr))}
   {}
   template<typename... Args>
   inline Value(ArrayDummy, Args&&... args) :
     m_line(0),
     m_type(TYPE_ARRAY),
-    m_array(new std::vector<Value>{std::move(args)...})
+    m_data{.m_array = new std::vector<Value>{std::move(args)...}}
   {}
 
   void destroy();
@@ -227,7 +227,7 @@ inline
 Value::Value(ConsDummy, Value&& car, Value&& cdr) :
   m_line(0),
   m_type(TYPE_CONS),
-  m_cons(new Cons{std::move(car), std::move(cdr)})
+  m_data{.m_cons = new Cons{std::move(car), std::move(cdr)}}
 {}
 
 inline void
@@ -237,15 +237,15 @@ Value::destroy()
   {
     case Value::TYPE_STRING:
     case Value::TYPE_SYMBOL:
-      delete m_string;
+      delete m_data.m_string;
       break;
 
     case Value::TYPE_CONS:
-      delete m_cons;
+      delete m_data.m_cons;
       break;
 
     case Value::TYPE_ARRAY:
-      delete m_array;
+      delete m_data.m_array;
       break;
 
     default:
@@ -265,28 +265,28 @@ Value::Value(Value const& other) :
       break;
 
     case TYPE_BOOLEAN:
-      m_bool = other.m_bool;
+      m_data.m_bool = other.m_data.m_bool;
       break;
 
     case TYPE_INTEGER:
-      m_int = other.m_int;
+      m_data.m_int = other.m_data.m_int;
       break;
 
     case TYPE_REAL:
-      m_float = other.m_float;
+      m_data.m_float = other.m_data.m_float;
       break;
 
     case TYPE_STRING:
     case TYPE_SYMBOL:
-      m_string = new std::string(*other.m_string);
+      m_data.m_string = new std::string(*other.m_data.m_string);
       break;
 
     case TYPE_CONS:
-      m_cons = new Cons(*other.m_cons);
+      m_data.m_cons = new Cons(*other.m_data.m_cons);
       break;
 
     case TYPE_ARRAY:
-      m_array = new std::vector<Value>(*other.m_array);
+      m_data.m_array = new std::vector<Value>(*other.m_data.m_array);
       break;
   }
 }
@@ -302,24 +302,24 @@ Value::operator==(Value const& rhs) const
         return true;
 
       case Value::TYPE_BOOLEAN:
-        return m_bool == rhs.m_bool;
+        return m_data.m_bool == rhs.m_data.m_bool;
 
       case Value::TYPE_INTEGER:
-        return m_int == rhs.m_int;
+        return m_data.m_int == rhs.m_data.m_int;
 
       case Value::TYPE_REAL:
-        return m_float == rhs.m_float;
+        return m_data.m_float == rhs.m_data.m_float;
 
       case Value::TYPE_STRING:
       case Value::TYPE_SYMBOL:
-        return *m_string == *rhs.m_string;
+        return *m_data.m_string == *rhs.m_data.m_string;
 
       case Value::TYPE_CONS:
-        return (m_cons->car == rhs.m_cons->car &&
-                m_cons->cdr == rhs.m_cons->cdr);
+        return (m_data.m_cons->car == rhs.m_data.m_cons->car &&
+                m_data.m_cons->cdr == rhs.m_data.m_cons->cdr);
 
       case Value::TYPE_ARRAY:
-        return *m_array == *rhs.m_array;
+        return *m_data.m_array == *rhs.m_data.m_array;
     }
     assert(false && "should never be reached");
     return false;
@@ -335,7 +335,7 @@ Value::get_car() const
 {
   if (m_type == TYPE_CONS)
   {
-    return m_cons->car;
+    return m_data.m_cons->car;
   }
   else
   {
@@ -348,7 +348,7 @@ Value::get_cdr() const
 {
   if (m_type == TYPE_CONS)
   {
-  return m_cons->cdr;
+  return m_data.m_cons->cdr;
   }
   else
   {
@@ -373,7 +373,7 @@ Value::set_car(Value&& sexpr)
 {
   if (m_type == TYPE_CONS)
   {
-    m_cons->car = std::move(sexpr);
+    m_data.m_cons->car = std::move(sexpr);
   }
   else
   {
@@ -386,7 +386,7 @@ Value::set_cdr(Value&& sexpr)
 {
   if (m_type == TYPE_CONS)
   {
-    m_cons->cdr = std::move(sexpr);
+    m_data.m_cons->cdr = std::move(sexpr);
   }
   else
   {
@@ -399,7 +399,7 @@ Value::append(Value&& sexpr)
 {
   if (m_type == TYPE_ARRAY)
   {
-    m_array->push_back(std::move(sexpr));
+    m_data.m_array->push_back(std::move(sexpr));
   }
   else
   {
@@ -412,7 +412,7 @@ Value::as_bool() const
 {
   if (m_type == TYPE_BOOLEAN)
   {
-    return m_bool;
+    return m_data.m_bool;
   }
   else
   {
@@ -425,7 +425,7 @@ Value::as_int() const
 {
   if (m_type == TYPE_INTEGER)
   {
-    return m_int;
+    return m_data.m_int;
   }
   else
   {
@@ -439,11 +439,11 @@ Value::as_float() const
 {
   if (m_type == TYPE_REAL)
   {
-    return m_float;
+    return m_data.m_float;
   }
   else if (m_type == TYPE_INTEGER)
   {
-    return static_cast<float>(m_int);
+    return static_cast<float>(m_data.m_int);
   }
   else
   {
@@ -456,7 +456,7 @@ Value::as_string() const
 {
   if (m_type == TYPE_SYMBOL || m_type == TYPE_STRING)
   {
-    return *m_string;
+    return *m_data.m_string;
   }
   else
   {
@@ -469,7 +469,7 @@ Value::as_array() const
 {
   if (m_type == TYPE_ARRAY)
   {
-    return *m_array;
+    return *m_data.m_array;
   }
   else
   {
