@@ -91,6 +91,19 @@ TEST(ParserTest, parse_negative_real)
   sx = sexp::Parser::from_string("-.125");
   ASSERT_EQ(sexp::Value::TYPE_REAL, sx.get_type());
   ASSERT_EQ(-0.125f, sx.as_float());
+TEST(ParserTest, parse_scientific_real)
+{
+  {
+    auto sx = sexp::Parser::from_string("1.2345e-13");
+    ASSERT_EQ(sexp::Value::TYPE_REAL, sx.get_type());
+    ASSERT_EQ(1.2345e-13f, sx.as_float());
+  }
+
+  {
+    auto sx = sexp::Parser::from_string("-1.2345e+13");
+    ASSERT_EQ(sexp::Value::TYPE_REAL, sx.get_type());
+    ASSERT_EQ(-1.2345e+13f, sx.as_float());
+  }
 }
 
 TEST(ParserTest, parse_string)
