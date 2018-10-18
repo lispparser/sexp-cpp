@@ -42,6 +42,6 @@ static void BM_lexer(benchmark::State& state)
 }
 BENCHMARK(BM_lexer);
 
-BENCHMARK_MAIN()
+BENCHMARK_MAIN();
 
 /* EOF */

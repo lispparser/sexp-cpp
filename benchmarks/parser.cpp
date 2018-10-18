@@ -58,6 +58,6 @@ static void BM_parser_use_arrays(benchmark::State& state)
 }
 BENCHMARK(BM_parser_use_arrays);
 
-BENCHMARK_MAIN()
+BENCHMARK_MAIN();
 
 /* EOF */
