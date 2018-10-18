@@ -23,6 +23,8 @@
 #include <stdexcept>
 #include <stdio.h>
 
+#include "float.hpp"
+
 namespace sexp {
 
 Lexer::Lexer(std::istream& newstream, bool use_arrays) :
@@ -256,37 +258,8 @@ Lexer::get_integer() const
 float
 Lexer::get_real() const
 {
-  float result = 0.0f;
-  float sign = 1.0f;
-
-  // sign
-  size_t i = 0;
-  if (m_token_string[i] == '-')
-  {
-    i += 1;
-    sign = -1;
-  }
-
-  // integer part
-  for(; m_token_string[i] != '.'; ++i)
-  {
-    result *= 10.0f;
-    result += static_cast<float>(m_token_string[i] - '0');
-  }
-
-  i += 1;
-
-  // fractional part
-  float fraction = 0.1f;
-  for(; i < m_token_string.size(); ++i)
-  {
-    result += static_cast<float>(m_token_string[i] - '0') * fraction;
-    fraction *= 0.1f;
-  }
-
-  return sign * result;
+  return string2float(m_token_string);
 }
-
 
 } // namespace sexp
 

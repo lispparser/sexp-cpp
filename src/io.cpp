@@ -19,6 +19,8 @@
 
 #include <sstream>
 
+#include "float.hpp"
+
 namespace sexp {
 
 void escape_string(std::ostream& os, std::string const& text)
@@ -85,16 +87,7 @@ std::ostream& operator<<(std::ostream& os, Value const& sx)
       break;
 
     case Value::TYPE_REAL:
-      {
-#ifdef SEXP_USE_LOCALE
-        auto loc = os.getloc();
-        os.imbue(std::locale::classic());
-        os << sx.as_float();
-        os.imbue(loc);
-#else
-        os << sx.as_float();
-#endif
-      }
+      float2string(os, sx.as_float());
       break;
 
     case Value::TYPE_SYMBOL:
