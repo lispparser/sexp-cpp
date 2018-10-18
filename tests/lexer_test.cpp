@@ -126,6 +126,8 @@ TEST(LexerTest, token_real)
     "1234.5678e15",
     "-1234.5678e15",
     "1234.5678e15",
+    "1234.5678E+15",
+    "-1234.5678E-15",
   };
 
   for(const auto& text : texts)

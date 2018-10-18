@@ -17,6 +17,7 @@
 
 #include "sexp/lexer.hpp"
 
+#include <assert.h>
 #include <string.h>
 #include <sstream>
 #include <stdexcept>
@@ -189,60 +190,160 @@ Lexer::get_next_token()
       return TOKEN_EOF;
 
     default:
-      if (isdigit(m_c) || m_c == '-' || m_c == '.')
       {
-        bool have_nondigits = false;
-        bool have_digits = false;
-        int have_floating_point = 0;
+        enum {
+          STATE_INIT,
+          STATE_SYMBOL,
+          STATE_MAYBE_DOT,
+          STATE_MAYBE_INTEGER_SIGN,
+          STATE_MAYBE_INTEGER_PART,
+          STATE_MAYBE_FRACTIONAL_START,
+          STATE_MAYBE_FRACTIONAL_PART,
+          STATE_MAYBE_EXPONENT_SIGN,
+          STATE_MAYBE_EXPONENT_START,
+          STATE_MAYBE_EXPONENT_PART,
+        } state = STATE_INIT;
 
+        bool has_integer_part = false;
+        bool has_fractional_part = false;
         do
         {
-          if (isdigit(m_c))
+          switch(state)
           {
-            have_digits = true;
-          }
-          else if (m_c == '.')
-          {
-            ++have_floating_point;
-          }
-          else if (isalnum(m_c) || m_c == '_')
-          {
-            have_nondigits = true;
+            case STATE_INIT:
+              if (isdigit(m_c)) {
+                has_integer_part = true;
+                state = STATE_MAYBE_INTEGER_PART;
+              } else if (m_c == '-' || m_c == '+') {
+                state = STATE_MAYBE_INTEGER_SIGN;
+              } else if (m_c == '.') {
+                state = STATE_MAYBE_DOT;
+              } else {
+                state = STATE_SYMBOL;
+              }
+              break;
+
+            case STATE_SYMBOL:
+              break;
+
+            case STATE_MAYBE_DOT:
+              if (isdigit(m_c)) {
+                state = STATE_MAYBE_FRACTIONAL_START;
+              } else {
+                state = STATE_SYMBOL;
+              }
+              break;
+
+            case STATE_MAYBE_INTEGER_SIGN:
+              if (isdigit(m_c)) {
+                has_integer_part = true;
+                state = STATE_MAYBE_INTEGER_PART;
+              } else if (m_c == '.') {
+                state = STATE_MAYBE_FRACTIONAL_START;
+              }
+              break;
+
+            case STATE_MAYBE_INTEGER_PART:
+              if (isdigit(m_c)) {
+                // loop
+              } else if (m_c == '.') {
+                state = STATE_MAYBE_FRACTIONAL_START;
+              } else if (m_c == 'e' || m_c == 'E') {
+                state = STATE_MAYBE_EXPONENT_SIGN;
+              } else {
+                state = STATE_SYMBOL;
+              }
+              break;
+
+            case STATE_MAYBE_FRACTIONAL_START:
+              if (isdigit(m_c)) {
+                has_fractional_part = true;
+                state = STATE_MAYBE_FRACTIONAL_PART;
+              } else {
+                state = STATE_SYMBOL;
+              }
+              break;
+
+            case STATE_MAYBE_FRACTIONAL_PART:
+              if (isdigit(m_c)) {
+                // loop
+              } else if ((has_integer_part || has_fractional_part) &&
+                         (m_c == 'e' || m_c == 'E')) {
+                state = STATE_MAYBE_EXPONENT_SIGN;
+              } else {
+                state = STATE_SYMBOL;
+              }
+              break;
+
+            case STATE_MAYBE_EXPONENT_SIGN:
+              if (m_c == '-' || m_c == '+') {
+                state = STATE_MAYBE_EXPONENT_START;
+              } else if (isdigit(m_c)) {
+                state = STATE_MAYBE_EXPONENT_PART;
+              } else {
+                state = STATE_SYMBOL;
+              }
+              break;
+
+            case STATE_MAYBE_EXPONENT_START:
+              if (isdigit(m_c)) {
+                state = STATE_MAYBE_EXPONENT_PART;
+              } else {
+                state = STATE_SYMBOL;
+              }
+              break;
+
+            case STATE_MAYBE_EXPONENT_PART:
+              if (isdigit(m_c)) {
+                // loop
+              } else {
+                state = STATE_SYMBOL;
+              }
+              break;
           }
 
           add_char();
         }
         while(!isspace(m_c) && !strchr(delims, m_c));
 
-        // no next_char
+        switch(state)
+        {
+          case STATE_INIT:
+            assert(false && "never reached");
+            return TOKEN_EOF;
 
-        if (m_token_string == ".")
-        {
-          return TOKEN_DOT;
-        }
-        else if (have_nondigits || !have_digits || have_floating_point > 1)
-        {
-          return TOKEN_SYMBOL;
-        }
-        else if (have_floating_point == 1)
-        {
-          return TOKEN_REAL;
-        }
-        else
-        {
-          return TOKEN_INTEGER;
+          case STATE_SYMBOL:
+            return TOKEN_SYMBOL;
+
+          case STATE_MAYBE_DOT:
+            return TOKEN_DOT;
+
+          case STATE_MAYBE_INTEGER_SIGN:
+            return TOKEN_SYMBOL;
+
+          case STATE_MAYBE_INTEGER_PART:
+            return TOKEN_INTEGER;
+
+          case STATE_MAYBE_FRACTIONAL_START:
+            if (has_integer_part) {
+              return TOKEN_REAL;
+            } else {
+              return TOKEN_SYMBOL;
+            }
+
+          case STATE_MAYBE_FRACTIONAL_PART:
+            return TOKEN_REAL;
+
+          case STATE_MAYBE_EXPONENT_SIGN:
+          case STATE_MAYBE_EXPONENT_START:
+            return TOKEN_SYMBOL;
+
+          case STATE_MAYBE_EXPONENT_PART:
+            return TOKEN_REAL;
         }
       }
-      else
-      {
-        do {
-          add_char();
-        } while(!isspace(m_c) && !strchr(delims, m_c));
-
-        // no next_char
-
-        return TOKEN_SYMBOL;
-      }
+      assert(false && "never reached");
+      return TOKEN_EOF;
   }
 }
 
