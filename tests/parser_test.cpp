@@ -25,20 +25,19 @@
 
 TEST(ParserTest, single)
 {
-  using sexp::Value;
   auto result = sexp::Parser::from_string("(1 2.5 foo \"TEXT\" bar)");
-  auto expected = Value::list(Value::integer(1),
-                              Value::real(2.5),
-                              Value::symbol("foo"),
-                              Value::string("TEXT"),
-                              Value::symbol("bar"));
+  auto expected = sexp::Value::list(sexp::Value::integer(1),
+                                    sexp::Value::real(2.5),
+                                    sexp::Value::symbol("foo"),
+                                    sexp::Value::string("TEXT"),
+                                    sexp::Value::symbol("bar"));
   ASSERT_EQ(expected, result);
 }
 
 TEST(ParserTest, single_fail)
 {
   std::istringstream in("(1 2.5 foo \"TEXT\" bar bar) 5");
-  EXPECT_THROW({
+  ASSERT_THROW({
       sexp::Value cons = sexp::Parser::from_stream(in);
     },
     std::runtime_error);
@@ -64,33 +63,47 @@ TEST(ParserTest, parse_positive_integer)
 
 TEST(ParserTest, parse_negative_integer)
 {
-  auto sx = sexp::Parser::from_string("-12345");
-  ASSERT_EQ(-12345, sx.as_int());
+  {
+    auto sx = sexp::Parser::from_string("-12345");
+    ASSERT_EQ(-12345, sx.as_int());
+  }
 
-  sexp::Value symbol = sexp::Parser::from_string("-");
-  ASSERT_TRUE(symbol.is_symbol());
+  {
+    sexp::Value sx = sexp::Parser::from_string("-");
+    ASSERT_TRUE(sx.is_symbol());
+  }
 }
 
 TEST(ParserTest, parse_positive_real)
 {
-  auto sx = sexp::Parser::from_string("0.125");
-  ASSERT_EQ(sexp::Value::TYPE_REAL, sx.get_type());
-  ASSERT_EQ(0.125f, sx.as_float());
+  {
+    auto sx = sexp::Parser::from_string("0.125");
+    ASSERT_EQ(sexp::Value::TYPE_REAL, sx.get_type());
+    ASSERT_EQ(0.125f, sx.as_float());
+  }
 
-  sx = sexp::Parser::from_string(".125");
-  ASSERT_EQ(sexp::Value::TYPE_REAL, sx.get_type());
-  ASSERT_EQ(0.125f, sx.as_float());
+  {
+    auto sx = sexp::Parser::from_string(".125");
+    ASSERT_EQ(sexp::Value::TYPE_REAL, sx.get_type());
+    ASSERT_EQ(0.125f, sx.as_float());
+  }
 }
 
 TEST(ParserTest, parse_negative_real)
 {
-  auto sx = sexp::Parser::from_string("-0.125");
-  ASSERT_EQ(sexp::Value::TYPE_REAL, sx.get_type());
-  ASSERT_EQ(-0.125f, sx.as_float());
+  {
+    auto sx = sexp::Parser::from_string("-0.125");
+    ASSERT_EQ(sexp::Value::TYPE_REAL, sx.get_type());
+    ASSERT_EQ(-0.125f, sx.as_float());
+  }
 
-  sx = sexp::Parser::from_string("-.125");
-  ASSERT_EQ(sexp::Value::TYPE_REAL, sx.get_type());
-  ASSERT_EQ(-0.125f, sx.as_float());
+  {
+    auto sx = sexp::Parser::from_string("-.125");
+    ASSERT_EQ(sexp::Value::TYPE_REAL, sx.get_type());
+    ASSERT_EQ(-0.125f, sx.as_float());
+  }
+}
+
 TEST(ParserTest, parse_scientific_real)
 {
   {
@@ -108,20 +121,32 @@ TEST(ParserTest, parse_scientific_real)
 
 TEST(ParserTest, parse_string)
 {
-  auto sx = sexp::Parser::from_string("\"Hello\\nWorld\"");
-  ASSERT_EQ(sexp::Value::TYPE_STRING, sx.get_type());
-  ASSERT_EQ("Hello\nWorld", sx.as_string());
+  {
+    auto sx = sexp::Parser::from_string("\"Hello\\nWorld\"");
+    ASSERT_EQ(sexp::Value::TYPE_STRING, sx.get_type());
+    ASSERT_EQ("Hello\nWorld", sx.as_string());
+  }
+
+  {
+    auto sx = sexp::Parser::from_string("\"\\\"Hello\\nWorld\\\"\"");
+    ASSERT_EQ(sexp::Value::TYPE_STRING, sx.get_type());
+    ASSERT_EQ("\"Hello\nWorld\"", sx.as_string());
+  }
 }
 
 TEST(ParserTest, parse_symbol)
 {
-  auto sx = sexp::Parser::from_string("HelloWorld");
-  ASSERT_EQ(sexp::Value::TYPE_SYMBOL, sx.get_type());
-  ASSERT_EQ("HelloWorld", sx.as_string());
+  {
+    auto sx = sexp::Parser::from_string("HelloWorld");
+    ASSERT_EQ(sexp::Value::TYPE_SYMBOL, sx.get_type());
+    ASSERT_EQ("HelloWorld", sx.as_string());
+  }
 
-  auto sx2 = sexp::Parser::from_string("5.6.7");
-  ASSERT_EQ(sexp::Value::TYPE_SYMBOL, sx2.get_type());
-  ASSERT_EQ("5.6.7", sx2.as_string());
+  {
+    auto sx = sexp::Parser::from_string("5.6.7");
+    ASSERT_EQ(sexp::Value::TYPE_SYMBOL, sx.get_type());
+    ASSERT_EQ("5.6.7", sx.as_string());
+  }
 }
 
 TEST(ParserTest, parse_array)
