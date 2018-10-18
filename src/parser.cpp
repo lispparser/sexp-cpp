@@ -15,12 +15,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "sexp/parser.hpp"
+
 #include <sstream>
 #include <stdexcept>
 #include <string.h>
 #include <iostream>
 
-#include "sexp/parser.hpp"
+#include "float.hpp"
 
 namespace sexp {
 
@@ -137,11 +139,11 @@ Parser::read()
       break;
 
     case Lexer::TOKEN_INTEGER:
-      result = Value::integer(m_lexer.get_integer());
+      result = Value::integer(std::stoi(m_lexer.get_string()));
       break;
 
     case Lexer::TOKEN_REAL:
-      result = Value::real(m_lexer.get_real());
+      result = Value::real(string2float(m_lexer.get_string()));
       break;
 
     case Lexer::TOKEN_TRUE:

@@ -18,12 +18,9 @@
 #include "sexp/lexer.hpp"
 
 #include <string.h>
-#include <string>
 #include <sstream>
 #include <stdexcept>
 #include <stdio.h>
-
-#include "float.hpp"
 
 namespace sexp {
 
@@ -247,18 +244,6 @@ Lexer::get_next_token()
         return TOKEN_SYMBOL;
       }
   }
-}
-
-int
-Lexer::get_integer() const
-{
-  return std::stoi(m_token_string);
-}
-
-float
-Lexer::get_real() const
-{
-  return string2float(m_token_string);
 }
 
 } // namespace sexp
