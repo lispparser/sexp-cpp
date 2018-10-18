@@ -68,6 +68,7 @@ if(BUILD_TESTS)
   file(GLOB TEST_SEXP_SOURCES tests/*.cpp)
   add_executable(test_sexp ${TEST_SEXP_SOURCES})
   target_compile_options(test_sexp PRIVATE ${WARNINGS_CXX_FLAGS})
+  target_include_directories(test_sexp PUBLIC src/)
   target_link_libraries(test_sexp
     gtest gtest_main
     sexp
