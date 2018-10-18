@@ -58,4 +58,83 @@ TEST(LexerTest, comment)
   ASSERT_EQ(sexp::Lexer::TOKEN_CLOSE_PAREN, lexer.getNextToken());
 }
 
+TEST(LexerTest, token_dot)
+{
+  std::vector<std::string> texts = {
+    "."
+  };
+
+  for(const auto& text : texts)
+  {
+    std::istringstream is(text);
+    sexp::Lexer lexer(is);
+    ASSERT_EQ(sexp::Lexer::TOKEN_DOT, lexer.getNextToken());
+    ASSERT_EQ(text, lexer.getString());
+  }
+}
+
+TEST(LexerTest, token_symbol)
+{
+  std::vector<std::string> texts = {
+    "SymbolTest",
+    "foo-bar",
+    "1.2.3",
+    "e50",
+  };
+
+  for(const auto& text : texts)
+  {
+    std::istringstream is(text);
+    sexp::Lexer lexer(is);
+    ASSERT_EQ(sexp::Lexer::TOKEN_SYMBOL, lexer.getNextToken());
+    ASSERT_EQ(text, lexer.getString());
+  }
+}
+
+TEST(LexerTest, token_string)
+{
+  std::istringstream is("\"StringTest\"");
+  sexp::Lexer lexer(is);
+  ASSERT_EQ(sexp::Lexer::TOKEN_STRING, lexer.getNextToken());
+  ASSERT_EQ("StringTest", lexer.getString());
+}
+
+TEST(LexerTest, token_integer)
+{
+  std::vector<std::string> texts = {
+    "123456789",
+    "-123456789"
+  };
+
+  for(const auto& text : texts)
+  {
+    std::istringstream is(text);
+    sexp::Lexer lexer(is);
+    ASSERT_EQ(sexp::Lexer::TOKEN_INTEGER, lexer.getNextToken());
+    ASSERT_EQ(text, lexer.getString());
+  }
+}
+
+TEST(LexerTest, token_real)
+{
+  std::vector<std::string> texts = {
+    ".1234",
+    ".1234e15",
+    "1234.6789",
+    "1234.",
+    "1234.5678",
+    "1234.5678e15",
+    "-1234.5678e15",
+    "1234.5678e15",
+  };
+
+  for(const auto& text : texts)
+  {
+    std::istringstream is(text);
+    sexp::Lexer lexer(is);
+    ASSERT_EQ(sexp::Lexer::TOKEN_REAL, lexer.getNextToken());
+    ASSERT_EQ(text, lexer.getString());
+  }
+}
+
 /* EOF */
