@@ -18,6 +18,7 @@
 #include "sexp/lexer.hpp"
 
 #include <string.h>
+#include <string>
 #include <sstream>
 #include <stdexcept>
 #include <stdio.h>
@@ -249,27 +250,7 @@ Lexer::get_next_token()
 int
 Lexer::get_integer() const
 {
-  int m_result = 0;
-  if (m_token_string[0] == '-')
-  {
-    m_result += m_token_string[1] - '0';
-    for(size_t i = 2; i < m_token_string.size(); ++i)
-    {
-      m_result *= 10;
-      m_result += m_token_string[i] - '0';
-    }
-    return -m_result;
-  }
-  else
-  {
-    m_result += m_token_string[0] - '0';
-    for(size_t i = 1; i < m_token_string.size(); ++i)
-    {
-      m_result *= 10;
-      m_result += m_token_string[i] - '0';
-    }
-    return m_result;
-  }
+  return std::stoi(m_token_string);
 }
 
 float

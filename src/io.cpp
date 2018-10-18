@@ -81,16 +81,7 @@ std::ostream& operator<<(std::ostream& os, Value const& sx)
       break;
 
     case Value::TYPE_INTEGER:
-      {
-#ifdef SEXP_USE_LOCALE
-        auto loc = os.getloc();
-        os.imbue(std::locale::classic());
-        os << sx.as_int();
-        os.imbue(loc);
-#else
-        os << sx.as_int();
-#endif
-      }
+      os << sx.as_int();
       break;
 
     case Value::TYPE_REAL:
