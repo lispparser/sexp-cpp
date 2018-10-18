@@ -42,19 +42,19 @@ public:
   Lexer(std::istream& stream, bool use_arrays = false);
   ~Lexer();
 
-  TokenType getNextToken();
-  std::string const& getString() const { return token_string; }
-  int getInteger() const;
-  float getReal() const;
-  int getLineNumber() const
+  TokenType get_next_token();
+  std::string const& get_string() const { return token_string; }
+  int get_integer() const;
+  float get_real() const;
+  int get_line_number() const
   { return linenumber; }
 
 private:
   static const int MAX_TOKEN_LENGTH = 16384;
   static const int BUFFER_SIZE = 16384;
 
-  inline void nextChar();
-  inline void addChar();
+  inline void next_char();
+  inline void add_char();
 
 private:
   std::istream& stream;

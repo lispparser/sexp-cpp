@@ -36,7 +36,7 @@ static void BM_lexer(benchmark::State& state)
     else
     {
       sexp::Lexer lexer(fin);
-      while(lexer.getNextToken() != sexp::Lexer::TOKEN_EOF);
+      while(lexer.get_next_token() != sexp::Lexer::TOKEN_EOF);
     }
   }
 }

@@ -37,7 +37,7 @@ Lexer::Lexer(std::istream& newstream, bool use_arrays) :
   // trigger a refill of the buffer
   bufpos = nullptr;
   bufend = nullptr;
-  nextChar();
+  next_char();
 }
 
 Lexer::~Lexer()
@@ -45,7 +45,7 @@ Lexer::~Lexer()
 }
 
 void
-Lexer::nextChar()
+Lexer::next_char()
 {
   if(bufpos >= bufend || (bufpos == nullptr && bufend == nullptr) /* Initial refill trigger */) {
     if(eof) {
@@ -77,19 +77,19 @@ Lexer::nextChar()
 }
 
 void
-Lexer::addChar()
+Lexer::add_char()
 {
   token_string += static_cast<char>(c);
-  nextChar();
+  next_char();
 }
 
 Lexer::TokenType
-Lexer::getNextToken()
+Lexer::get_next_token()
 {
   static const char* delims = "\"();";
 
   while(isspace(c)) {
-    nextChar();
+    next_char();
   }
 
   token_string.clear();
@@ -98,12 +98,12 @@ Lexer::getNextToken()
   {
     case ';': // comment
       while(c != '\n') {
-        nextChar();
+        next_char();
       }
-      return getNextToken(); // and again
+      return get_next_token(); // and again
 
     case '(':
-      nextChar();
+      next_char();
       if (m_use_arrays)
       {
         return TOKEN_ARRAY_START;
@@ -113,23 +113,23 @@ Lexer::getNextToken()
         return TOKEN_OPEN_PAREN;
       }
     case ')':
-      nextChar();
+      next_char();
       return TOKEN_CLOSE_PAREN;
 
     case '"': {  // string
       int startline = linenumber;
       while(1) {
-        nextChar();
+        next_char();
         switch(c) {
           case '"':
-            nextChar();
+            next_char();
             goto string_finished;
           case '\r':
             continue;
           case '\n':
             break;
           case '\\':
-            nextChar();
+            next_char();
             switch(c) {
               case 'n':
                 c = '\n';
@@ -154,17 +154,17 @@ Lexer::getNextToken()
       return TOKEN_STRING;
     }
     case '#': // constant
-      nextChar();
+      next_char();
 
       if (c == '(')
       {
-        nextChar();
+        next_char();
         return TOKEN_ARRAY_START;
       }
       else
       {
         while(isalnum(c) || c == '_') {
-          addChar();
+          add_char();
         }
 
         if(token_string == "t")
@@ -210,11 +210,11 @@ Lexer::getNextToken()
             have_nondigits = true;
           }
 
-          addChar();
+          add_char();
         }
         while(!isspace(c) && !strchr(delims, c));
 
-        // no nextChar
+        // no next_char
 
         if (token_string == ".")
         {
@@ -236,10 +236,10 @@ Lexer::getNextToken()
       else
       {
         do {
-          addChar();
+          add_char();
         } while(!isspace(c) && !strchr(delims, c));
 
-        // no nextChar
+        // no next_char
 
         return TOKEN_SYMBOL;
       }
@@ -247,7 +247,7 @@ Lexer::getNextToken()
 }
 
 int
-Lexer::getInteger() const
+Lexer::get_integer() const
 {
   int result = 0;
   if (token_string[0] == '-')
@@ -273,7 +273,7 @@ Lexer::getInteger() const
 }
 
 float
-Lexer::getReal() const
+Lexer::get_real() const
 {
   float result = 0.0f;
   float sign = 1.0f;

@@ -24,16 +24,16 @@ TEST(LexerTest, simple_tokens)
 {
   std::istringstream is("(foo . bar #())");
   sexp::Lexer lexer(is);
-  ASSERT_EQ(sexp::Lexer::TOKEN_OPEN_PAREN, lexer.getNextToken());
-  ASSERT_EQ(sexp::Lexer::TOKEN_SYMBOL, lexer.getNextToken());
-  ASSERT_EQ("foo", lexer.getString());
-  ASSERT_EQ(sexp::Lexer::TOKEN_DOT, lexer.getNextToken());
-  ASSERT_EQ(sexp::Lexer::TOKEN_SYMBOL, lexer.getNextToken());
-  ASSERT_EQ("bar", lexer.getString());
-  ASSERT_EQ(sexp::Lexer::TOKEN_ARRAY_START, lexer.getNextToken());
-  ASSERT_EQ(sexp::Lexer::TOKEN_CLOSE_PAREN, lexer.getNextToken());
-  ASSERT_EQ(sexp::Lexer::TOKEN_CLOSE_PAREN, lexer.getNextToken());
-  ASSERT_EQ(sexp::Lexer::TOKEN_EOF, lexer.getNextToken());
+  ASSERT_EQ(sexp::Lexer::TOKEN_OPEN_PAREN, lexer.get_next_token());
+  ASSERT_EQ(sexp::Lexer::TOKEN_SYMBOL, lexer.get_next_token());
+  ASSERT_EQ("foo", lexer.get_string());
+  ASSERT_EQ(sexp::Lexer::TOKEN_DOT, lexer.get_next_token());
+  ASSERT_EQ(sexp::Lexer::TOKEN_SYMBOL, lexer.get_next_token());
+  ASSERT_EQ("bar", lexer.get_string());
+  ASSERT_EQ(sexp::Lexer::TOKEN_ARRAY_START, lexer.get_next_token());
+  ASSERT_EQ(sexp::Lexer::TOKEN_CLOSE_PAREN, lexer.get_next_token());
+  ASSERT_EQ(sexp::Lexer::TOKEN_CLOSE_PAREN, lexer.get_next_token());
+  ASSERT_EQ(sexp::Lexer::TOKEN_EOF, lexer.get_next_token());
 }
 
 TEST(LexerTest, long_tokens)
@@ -41,21 +41,21 @@ TEST(LexerTest, long_tokens)
   std::string long_token(32768, 'X');
   std::istringstream is("(" + long_token + ")");
   sexp::Lexer lexer(is);
-  ASSERT_EQ(sexp::Lexer::TOKEN_OPEN_PAREN, lexer.getNextToken());
-  ASSERT_EQ(sexp::Lexer::TOKEN_SYMBOL, lexer.getNextToken());
-  ASSERT_EQ(long_token, lexer.getString());
-  ASSERT_EQ(sexp::Lexer::TOKEN_CLOSE_PAREN, lexer.getNextToken());
-  ASSERT_EQ(sexp::Lexer::TOKEN_EOF, lexer.getNextToken());
+  ASSERT_EQ(sexp::Lexer::TOKEN_OPEN_PAREN, lexer.get_next_token());
+  ASSERT_EQ(sexp::Lexer::TOKEN_SYMBOL, lexer.get_next_token());
+  ASSERT_EQ(long_token, lexer.get_string());
+  ASSERT_EQ(sexp::Lexer::TOKEN_CLOSE_PAREN, lexer.get_next_token());
+  ASSERT_EQ(sexp::Lexer::TOKEN_EOF, lexer.get_next_token());
 }
 
 TEST(LexerTest, comment)
 {
   std::istringstream is(";comment\n(foo ;comment\n;comment\n bar);EOF");
   sexp::Lexer lexer(is);
-  ASSERT_EQ(sexp::Lexer::TOKEN_OPEN_PAREN, lexer.getNextToken());
-  ASSERT_EQ(sexp::Lexer::TOKEN_SYMBOL, lexer.getNextToken());
-  ASSERT_EQ(sexp::Lexer::TOKEN_SYMBOL, lexer.getNextToken());
-  ASSERT_EQ(sexp::Lexer::TOKEN_CLOSE_PAREN, lexer.getNextToken());
+  ASSERT_EQ(sexp::Lexer::TOKEN_OPEN_PAREN, lexer.get_next_token());
+  ASSERT_EQ(sexp::Lexer::TOKEN_SYMBOL, lexer.get_next_token());
+  ASSERT_EQ(sexp::Lexer::TOKEN_SYMBOL, lexer.get_next_token());
+  ASSERT_EQ(sexp::Lexer::TOKEN_CLOSE_PAREN, lexer.get_next_token());
 }
 
 TEST(LexerTest, token_dot)
@@ -68,8 +68,8 @@ TEST(LexerTest, token_dot)
   {
     std::istringstream is(text);
     sexp::Lexer lexer(is);
-    ASSERT_EQ(sexp::Lexer::TOKEN_DOT, lexer.getNextToken());
-    ASSERT_EQ(text, lexer.getString());
+    ASSERT_EQ(sexp::Lexer::TOKEN_DOT, lexer.get_next_token());
+    ASSERT_EQ(text, lexer.get_string());
   }
 }
 
@@ -86,8 +86,8 @@ TEST(LexerTest, token_symbol)
   {
     std::istringstream is(text);
     sexp::Lexer lexer(is);
-    ASSERT_EQ(sexp::Lexer::TOKEN_SYMBOL, lexer.getNextToken());
-    ASSERT_EQ(text, lexer.getString());
+    ASSERT_EQ(sexp::Lexer::TOKEN_SYMBOL, lexer.get_next_token());
+    ASSERT_EQ(text, lexer.get_string());
   }
 }
 
@@ -95,8 +95,8 @@ TEST(LexerTest, token_string)
 {
   std::istringstream is("\"StringTest\"");
   sexp::Lexer lexer(is);
-  ASSERT_EQ(sexp::Lexer::TOKEN_STRING, lexer.getNextToken());
-  ASSERT_EQ("StringTest", lexer.getString());
+  ASSERT_EQ(sexp::Lexer::TOKEN_STRING, lexer.get_next_token());
+  ASSERT_EQ("StringTest", lexer.get_string());
 }
 
 TEST(LexerTest, token_integer)
@@ -110,8 +110,8 @@ TEST(LexerTest, token_integer)
   {
     std::istringstream is(text);
     sexp::Lexer lexer(is);
-    ASSERT_EQ(sexp::Lexer::TOKEN_INTEGER, lexer.getNextToken());
-    ASSERT_EQ(text, lexer.getString());
+    ASSERT_EQ(sexp::Lexer::TOKEN_INTEGER, lexer.get_next_token());
+    ASSERT_EQ(text, lexer.get_string());
   }
 }
 
@@ -132,8 +132,8 @@ TEST(LexerTest, token_real)
   {
     std::istringstream is(text);
     sexp::Lexer lexer(is);
-    ASSERT_EQ(sexp::Lexer::TOKEN_REAL, lexer.getNextToken());
-    ASSERT_EQ(text, lexer.getString());
+    ASSERT_EQ(sexp::Lexer::TOKEN_REAL, lexer.get_next_token());
+    ASSERT_EQ(text, lexer.get_string());
   }
 }
 

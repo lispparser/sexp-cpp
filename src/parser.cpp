@@ -61,7 +61,7 @@ Parser::from_stream_many(std::istream& is, bool use_arrays)
 
 Parser::Parser(Lexer& lexer) :
   m_lexer(lexer),
-  m_token(m_lexer.getNextToken())
+  m_token(m_lexer.get_next_token())
 {
 }
 
@@ -73,7 +73,7 @@ void
 Parser::parse_error(const char* msg) const
 {
   std::stringstream emsg;
-  emsg << "Parse Error at line " << m_lexer.getLineNumber()
+  emsg << "Parse Error at line " << m_lexer.get_line_number()
        << ": " << msg;
   throw std::runtime_error(emsg.str());
 }
@@ -93,12 +93,12 @@ Value
 Parser::read()
 {
   Value result;
-  int line_number = m_lexer.getLineNumber();
+  int line_number = m_lexer.get_line_number();
 
   switch(m_token)
   {
     case Lexer::TOKEN_OPEN_PAREN:
-      m_token = m_lexer.getNextToken();
+      m_token = m_lexer.get_next_token();
       if(m_token == Lexer::TOKEN_CLOSE_PAREN)
       {
         result = Value::nil();
@@ -111,7 +111,7 @@ Parser::read()
         {
           if (m_token == Lexer::TOKEN_DOT)
           {
-            m_token = m_lexer.getNextToken();
+            m_token = m_lexer.get_next_token();
             cur->set_cdr(read());
             if (m_token != Lexer::TOKEN_CLOSE_PAREN)
             {
@@ -129,19 +129,19 @@ Parser::read()
       break;
 
     case Lexer::TOKEN_SYMBOL:
-      result = Value::symbol(m_lexer.getString());
+      result = Value::symbol(m_lexer.get_string());
       break;
 
     case Lexer::TOKEN_STRING:
-      result = Value::string(m_lexer.getString());
+      result = Value::string(m_lexer.get_string());
       break;
 
     case Lexer::TOKEN_INTEGER:
-      result = Value::integer(m_lexer.getInteger());
+      result = Value::integer(m_lexer.get_integer());
       break;
 
     case Lexer::TOKEN_REAL:
-      result = Value::real(m_lexer.getReal());
+      result = Value::real(m_lexer.get_real());
       break;
 
     case Lexer::TOKEN_TRUE:
@@ -154,7 +154,7 @@ Parser::read()
 
     case Lexer::TOKEN_ARRAY_START:
       {
-        m_token = m_lexer.getNextToken();
+        m_token = m_lexer.get_next_token();
         std::vector<Value> arr;
         do
         {
@@ -182,7 +182,7 @@ Parser::read()
       break;
   }
 
-  m_token = m_lexer.getNextToken();
+  m_token = m_lexer.get_next_token();
 
   result.set_line(line_number);
   return result;
