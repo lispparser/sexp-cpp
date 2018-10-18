@@ -23,35 +23,55 @@
 #include "sexp/parser.hpp"
 #include "sexp/io.hpp"
 
-TEST(ValueTest, construct)
+TEST(ValueTest, construct_boolean)
 {
-  using sexp::Value;
-
-  auto sx_bool = Value::boolean(true);
+  auto sx_bool = sexp::Value::boolean(true);
   ASSERT_EQ(true, sx_bool.as_bool());
+}
 
-  auto sx_integer = Value::integer(12345789);
-  ASSERT_EQ(12345789, sx_integer.as_int());
+TEST(ValueTest, construct_integer)
+{
+  auto sx = sexp::Value::integer(12345789);
+  ASSERT_EQ(12345789, sx.as_int());
+}
 
-  auto sx_real = Value::real(12345.0f);
-  ASSERT_EQ(12345.0f, sx_real.as_float());
+TEST(ValueTest, construct_real)
+{
+  auto sx = sexp::Value::real(12345.0f);
+  ASSERT_EQ(12345.0f, sx.as_float());
+}
 
-  auto sx_symbol = Value::symbol("Symbol");
-  ASSERT_EQ("Symbol", sx_symbol.as_string());
+TEST(ValueTest, construct_symbol)
+{
+  auto sx = sexp::Value::symbol("Symbol");
+  ASSERT_EQ("Symbol", sx.as_string());
+}
 
-  auto sx_string = Value::string("HelloWorld");
-  ASSERT_EQ("HelloWorld", sx_string.as_string());
+TEST(ValueTest, construct_string)
+{
+  auto sx = sexp::Value::string("HelloWorld");
+  ASSERT_EQ("HelloWorld", sx.as_string());
+}
 
-  auto sx_array = Value::array(Value::integer(1), Value::integer(2), Value::integer(3), Value::integer(4));
-  ASSERT_EQ("#(1 2 3 4)", sx_array.str());
-  sx_array.append(Value::integer(5));
-  ASSERT_EQ("#(1 2 3 4 5)", sx_array.str());
+TEST(ValueTest, construct_array)
+{
+  auto sx = sexp::Value::array(sexp::Value::integer(1),
+                               sexp::Value::integer(2),
+                               sexp::Value::integer(3),
+                               sexp::Value::integer(4));
+  ASSERT_EQ("#(1 2 3 4)", sx.str());
+  sx.append(sexp::Value::integer(5));
+  ASSERT_EQ("#(1 2 3 4 5)", sx.str());
+}
 
-  auto sx_cons = Value::cons(Value::integer(5), Value::nil());
-  auto sx_cons2 = Value::cons(std::move(sx_integer), Value::nil());
+TEST(ValueTest, construct_cons)
+{
+  auto sx_integer = sexp::Value::integer(12345789);
+  auto sx_cons = sexp::Value::cons(sexp::Value::integer(5), sexp::Value::nil());
+  auto sx_cons2 = sexp::Value::cons(std::move(sx_integer), sexp::Value::nil());
 
   ASSERT_EQ(12345789, sx_cons2.get_car().as_int());
-  ASSERT_EQ(Value::nil(), sx_cons2.get_cdr());
+  ASSERT_EQ(sexp::Value::nil(), sx_cons2.get_cdr());
 }
 
 TEST(ValueTest, copy)
