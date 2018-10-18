@@ -25,18 +25,18 @@
 namespace sexp {
 
 Lexer::Lexer(std::istream& newstream, bool use_arrays) :
-  stream(newstream),
+  m_stream(newstream),
   m_use_arrays(use_arrays),
-  eof(false),
-  linenumber(0),
-  bufend(),
-  bufpos(),
-  c(),
-  token_string()
+  m_eof(false),
+  m_linenumber(0),
+  m_bufend(),
+  m_bufpos(),
+  m_c(),
+  m_token_string()
 {
   // trigger a refill of the buffer
-  bufpos = nullptr;
-  bufend = nullptr;
+  m_bufpos = nullptr;
+  m_bufend = nullptr;
   next_char();
 }
 
@@ -47,39 +47,39 @@ Lexer::~Lexer()
 void
 Lexer::next_char()
 {
-  if(bufpos >= bufend || (bufpos == nullptr && bufend == nullptr) /* Initial refill trigger */) {
-    if(eof) {
-      c = EOF;
+  if (m_bufpos >= m_bufend || (m_bufpos == nullptr && m_bufend == nullptr) /* Initial refill trigger */) {
+    if (m_eof) {
+      m_c = EOF;
       return;
     }
-    stream.read(buffer, BUFFER_SIZE);
-    std::streamsize bytes_read = stream.gcount();
+    m_stream.read(m_buffer, BUFFER_SIZE);
+    std::streamsize bytes_read = m_stream.gcount();
 
-    bufpos = buffer;
-    bufend = buffer + bytes_read;
+    m_bufpos = m_buffer;
+    m_bufend = m_buffer + bytes_read;
 
     // the following is a hack that appends an additional ' ' at the end of
     // the file to avoid problems when parsing symbols/elements and a sudden
     // EOF. This is faster than relying on unget and IMO also nicer.
-    if(bytes_read == 0 || stream.eof()) {
-      eof = true;
-      *bufend = ' ';
-      ++bufend;
+    if (bytes_read == 0 || m_stream.eof()) {
+      m_eof = true;
+      *m_bufend = ' ';
+      ++m_bufend;
     }
   }
 
-  if(bufpos == nullptr)
+  if (m_bufpos == nullptr)
     return;
 
-  c = *bufpos++;
-  if(c == '\n')
-    ++linenumber;
+  m_c = *m_bufpos++;
+  if (m_c == '\n')
+    ++m_linenumber;
 }
 
 void
 Lexer::add_char()
 {
-  token_string += static_cast<char>(c);
+  m_token_string += static_cast<char>(m_c);
   next_char();
 }
 
@@ -88,16 +88,16 @@ Lexer::get_next_token()
 {
   static const char* delims = "\"();";
 
-  while(isspace(c)) {
+  while(isspace(m_c)) {
     next_char();
   }
 
-  token_string.clear();
+  m_token_string.clear();
 
-  switch(c)
+  switch(m_c)
   {
     case ';': // comment
-      while(c != '\n') {
+      while(m_c != '\n') {
         next_char();
       }
       return get_next_token(); // and again
@@ -117,10 +117,10 @@ Lexer::get_next_token()
       return TOKEN_CLOSE_PAREN;
 
     case '"': {  // string
-      int startline = linenumber;
+      int startline = m_linenumber;
       while(1) {
         next_char();
-        switch(c) {
+        switch(m_c) {
           case '"':
             next_char();
             goto string_finished;
@@ -130,12 +130,12 @@ Lexer::get_next_token()
             break;
           case '\\':
             next_char();
-            switch(c) {
+            switch(m_c) {
               case 'n':
-                c = '\n';
+                m_c = '\n';
                 break;
               case 't':
-                c = '\t';
+                m_c = '\t';
                 break;
             }
             break;
@@ -148,7 +148,7 @@ Lexer::get_next_token()
           default:
             break;
         }
-        token_string += static_cast<char>(c);
+        m_token_string += static_cast<char>(m_c);
       }
       string_finished:
       return TOKEN_STRING;
@@ -156,22 +156,22 @@ Lexer::get_next_token()
     case '#': // constant
       next_char();
 
-      if (c == '(')
+      if (m_c == '(')
       {
         next_char();
         return TOKEN_ARRAY_START;
       }
       else
       {
-        while(isalnum(c) || c == '_') {
+        while(isalnum(m_c) || m_c == '_') {
           add_char();
         }
 
-        if(token_string == "t")
+        if (m_token_string == "t")
         {
           return TOKEN_TRUE;
         }
-        else if(token_string == "f")
+        else if (m_token_string == "f")
         {
           return TOKEN_FALSE;
         }
@@ -179,8 +179,8 @@ Lexer::get_next_token()
         {
           // we only handle #t and #f constants at the moment...
           std::stringstream msg;
-          msg << "Parse Error in line " << linenumber << ": "
-              << "Unknown constant '" << token_string << "'.";
+          msg << "Parse Error in line " << m_linenumber << ": "
+              << "Unknown constant '" << m_token_string << "'.";
           throw std::runtime_error(msg.str());
         }
       }
@@ -189,7 +189,7 @@ Lexer::get_next_token()
       return TOKEN_EOF;
 
     default:
-      if(isdigit(c) || c == '-' || c == '.')
+      if (isdigit(m_c) || m_c == '-' || m_c == '.')
       {
         bool have_nondigits = false;
         bool have_digits = false;
@@ -197,26 +197,26 @@ Lexer::get_next_token()
 
         do
         {
-          if (isdigit(c))
+          if (isdigit(m_c))
           {
             have_digits = true;
           }
-          else if (c == '.')
+          else if (m_c == '.')
           {
             ++have_floating_point;
           }
-          else if (isalnum(c) || c == '_')
+          else if (isalnum(m_c) || m_c == '_')
           {
             have_nondigits = true;
           }
 
           add_char();
         }
-        while(!isspace(c) && !strchr(delims, c));
+        while(!isspace(m_c) && !strchr(delims, m_c));
 
         // no next_char
 
-        if (token_string == ".")
+        if (m_token_string == ".")
         {
           return TOKEN_DOT;
         }
@@ -237,7 +237,7 @@ Lexer::get_next_token()
       {
         do {
           add_char();
-        } while(!isspace(c) && !strchr(delims, c));
+        } while(!isspace(m_c) && !strchr(delims, m_c));
 
         // no next_char
 
@@ -249,26 +249,26 @@ Lexer::get_next_token()
 int
 Lexer::get_integer() const
 {
-  int result = 0;
-  if (token_string[0] == '-')
+  int m_result = 0;
+  if (m_token_string[0] == '-')
   {
-    result += token_string[1] - '0';
-    for(size_t i = 2; i < token_string.size(); ++i)
+    m_result += m_token_string[1] - '0';
+    for(size_t i = 2; i < m_token_string.size(); ++i)
     {
-      result *= 10;
-      result += token_string[i] - '0';
+      m_result *= 10;
+      m_result += m_token_string[i] - '0';
     }
-    return -result;
+    return -m_result;
   }
   else
   {
-    result += token_string[0] - '0';
-    for(size_t i = 1; i < token_string.size(); ++i)
+    m_result += m_token_string[0] - '0';
+    for(size_t i = 1; i < m_token_string.size(); ++i)
     {
-      result *= 10;
-      result += token_string[i] - '0';
+      m_result *= 10;
+      m_result += m_token_string[i] - '0';
     }
-    return result;
+    return m_result;
   }
 }
 
@@ -280,26 +280,26 @@ Lexer::get_real() const
 
   // sign
   size_t i = 0;
-  if (token_string[i] == '-')
+  if (m_token_string[i] == '-')
   {
     i += 1;
     sign = -1;
   }
 
   // integer part
-  for(; token_string[i] != '.'; ++i)
+  for(; m_token_string[i] != '.'; ++i)
   {
     result *= 10.0f;
-    result += static_cast<float>(token_string[i] - '0');
+    result += static_cast<float>(m_token_string[i] - '0');
   }
 
   i += 1;
 
   // fractional part
   float fraction = 0.1f;
-  for(; i < token_string.size(); ++i)
+  for(; i < m_token_string.size(); ++i)
   {
-    result += static_cast<float>(token_string[i] - '0') * fraction;
+    result += static_cast<float>(m_token_string[i] - '0') * fraction;
     fraction *= 0.1f;
   }
 

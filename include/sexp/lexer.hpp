@@ -39,33 +39,34 @@ public:
     TOKEN_ARRAY_START
   };
 
+public:
   Lexer(std::istream& stream, bool use_arrays = false);
   ~Lexer();
 
   TokenType get_next_token();
-  std::string const& get_string() const { return token_string; }
+  std::string const& get_string() const { return m_token_string; }
   int get_integer() const;
   float get_real() const;
-  int get_line_number() const
-  { return linenumber; }
+  int get_line_number() const { return m_linenumber; }
 
 private:
   static const int MAX_TOKEN_LENGTH = 16384;
   static const int BUFFER_SIZE = 16384;
 
+private:
   inline void next_char();
   inline void add_char();
 
 private:
-  std::istream& stream;
+  std::istream& m_stream;
   bool m_use_arrays;
-  bool eof;
-  int linenumber;
-  char buffer[BUFFER_SIZE+1];
-  char* bufend;
-  char* bufpos;
-  int  c;
-  std::string token_string;
+  bool m_eof;
+  int m_linenumber;
+  char m_buffer[BUFFER_SIZE+1];
+  char* m_bufend;
+  char* m_bufpos;
+  int m_c;
+  std::string m_token_string;
 
 private:
   Lexer(const Lexer&);
