@@ -17,13 +17,23 @@
 
 #include "float.hpp"
 
+#ifdef SEXP_USE_CXX17
+#  include <charconv>
+#  include <assert.h>
+#endif
+
 #include <limits>
 
 namespace sexp {
 
 float string2float(const std::string& text)
 {
-#ifdef SEXP_USE_LOCALE
+#ifdef SEXP_USE_CXX17
+  float result;
+  std::from_chars(text.data(), text.data() + text.size(), result);
+  return result;
+#else
+#  ifdef SEXP_USE_LOCALE
   std::istringstream in(text);
   in.imbue(std::locale::classic());
 
@@ -31,25 +41,32 @@ float string2float(const std::string& text)
   in >> value;
 
   return value;
-#else
+#  else
   return strtof(text.c_str(), NULL);
+#  endif
 #endif
 }
 
 void float2string(std::ostream& os, float value)
 {
+#ifdef SEXP_USE_CXX17
+  constexpr size_t len = std::numeric_limits<float>::digits10 + 1;
+  char buffer[len];
+  auto result = std::to_chars(buffer, buffer + len, value);
+  assert(result.ec == std::errc());
+  os.write(buffer, result.ptr - buffer);
+#else
   auto precision = os.precision(std::numeric_limits<float>::digits10 + 1);
-
-#ifdef SEXP_USE_LOCALE
+#  ifdef SEXP_USE_LOCALE
   const auto& loc = os.getloc();
   os.imbue(std::locale::classic());
   os << value;
   os.imbue(loc);
-#else
+#  else
   os << value;
-#endif
-
+#  endif
   os.precision(precision);
+#endif
 }
 
 } // namespace sexp

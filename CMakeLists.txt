@@ -20,6 +20,7 @@ project(sexp VERSION 0.1.0)
 option(WARNINGS "Switch on extra warnings" OFF)
 option(WERROR "Turn warnings into errors" OFF)
 option(USE_LOCALE "Use C++ locale support" OFF)
+option(USE_CXX17 "Use C++17 features" OFF)
 
 if(WARNINGS)
   set(WARNINGS_CXX_FLAGS ${WARNINGS_CXX_FLAGS}
@@ -36,7 +37,12 @@ endif()
 
 find_package(Threads REQUIRED)
 
-add_compile_options(-std=c++11)
+if(USE_CXX17)
+  add_compile_options(-std=c++17)
+  add_definitions(-DSEXP_USE_CXX17)
+else()
+  add_compile_options(-std=c++11)
+endif()
 
 if(USE_LOCALE)
   add_definitions(-DSEXP_USE_LOCALE)
