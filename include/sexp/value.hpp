@@ -55,6 +55,14 @@ private:
 
   union Data
   {
+    inline Data() {}
+    inline Data(bool v) : m_bool(v) {}
+    inline Data(int v) : m_int(v) {}
+    inline Data(float v) : m_float(v) {}
+    inline Data(std::string* v) : m_string(v) {}
+    inline Data(Cons* v) : m_cons(v) {}
+    inline Data(std::vector<Value>* v) : m_array(v) {}
+
     bool m_bool;
     int m_int;
     float m_float;
@@ -111,30 +119,30 @@ public:
   }
 
 private:
-  inline explicit Value(BooleanTag, bool value) : m_line(0), m_type(TYPE_BOOLEAN), m_data{.m_bool = value} {}
-  inline explicit Value(IntegerTag, int value) : m_line(0), m_type(TYPE_INTEGER), m_data{.m_int = value} {}
-  inline explicit Value(RealTag, float value) : m_line(0), m_type(TYPE_REAL), m_data{.m_float = value} {}
+  inline explicit Value(BooleanTag, bool value) : m_line(0), m_type(TYPE_BOOLEAN), m_data(value) {}
+  inline explicit Value(IntegerTag, int value) : m_line(0), m_type(TYPE_INTEGER), m_data(value) {}
+  inline explicit Value(RealTag, float value) : m_line(0), m_type(TYPE_REAL), m_data(value) {}
   inline Value(StringTag, std::string const& value) :
     m_line(0),
     m_type(TYPE_STRING),
-    m_data{.m_string = new std::string(value)}
+    m_data(new std::string(value))
   {}
   inline Value(SymbolTag, std::string const& value) :
     m_line(0),
     m_type(TYPE_SYMBOL),
-    m_data{.m_string = new std::string(value)}
+    m_data(new std::string(value))
   {}
   inline Value(ConsTag, Value&& car, Value&& cdr);
   inline Value(ArrayTag, std::vector<Value> arr) :
     m_line(0),
     m_type(TYPE_ARRAY),
-    m_data{.m_array = new std::vector<Value>(std::move(arr))}
+    m_data(new std::vector<Value>(std::move(arr)))
   {}
   template<typename... Args>
   inline Value(ArrayTag, Args&&... args) :
     m_line(0),
     m_type(TYPE_ARRAY),
-    m_data{.m_array = new std::vector<Value>{std::move(args)...}}
+    m_data(new std::vector<Value>{std::move(args)...})
   {}
 
   void destroy();
@@ -158,7 +166,8 @@ public:
 
   inline Value() :
     m_line(0),
-    m_type(TYPE_NIL)
+    m_type(TYPE_NIL),
+    m_data()
   {}
 
   inline ~Value()
