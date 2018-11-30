@@ -23,11 +23,33 @@ option(USE_LOCALE "Use C++ locale support" OFF)
 option(USE_CXX17 "Use C++17 features" OFF)
 
 if(WARNINGS)
-  set(WARNINGS_CXX_FLAGS ${WARNINGS_CXX_FLAGS}
-    -pedantic -Wall -Wextra -Wno-c++0x-compat -Wnon-virtual-dtor
-    -Wshadow -Wcast-qual -Winit-self -Wno-unused-parameter
-    -Weffc++ -Wconversion -Wold-style-cast)
-  # -Winline -Wfloat-equal -Wunreachable-code
+  if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    set(WARNINGS_CXX_FLAGS "${WARNINGS_CXX_FLAGS}"
+      -Weverything
+
+      # flags that we deliberately ignore
+      -Wno-c++98-compat
+      -Wno-c++98-compat-pedantic
+      -Wno-float-equal
+      -Wno-padded
+      -Wno-weak-vtables
+      -Wno-disabled-macro-expansion
+      -Wno-documentation
+      -Wno-reserved-id-macro
+      -Wno-sign-conversion
+      -Wno-unreachable-code-break
+      -Wno-unused-parameter
+      -Wno-covered-switch-default
+      -Wno-global-constructors
+      -Wno-zero-as-null-pointer-constant
+      )
+  else()
+    set(WARNINGS_CXX_FLAGS ${WARNINGS_CXX_FLAGS}
+      -pedantic -Wall -Wextra -Wno-c++0x-compat -Wnon-virtual-dtor
+      -Wshadow -Wcast-qual -Winit-self -Wno-unused-parameter
+      -Weffc++ -Wconversion -Wold-style-cast)
+    # -Winline -Wfloat-equal -Wunreachable-code
+  endif()
 endif()
 
 if(WERROR)
