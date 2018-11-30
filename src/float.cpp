@@ -42,7 +42,7 @@ float string2float(const std::string& text)
 
   return value;
 #  else
-  return strtof(text.c_str(), NULL);
+  return strtof(text.c_str(), nullptr);
 #  endif
 #endif
 }
