@@ -240,7 +240,7 @@ inline
 Value::Value(ConsTag, Value&& car, Value&& cdr) :
   m_line(0),
   m_type(TYPE_CONS),
-  m_data{.m_cons = new Cons{std::move(car), std::move(cdr)}}
+  m_data(new Cons{std::move(car), std::move(cdr)})
 {}
 
 inline void
