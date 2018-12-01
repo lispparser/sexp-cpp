@@ -178,11 +178,13 @@ TEST(ValueTest, type_errors_cons)
 
 TEST(ValueTest, object_size)
 {
-#ifdef _MSC_VER
-  ASSERT_EQ(12, sizeof(sexp::Value));
-#elif INTPTR_MAX == INT32_MAX
+#if INTPTR_MAX == INT32_MAX
   // on 32bit systems
+#  ifdef _MSC_VER
+  ASSERT_EQ(12, sizeof(sexp::Value));
+#  else
   ASSERT_EQ(8, sizeof(sexp::Value));
+#  endif
 #elif INTPTR_MAX == INT64_MAX
   // on 64bit systems
   ASSERT_EQ(16, sizeof(sexp::Value));
