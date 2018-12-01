@@ -30,16 +30,16 @@ namespace sexp {
 class Value
 {
 public:
-  enum Type : unsigned char
+  enum class Type : unsigned char
   {
-    TYPE_NIL,
-    TYPE_BOOLEAN,
-    TYPE_INTEGER,
-    TYPE_REAL,
-    TYPE_STRING,
-    TYPE_SYMBOL,
-    TYPE_CONS,
-    TYPE_ARRAY
+    NIL,
+    BOOLEAN,
+    INTEGER,
+    REAL,
+    STRING,
+    SYMBOL,
+    CONS,
+    ARRAY
   };
 
 private:
@@ -119,29 +119,29 @@ public:
   }
 
 private:
-  inline explicit Value(BooleanTag, bool value) : m_line(0), m_type(TYPE_BOOLEAN), m_data(value) {}
-  inline explicit Value(IntegerTag, int value) : m_line(0), m_type(TYPE_INTEGER), m_data(value) {}
-  inline explicit Value(RealTag, float value) : m_line(0), m_type(TYPE_REAL), m_data(value) {}
+  inline explicit Value(BooleanTag, bool value) : m_line(0), m_type(Type::BOOLEAN), m_data(value) {}
+  inline explicit Value(IntegerTag, int value) : m_line(0), m_type(Type::INTEGER), m_data(value) {}
+  inline explicit Value(RealTag, float value) : m_line(0), m_type(Type::REAL), m_data(value) {}
   inline Value(StringTag, std::string const& value) :
     m_line(0),
-    m_type(TYPE_STRING),
+    m_type(Type::STRING),
     m_data(new std::string(value))
   {}
   inline Value(SymbolTag, std::string const& value) :
     m_line(0),
-    m_type(TYPE_SYMBOL),
+    m_type(Type::SYMBOL),
     m_data(new std::string(value))
   {}
   inline Value(ConsTag, Value&& car, Value&& cdr);
   inline Value(ArrayTag, std::vector<Value> arr) :
     m_line(0),
-    m_type(TYPE_ARRAY),
+    m_type(Type::ARRAY),
     m_data(new std::vector<Value>(std::move(arr)))
   {}
   template<typename... Args>
   inline Value(ArrayTag, Args&&... args) :
     m_line(0),
-    m_type(TYPE_ARRAY),
+    m_type(Type::ARRAY),
     m_data(new std::vector<Value>{std::move(args)...})
   {}
 
@@ -161,12 +161,12 @@ public:
     m_type(other.m_type),
     m_data(other.m_data)
   {
-    other.m_type = TYPE_NIL;
+    other.m_type = Type::NIL;
   }
 
   inline Value() :
     m_line(0),
-    m_type(TYPE_NIL),
+    m_type(Type::NIL),
     m_data()
   {}
 
@@ -183,7 +183,7 @@ public:
     m_type = other.m_type;
     m_data = other.m_data;
 
-    other.m_type = TYPE_NIL;
+    other.m_type = Type::NIL;
 
     return *this;
   }
@@ -197,16 +197,16 @@ public:
 
   inline Type get_type() const { return m_type; }
 
-  inline explicit operator bool() const { return m_type != TYPE_NIL; }
+  inline explicit operator bool() const { return m_type != Type::NIL; }
 
-  inline bool is_nil() const { return m_type == TYPE_NIL; }
-  inline bool is_boolean() const { return m_type == TYPE_BOOLEAN; }
-  inline bool is_integer() const { return m_type == TYPE_INTEGER; }
-  inline bool is_real() const { return (m_type == TYPE_REAL || m_type == TYPE_INTEGER); }
-  inline bool is_string() const { return m_type == TYPE_STRING; }
-  inline bool is_symbol() const { return m_type == TYPE_SYMBOL; }
-  inline bool is_cons() const { return m_type == TYPE_CONS; }
-  inline bool is_array() const { return m_type == TYPE_ARRAY; }
+  inline bool is_nil() const { return m_type == Type::NIL; }
+  inline bool is_boolean() const { return m_type == Type::BOOLEAN; }
+  inline bool is_integer() const { return m_type == Type::INTEGER; }
+  inline bool is_real() const { return (m_type == Type::REAL || m_type == Type::INTEGER); }
+  inline bool is_string() const { return m_type == Type::STRING; }
+  inline bool is_symbol() const { return m_type == Type::SYMBOL; }
+  inline bool is_cons() const { return m_type == Type::CONS; }
+  inline bool is_array() const { return m_type == Type::ARRAY; }
 
   Value const& get_car() const;
   Value const& get_cdr() const;
@@ -239,7 +239,7 @@ struct Value::Cons
 inline
 Value::Value(ConsTag, Value&& car, Value&& cdr) :
   m_line(0),
-  m_type(TYPE_CONS),
+  m_type(Type::CONS),
   m_data(new Cons{std::move(car), std::move(cdr)})
 {}
 
@@ -248,16 +248,16 @@ Value::destroy()
 {
   switch(m_type)
   {
-    case Value::TYPE_STRING:
-    case Value::TYPE_SYMBOL:
+    case Value::Type::STRING:
+    case Value::Type::SYMBOL:
       delete m_data.m_string;
       break;
 
-    case Value::TYPE_CONS:
+    case Value::Type::CONS:
       delete m_data.m_cons;
       break;
 
-    case Value::TYPE_ARRAY:
+    case Value::Type::ARRAY:
       delete m_data.m_array;
       break;
 
@@ -274,31 +274,31 @@ Value::Value(Value const& other) :
 {
   switch(m_type)
   {
-    case TYPE_NIL:
+    case Type::NIL:
       break;
 
-    case TYPE_BOOLEAN:
+    case Type::BOOLEAN:
       m_data.m_bool = other.m_data.m_bool;
       break;
 
-    case TYPE_INTEGER:
+    case Type::INTEGER:
       m_data.m_int = other.m_data.m_int;
       break;
 
-    case TYPE_REAL:
+    case Type::REAL:
       m_data.m_float = other.m_data.m_float;
       break;
 
-    case TYPE_STRING:
-    case TYPE_SYMBOL:
+    case Type::STRING:
+    case Type::SYMBOL:
       m_data.m_string = new std::string(*other.m_data.m_string);
       break;
 
-    case TYPE_CONS:
+    case Type::CONS:
       m_data.m_cons = new Cons(*other.m_data.m_cons);
       break;
 
-    case TYPE_ARRAY:
+    case Type::ARRAY:
       m_data.m_array = new std::vector<Value>(*other.m_data.m_array);
       break;
   }
@@ -311,27 +311,27 @@ Value::operator==(Value const& rhs) const
   {
     switch(m_type)
     {
-      case TYPE_NIL:
+      case Type::NIL:
         return true;
 
-      case Value::TYPE_BOOLEAN:
+      case Value::Type::BOOLEAN:
         return m_data.m_bool == rhs.m_data.m_bool;
 
-      case Value::TYPE_INTEGER:
+      case Value::Type::INTEGER:
         return m_data.m_int == rhs.m_data.m_int;
 
-      case Value::TYPE_REAL:
+      case Value::Type::REAL:
         return m_data.m_float == rhs.m_data.m_float;
 
-      case Value::TYPE_STRING:
-      case Value::TYPE_SYMBOL:
+      case Value::Type::STRING:
+      case Value::Type::SYMBOL:
         return *m_data.m_string == *rhs.m_data.m_string;
 
-      case Value::TYPE_CONS:
+      case Value::Type::CONS:
         return (m_data.m_cons->car == rhs.m_data.m_cons->car &&
                 m_data.m_cons->cdr == rhs.m_data.m_cons->cdr);
 
-      case Value::TYPE_ARRAY:
+      case Value::Type::ARRAY:
         return *m_data.m_array == *rhs.m_data.m_array;
     }
     assert(false && "should never be reached");
@@ -346,26 +346,26 @@ Value::operator==(Value const& rhs) const
 inline Value const&
 Value::get_car() const
 {
-  if (m_type == TYPE_CONS)
+  if (m_type == Type::CONS)
   {
     return m_data.m_cons->car;
   }
   else
   {
-    type_error("sexp::Value::get_car(): wrong type, expected TYPE_CONS");
+    type_error("sexp::Value::get_car(): wrong type, expected Type::CONS");
   }
 }
 
 inline Value const&
 Value::get_cdr() const
 {
-  if (m_type == TYPE_CONS)
+  if (m_type == Type::CONS)
   {
   return m_data.m_cons->cdr;
   }
   else
   {
-    type_error("sexp::Value::get_cdr(): wrong type, expected TYPE_CONS");
+    type_error("sexp::Value::get_cdr(): wrong type, expected Type::CONS");
   }
 }
 
@@ -384,65 +384,65 @@ Value::get_cdr()
 inline void
 Value::set_car(Value&& sexpr)
 {
-  if (m_type == TYPE_CONS)
+  if (m_type == Type::CONS)
   {
     m_data.m_cons->car = std::move(sexpr);
   }
   else
   {
-    type_error("sexp::Value::set_car(): wrong type, expected TYPE_CONS");
+    type_error("sexp::Value::set_car(): wrong type, expected Type::CONS");
   }
 }
 
 inline void
 Value::set_cdr(Value&& sexpr)
 {
-  if (m_type == TYPE_CONS)
+  if (m_type == Type::CONS)
   {
     m_data.m_cons->cdr = std::move(sexpr);
   }
   else
   {
-    type_error("sexp::Value::set_cdr(): wrong type, expected TYPE_CONS");
+    type_error("sexp::Value::set_cdr(): wrong type, expected Type::CONS");
   }
 }
 
 inline void
 Value::append(Value&& sexpr)
 {
-  if (m_type == TYPE_ARRAY)
+  if (m_type == Type::ARRAY)
   {
     m_data.m_array->push_back(std::move(sexpr));
   }
   else
   {
-    type_error("sexp::Value::append(): wrong type, expected TYPE_ARRAY");
+    type_error("sexp::Value::append(): wrong type, expected Type::ARRAY");
   }
 }
 
 inline bool
 Value::as_bool() const
 {
-  if (m_type == TYPE_BOOLEAN)
+  if (m_type == Type::BOOLEAN)
   {
     return m_data.m_bool;
   }
   else
   {
-    type_error("sexp::Value::as_bool(): wrong type, expected TYPE_BOOLEAN");
+    type_error("sexp::Value::as_bool(): wrong type, expected Type::BOOLEAN");
   }
 }
 
 inline int
 Value::as_int() const
 {
-  if (m_type == TYPE_INTEGER)
+  if (m_type == Type::INTEGER)
   {
     return m_data.m_int;
   }
   else
   {
-    type_error("sexp::Value::as_int(): wrong type, expected TYPE_INTEGER");
+    type_error("sexp::Value::as_int(): wrong type, expected Type::INTEGER");
   }
 
 }
@@ -450,43 +450,43 @@ Value::as_int() const
 inline float
 Value::as_float() const
 {
-  if (m_type == TYPE_REAL)
+  if (m_type == Type::REAL)
   {
     return m_data.m_float;
   }
-  else if (m_type == TYPE_INTEGER)
+  else if (m_type == Type::INTEGER)
   {
     return static_cast<float>(m_data.m_int);
   }
   else
   {
-    type_error("sexp::Value::as_float(): wrong type, expected TYPE_INTEGER or TYPE_REAL");
+    type_error("sexp::Value::as_float(): wrong type, expected Type::INTEGER or Type::REAL");
   }
 }
 
 inline std::string const&
 Value::as_string() const
 {
-  if (m_type == TYPE_SYMBOL || m_type == TYPE_STRING)
+  if (m_type == Type::SYMBOL || m_type == Type::STRING)
   {
     return *m_data.m_string;
   }
   else
   {
-    type_error("sexp::Value::as_float(): wrong type, expected TYPE_SYMBOL or TYPE_STRING");
+    type_error("sexp::Value::as_float(): wrong type, expected Type::SYMBOL or Type::STRING");
   }
 }
 
 inline std::vector<Value> const&
 Value::as_array() const
 {
-  if (m_type == TYPE_ARRAY)
+  if (m_type == Type::ARRAY)
   {
     return *m_data.m_array;
   }
   else
   {
-    type_error("sexp::Value::as_array(): wrong type, expected TYPE_ARRAY");
+    type_error("sexp::Value::as_array(): wrong type, expected Type::ARRAY");
   }
 }
 

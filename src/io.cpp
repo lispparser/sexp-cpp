@@ -48,17 +48,17 @@ std::ostream& operator<<(std::ostream& os, Value const& sx)
 {
   switch(sx.get_type())
   {
-    case Value::TYPE_NIL:
+    case Value::Type::NIL:
       os << "()";
       break;
 
-    case Value::TYPE_CONS:
+    case Value::Type::CONS:
       {
         os << '(';
         Value const* cur = &sx;
         do
         {
-          if (cur->get_type() != Value::TYPE_CONS)
+          if (cur->get_type() != Value::Type::CONS)
           {
             os << ". " << *cur;
             break;
@@ -78,27 +78,27 @@ std::ostream& operator<<(std::ostream& os, Value const& sx)
       }
       break;
 
-    case Value::TYPE_STRING:
+    case Value::Type::STRING:
       escape_string(os, sx.as_string());
       break;
 
-    case Value::TYPE_INTEGER:
+    case Value::Type::INTEGER:
       os << sx.as_int();
       break;
 
-    case Value::TYPE_REAL:
+    case Value::Type::REAL:
       float2string(os, sx.as_float());
       break;
 
-    case Value::TYPE_SYMBOL:
+    case Value::Type::SYMBOL:
       os << sx.as_string();
       break;
 
-    case Value::TYPE_BOOLEAN:
+    case Value::Type::BOOLEAN:
       os << (sx.as_bool() ? "#t" : "#f");
       break;
 
-    case Value::TYPE_ARRAY:
+    case Value::Type::ARRAY:
       {
         os << "#(";
         auto const& arr = sx.as_array();

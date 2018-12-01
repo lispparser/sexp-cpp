@@ -48,11 +48,11 @@ TEST(ParserTest, parse_many)
   std::istringstream in("1 2.5 foo \"TEXT\" bar");
   std::vector<sexp::Value> value = sexp::Parser::from_stream_many(in);
   ASSERT_EQ(5, value.size());
-  ASSERT_EQ(value[0].get_type(), sexp::Value::TYPE_INTEGER);
-  ASSERT_EQ(value[1].get_type(), sexp::Value::TYPE_REAL);
-  ASSERT_EQ(value[2].get_type(), sexp::Value::TYPE_SYMBOL);
-  ASSERT_EQ(value[3].get_type(), sexp::Value::TYPE_STRING);
-  ASSERT_EQ(value[4].get_type(), sexp::Value::TYPE_SYMBOL);
+  ASSERT_EQ(value[0].get_type(), sexp::Value::Type::INTEGER);
+  ASSERT_EQ(value[1].get_type(), sexp::Value::Type::REAL);
+  ASSERT_EQ(value[2].get_type(), sexp::Value::Type::SYMBOL);
+  ASSERT_EQ(value[3].get_type(), sexp::Value::Type::STRING);
+  ASSERT_EQ(value[4].get_type(), sexp::Value::Type::SYMBOL);
 }
 
 TEST(ParserTest, parse_positive_integer)
@@ -78,13 +78,13 @@ TEST(ParserTest, parse_positive_real)
 {
   {
     auto sx = sexp::Parser::from_string("0.125");
-    ASSERT_EQ(sexp::Value::TYPE_REAL, sx.get_type());
+    ASSERT_EQ(sexp::Value::Type::REAL, sx.get_type());
     ASSERT_EQ(0.125f, sx.as_float());
   }
 
   {
     auto sx = sexp::Parser::from_string(".125");
-    ASSERT_EQ(sexp::Value::TYPE_REAL, sx.get_type());
+    ASSERT_EQ(sexp::Value::Type::REAL, sx.get_type());
     ASSERT_EQ(0.125f, sx.as_float());
   }
 }
@@ -93,13 +93,13 @@ TEST(ParserTest, parse_negative_real)
 {
   {
     auto sx = sexp::Parser::from_string("-0.125");
-    ASSERT_EQ(sexp::Value::TYPE_REAL, sx.get_type());
+    ASSERT_EQ(sexp::Value::Type::REAL, sx.get_type());
     ASSERT_EQ(-0.125f, sx.as_float());
   }
 
   {
     auto sx = sexp::Parser::from_string("-.125");
-    ASSERT_EQ(sexp::Value::TYPE_REAL, sx.get_type());
+    ASSERT_EQ(sexp::Value::Type::REAL, sx.get_type());
     ASSERT_EQ(-0.125f, sx.as_float());
   }
 }
@@ -108,13 +108,13 @@ TEST(ParserTest, parse_scientific_real)
 {
   {
     auto sx = sexp::Parser::from_string("1.2345e-13");
-    ASSERT_EQ(sexp::Value::TYPE_REAL, sx.get_type());
+    ASSERT_EQ(sexp::Value::Type::REAL, sx.get_type());
     ASSERT_EQ(1.2345e-13f, sx.as_float());
   }
 
   {
     auto sx = sexp::Parser::from_string("-1.2345e+13");
-    ASSERT_EQ(sexp::Value::TYPE_REAL, sx.get_type());
+    ASSERT_EQ(sexp::Value::Type::REAL, sx.get_type());
     ASSERT_EQ(-1.2345e+13f, sx.as_float());
   }
 }
@@ -123,13 +123,13 @@ TEST(ParserTest, parse_string)
 {
   {
     auto sx = sexp::Parser::from_string("\"Hello\\nWorld\"");
-    ASSERT_EQ(sexp::Value::TYPE_STRING, sx.get_type());
+    ASSERT_EQ(sexp::Value::Type::STRING, sx.get_type());
     ASSERT_EQ("Hello\nWorld", sx.as_string());
   }
 
   {
     auto sx = sexp::Parser::from_string("\"\\\"Hello\\nWorld\\\"\"");
-    ASSERT_EQ(sexp::Value::TYPE_STRING, sx.get_type());
+    ASSERT_EQ(sexp::Value::Type::STRING, sx.get_type());
     ASSERT_EQ("\"Hello\nWorld\"", sx.as_string());
   }
 }
@@ -138,13 +138,13 @@ TEST(ParserTest, parse_symbol)
 {
   {
     auto sx = sexp::Parser::from_string("HelloWorld");
-    ASSERT_EQ(sexp::Value::TYPE_SYMBOL, sx.get_type());
+    ASSERT_EQ(sexp::Value::Type::SYMBOL, sx.get_type());
     ASSERT_EQ("HelloWorld", sx.as_string());
   }
 
   {
     auto sx = sexp::Parser::from_string("5.6.7");
-    ASSERT_EQ(sexp::Value::TYPE_SYMBOL, sx.get_type());
+    ASSERT_EQ(sexp::Value::Type::SYMBOL, sx.get_type());
     ASSERT_EQ("5.6.7", sx.as_string());
   }
 }
@@ -154,7 +154,7 @@ TEST(ParserTest, parse_array)
   char const* sx_str = "#(1 \"foo\" #(bar))";
   auto sx = sexp::Parser::from_string(sx_str);
   ASSERT_TRUE(sx.is_array());
-  ASSERT_EQ(sexp::Value::TYPE_ARRAY, sx.get_type());
+  ASSERT_EQ(sexp::Value::Type::ARRAY, sx.get_type());
   ASSERT_EQ(sx_str, sx.str());
 }
 
@@ -166,9 +166,9 @@ TEST(ParserTest, simple_pair)
   ASSERT_EQ("(foo . bar)", sx.str());
   ASSERT_EQ("foo", sx.get_car().as_string());
   ASSERT_EQ("bar", sx.get_cdr().as_string());
-  ASSERT_EQ(sexp::Value::TYPE_CONS, sx.get_type());
-  ASSERT_EQ(sexp::Value::TYPE_SYMBOL, sx.get_car().get_type());
-  ASSERT_EQ(sexp::Value::TYPE_SYMBOL, sx.get_cdr().get_type());
+  ASSERT_EQ(sexp::Value::Type::CONS, sx.get_type());
+  ASSERT_EQ(sexp::Value::Type::SYMBOL, sx.get_car().get_type());
+  ASSERT_EQ(sexp::Value::Type::SYMBOL, sx.get_cdr().get_type());
 
   ASSERT_EQ("(foo . bar)", sexp::Parser::from_string("(foo . bar)").str());
 }
