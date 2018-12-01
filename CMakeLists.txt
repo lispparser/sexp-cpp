@@ -43,7 +43,7 @@ if(WARNINGS)
       -Wno-global-constructors
       -Wno-zero-as-null-pointer-constant
       )
-  else()
+  elseif(CMAKE_COMPILER_IS_GNUCXX)
     set(WARNINGS_CXX_FLAGS ${WARNINGS_CXX_FLAGS}
       -pedantic -Wall -Wextra -Wno-c++0x-compat -Wnon-virtual-dtor
       -Wshadow -Wcast-qual -Winit-self -Wno-unused-parameter
@@ -53,11 +53,11 @@ if(WARNINGS)
 endif()
 
 if(WERROR)
-  set(WARNINGS_CXX_FLAGS ${WARNINGS_CXX_FLAGS}
-    -Werror)
+  if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    set(WARNINGS_CXX_FLAGS ${WARNINGS_CXX_FLAGS}
+      -Werror)
+  endif()
 endif()
-
-find_package(Threads REQUIRED)
 
 if(USE_CXX17)
   add_compile_options(-std=c++17)
@@ -84,6 +84,8 @@ target_compile_options(sexp PRIVATE ${WARNINGS_CXX_FLAGS})
 target_include_directories(sexp SYSTEM PUBLIC include)
 
 if(BUILD_TESTS)
+  find_package(Threads REQUIRED)
+
   # build gtest
   # ${CMAKE_CURRENT_SOURCE_DIR} in include_directories is needed to generate -isystem instead of -I flags
   add_library(gtest_main STATIC ${CMAKE_CURRENT_SOURCE_DIR}/external/googletest/googletest/src/gtest_main.cc)
