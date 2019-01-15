@@ -34,9 +34,9 @@ Parser::from_string(std::string const& str, bool use_arrays)
 }
 
 Value
-Parser::from_stream(std::istream& is, bool use_arrays)
+Parser::from_stream(std::istream& stream, bool use_arrays)
 {
-  Lexer lexer(is, use_arrays);
+  Lexer lexer(stream, use_arrays);
   Parser parser(lexer);
   Value result = parser.read();
   if (parser.m_token != Lexer::TOKEN_EOF)
@@ -54,9 +54,9 @@ Parser::from_string_many(std::string const& str, bool use_arrays)
 }
 
 std::vector<Value>
-Parser::from_stream_many(std::istream& is, bool use_arrays)
+Parser::from_stream_many(std::istream& stream, bool use_arrays)
 {
-  Lexer lexer(is, use_arrays);
+  Lexer lexer(stream, use_arrays);
   Parser parser(lexer);
   return parser.read_many();
 }

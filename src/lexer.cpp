@@ -69,12 +69,14 @@ Lexer::next_char()
     }
   }
 
-  if (m_bufpos == nullptr)
+  if (m_bufpos == nullptr) {
     return;
+  }
 
   m_c = *m_bufpos++;
-  if (m_c == '\n')
+  if (m_c == '\n') {
     ++m_linenumber;
+  }
 }
 
 void

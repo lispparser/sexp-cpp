@@ -104,7 +104,7 @@ std::ostream& operator<<(std::ostream& os, Value const& sx)
         auto const& arr = sx.as_array();
         for(size_t i = 0; i != arr.size(); ++i)
         {
-          if (i != 0) os << ' ';
+          if (i != 0) { os << ' '; }
           os << arr[i];
         }
         os << ")";

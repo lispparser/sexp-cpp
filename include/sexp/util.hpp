@@ -107,7 +107,7 @@ public:
   bool operator==(ListIterator const& rhs) const { return cur == rhs.cur; }
   bool operator!=(ListIterator const& rhs) const { return cur != rhs.cur; }
 
-  Value const& operator*() const { return cur->get_car(); }
+  Value const& operator*() const { return cur->get_car(); /* NOLINT */ }
   Value const* operator->() const { return &cur->get_car(); }
 
   ListIterator& operator++()
