@@ -17,6 +17,8 @@
 cmake_minimum_required(VERSION 3.0)
 project(sexp VERSION 0.1.0)
 
+include(GNUInstallDirs)
+
 option(WARNINGS "Switch on extra warnings" OFF)
 option(WERROR "Turn warnings into errors" OFF)
 option(USE_LOCALE "Use C++ locale support" OFF)
@@ -79,9 +81,16 @@ endif()
 # target_include_directories(pingus-lisp SYSTEM PUBLIC pingus)
 
 file(GLOB SEXP_SOURCES src/*.cpp)
+file(GLOB SEXP_HEADER_SOURCES include/sexp/*.hpp)
 add_library(sexp ${SEXP_SOURCES})
+set_target_properties(sexp PROPERTIES PUBLIC_HEADER "${SEXP_HEADER_SOURCES}")
 target_compile_options(sexp PRIVATE ${WARNINGS_CXX_FLAGS})
 target_include_directories(sexp SYSTEM PUBLIC include)
+
+install(TARGETS sexp
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/sexp)
 
 if(BUILD_TESTS)
   find_package(Threads REQUIRED)
