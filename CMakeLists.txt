@@ -61,6 +61,23 @@ if(WERROR)
   endif()
 endif()
 
+if(CMAKE_VERSION VERSION_GREATER 3.6)
+  if (USE_CLANG_TIDY)
+    find_program(
+      CLANG_TIDY_EXE
+      NAMES "clang-tidy"
+      DOC "Path to clang-tidy executable"
+      )
+
+    if(NOT CLANG_TIDY_EXE)
+      message(FATAL_ERROR "clang-tidy not found.")
+    else()
+      message(STATUS "clang-tidy found: ${CLANG_TIDY_EXE}")
+      set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE}")
+    endif()
+  endif()
+endif()
+
 if(USE_CXX17)
   add_compile_options(-std=c++17)
   add_definitions(-DSEXP_USE_CXX17)
@@ -94,6 +111,8 @@ if(BUILD_TESTS)
   add_library(gtest STATIC ${CMAKE_CURRENT_SOURCE_DIR}/external/googletest/googletest/src/gtest-all.cc)
   target_include_directories(gtest SYSTEM PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/googletest/googletest/)
   target_include_directories(gtest SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/external/googletest/googletest/include/)
+  set_target_properties(gtest_main PROPERTIES CXX_CLANG_TIDY "")
+  set_target_properties(gtest PROPERTIES CXX_CLANG_TIDY "")
 
   # build sexp tests
   file(GLOB TEST_SEXP_SOURCES tests/*.cpp)
@@ -121,6 +140,7 @@ if(BUILD_BENCHMARKS)
   target_compile_options(benchmark PRIVATE -std=c++1y)
   target_include_directories(benchmark SYSTEM PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/external/benchmark/include)
+  set_target_properties(benchmark PROPERTIES CXX_CLANG_TIDY "")
 
   # build benchmarks
   file(GLOB BENCHMARKSOURCES benchmarks/*.cpp)
