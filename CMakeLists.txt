@@ -72,14 +72,6 @@ if(USE_LOCALE)
   add_definitions(-DSEXP_USE_LOCALE)
 endif()
 
-# file(GLOB SUPERTUX_LISP_SOURCES supertux/lisp/*.cpp)
-# add_library(supertux-lisp ${SUPERTUX_LISP_SOURCES})
-# target_include_directories(supertux-lisp SYSTEM PUBLIC supertux)
-
-# file(GLOB PINGUS_LISP_SOURCES pingus/lisp/*.cpp)
-# add_library(pingus-lisp ${PINGUS_LISP_SOURCES})
-# target_include_directories(pingus-lisp SYSTEM PUBLIC pingus)
-
 file(GLOB SEXP_SOURCES src/*.cpp)
 file(GLOB SEXP_HEADER_SOURCES include/sexp/*.hpp)
 add_library(sexp ${SEXP_SOURCES})
