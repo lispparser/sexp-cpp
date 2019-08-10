@@ -23,6 +23,7 @@
 #endif
 
 #include <limits>
+#include <sstream>
 
 namespace sexp {
 
