@@ -101,6 +101,14 @@ install(TARGETS sexp
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
   PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/sexp)
 
+configure_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/pkgconfig/sexp.pc.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/pkgconfig/sexp.pc"
+  @ONLY)
+
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/pkgconfig/sexp.pc"
+  DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
+
 if(BUILD_TESTS)
   find_package(Threads REQUIRED)
 
