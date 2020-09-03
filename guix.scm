@@ -21,7 +21,6 @@
 (use-modules (guix build-system cmake)
              ((guix licenses) #:prefix license:)
              (guix packages)
-             (gnu packages boost)
              (gnu packages gcc)
              (gnu packages pkg-config)
              (guix-cocfree utils))
@@ -39,8 +38,6 @@
    (build-system cmake-build-system)
    (native-inputs
     `(("pkg-config" ,pkg-config)))
-   (inputs
-    `())
    (synopsis (synopsis-from-source %source-dir))
    (description (description-from-source %source-dir))
    (home-page (homepage-from-source %source-dir))
