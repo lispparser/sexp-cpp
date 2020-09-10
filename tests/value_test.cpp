@@ -77,7 +77,7 @@ TEST(ValueTest, construct_cons)
 TEST(ValueTest, copy)
 {
   sexp::Value sx = sexp::Parser::from_string("(a-symbol #f #t 1 2 3 (4 5 (6 7 8) (9 . 10) \"Hello world\"))");
-  sexp::Value sx_copy = sexp::Value(sx);
+  sexp::Value sx_copy = sx;
   ASSERT_EQ(sx.str(), sx_copy.str());
 }
 
