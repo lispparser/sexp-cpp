@@ -60,15 +60,7 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/pkgconfig/sexp.pc"
 if(BUILD_TESTS)
   find_package(Threads REQUIRED)
 
-  # build gtest
-  # ${CMAKE_CURRENT_SOURCE_DIR} in include_directories is needed to generate -isystem instead of -I flags
-  add_library(gtest_main STATIC ${CMAKE_CURRENT_SOURCE_DIR}/external/googletest/googletest/src/gtest_main.cc)
-  target_include_directories(gtest_main SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/external/googletest/googletest/include/)
-  add_library(gtest STATIC ${CMAKE_CURRENT_SOURCE_DIR}/external/googletest/googletest/src/gtest-all.cc)
-  target_include_directories(gtest SYSTEM PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/external/googletest/googletest/)
-  target_include_directories(gtest SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/external/googletest/googletest/include/)
-  set_target_properties(gtest_main PROPERTIES CXX_CLANG_TIDY "")
-  set_target_properties(gtest PROPERTIES CXX_CLANG_TIDY "")
+  add_subdirectory(external/googletest/ EXCLUDE_FROM_ALL)
 
   # build sexp tests
   file(GLOB TEST_SEXP_SOURCES tests/*.cpp)
