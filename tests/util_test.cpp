@@ -102,7 +102,8 @@ TEST(UtilTest, list_length)
   ASSERT_THROW(sexp::list_length(lst_invalid), sexp::TypeError);
 
   sexp::Value lst_nil = sexp::Value::nil();
-  ASSERT_EQ(0, sexp::list_length(lst_nil));
+  int expected = 0;
+  ASSERT_EQ(expected, sexp::list_length(lst_nil));
 }
 
 TEST(UtilTest, list_ref)

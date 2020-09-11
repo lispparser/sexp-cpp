@@ -26,12 +26,12 @@ TEST(FloatTest, float2string)
 {
   std::vector<std::tuple<float, std::string> > datas =
     {
-      { 1.0f, "1" },
-      { 1234.567f, "1234.567" },
-      { 1.0e3f, "1000" },
-      { 1234567e-4f, "123.4567" },
-      { 1.234e13f, "1.234e+13" },
-      { 1234.0e13f, "1.234e+16" },
+      { 1.0F, "1" },
+      { 1234.567F, "1234.567" },
+      { 1.0e3F, "1000" },
+      { 1234567e-4F, "123.4567" },
+      { 1.234e13F, "1.234e+13" },
+      { 1234.0e13F, "1.234e+16" },
     };
 
   for(const auto& data: datas)
@@ -44,13 +44,13 @@ TEST(FloatTest, float2string)
 
 TEST(FloatTest, string2float)
 {
-  ASSERT_EQ(1234.5678f, sexp::string2float("1234.5678"));
-  ASSERT_EQ(1234.5678f, sexp::string2float("+1234.5678"));
-  ASSERT_EQ(-1234.5678f, sexp::string2float("-1234.5678"));
+  ASSERT_EQ(1234.5678F, sexp::string2float("1234.5678"));
+  ASSERT_EQ(1234.5678F, sexp::string2float("+1234.5678"));
+  ASSERT_EQ(-1234.5678F, sexp::string2float("-1234.5678"));
 
-  ASSERT_EQ(5.0f, sexp::string2float("5.0ef"));
-  ASSERT_EQ(1234.5f, sexp::string2float("1.2345e3f"));
-  ASSERT_EQ(12.345f, sexp::string2float("12345e-3f"));
+  ASSERT_EQ(5.0F, sexp::string2float("5.0ef"));
+  ASSERT_EQ(1234.5F, sexp::string2float("1.2345e3f"));
+  ASSERT_EQ(12.345F, sexp::string2float("12345e-3f"));
 }
 
 /* EOF */

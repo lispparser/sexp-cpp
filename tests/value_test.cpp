@@ -37,8 +37,8 @@ TEST(ValueTest, construct_integer)
 
 TEST(ValueTest, construct_real)
 {
-  auto sx = sexp::Value::real(12345.0f);
-  ASSERT_EQ(12345.0f, sx.as_float());
+  auto sx = sexp::Value::real(12345.0F);
+  ASSERT_EQ(12345.0F, sx.as_float());
 }
 
 TEST(ValueTest, construct_symbol)
@@ -77,7 +77,7 @@ TEST(ValueTest, construct_cons)
 TEST(ValueTest, copy)
 {
   sexp::Value sx = sexp::Parser::from_string("(a-symbol #f #t 1 2 3 (4 5 (6 7 8) (9 . 10) \"Hello world\"))");
-  sexp::Value sx_copy = sx;
+  sexp::Value sx_copy = sx; // NOLINT
   ASSERT_EQ(sx.str(), sx_copy.str());
 }
 
@@ -128,7 +128,7 @@ TEST(ValueTest, type_errors_integer)
 
 TEST(ValueTest, type_errors_real)
 {
-  sexp::Value sx = sexp::Value::real(1.125f);
+  sexp::Value sx = sexp::Value::real(1.125F);
   ASSERT_THROW(sx.append(sexp::Value::nil()), sexp::TypeError);
   ASSERT_THROW(sx.set_car(sexp::Value::nil()), sexp::TypeError);
   ASSERT_THROW(sx.set_cdr(sexp::Value::nil()), sexp::TypeError);
