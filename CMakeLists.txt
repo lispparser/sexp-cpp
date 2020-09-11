@@ -58,9 +58,9 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/pkgconfig/sexp.pc"
   DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
 
 if(BUILD_TESTS)
-  find_package(Threads REQUIRED)
-
-  add_subdirectory(external/googletest/ EXCLUDE_FROM_ALL)
+  if(NOT TARGET gtest)
+    add_subdirectory(external/googletest/ EXCLUDE_FROM_ALL)
+  endif()
 
   # build sexp tests
   file(GLOB TEST_SEXP_SOURCES tests/*.cpp)
