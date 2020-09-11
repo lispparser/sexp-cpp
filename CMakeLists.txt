@@ -20,48 +20,10 @@ project(sexp VERSION 0.1.0)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/external/cmake-modules)
 
 include(GNUInstallDirs)
+include(MaximumWarnings)
 
-option(WARNINGS "Switch on extra warnings" OFF)
-option(WERROR "Turn warnings into errors" OFF)
 option(USE_LOCALE "Use C++ locale support" OFF)
 option(USE_CXX17 "Use C++17 features" OFF)
-
-if(WARNINGS)
-  if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    set(WARNINGS_CXX_FLAGS "${WARNINGS_CXX_FLAGS}"
-      -Weverything
-
-      # flags that we deliberately ignore
-      -Wno-c++98-compat
-      -Wno-c++98-compat-pedantic
-      -Wno-float-equal
-      -Wno-padded
-      -Wno-weak-vtables
-      -Wno-disabled-macro-expansion
-      -Wno-documentation
-      -Wno-reserved-id-macro
-      -Wno-sign-conversion
-      -Wno-unreachable-code-break
-      -Wno-unused-parameter
-      -Wno-covered-switch-default
-      -Wno-global-constructors
-      -Wno-zero-as-null-pointer-constant
-      )
-  elseif(CMAKE_COMPILER_IS_GNUCXX)
-    set(WARNINGS_CXX_FLAGS ${WARNINGS_CXX_FLAGS}
-      -pedantic -Wall -Wextra -Wno-c++0x-compat -Wnon-virtual-dtor
-      -Wshadow -Wcast-qual -Winit-self -Wno-unused-parameter
-      -Weffc++ -Wconversion -Wold-style-cast)
-    # -Winline -Wfloat-equal -Wunreachable-code
-  endif()
-endif()
-
-if(WERROR)
-  if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    set(WARNINGS_CXX_FLAGS ${WARNINGS_CXX_FLAGS}
-      -Werror)
-  endif()
-endif()
 
 if(CMAKE_VERSION VERSION_GREATER 3.6)
   if (USE_CLANG_TIDY)
