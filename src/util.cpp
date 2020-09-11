@@ -21,6 +21,7 @@
 #include <stdexcept>
 
 #include "sexp/io.hpp"
+#include "sexp/error.hpp"
 
 namespace sexp {
 
@@ -54,8 +55,7 @@ list_length(Value const& sx)
   }
   else
   {
-    // silently ignoring malformed list content
-    return 0;
+    throw TypeError(sx.get_line(), "sexp::list_length(): wrong type, expected list");
   }
 }
 

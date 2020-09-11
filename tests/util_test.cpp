@@ -99,7 +99,7 @@ TEST(UtilTest, list_length)
   ASSERT_EQ(9, sexp::list_length(lst));
 
   sexp::Value lst_invalid = sexp::Parser::from_string("(1 2 3 4 5 6 7 8 9 . 10)");
-  ASSERT_EQ(9, sexp::list_length(lst_invalid));
+  ASSERT_THROW(sexp::list_length(lst_invalid), sexp::TypeError);
 
   sexp::Value lst_nil = sexp::Value::nil();
   ASSERT_EQ(0, sexp::list_length(lst_nil));
