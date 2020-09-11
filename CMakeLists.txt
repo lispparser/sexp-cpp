@@ -58,9 +58,7 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/pkgconfig/sexp.pc"
   DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
 
 if(BUILD_TESTS)
-  if(NOT TARGET gtest)
-    add_subdirectory(external/googletest/ EXCLUDE_FROM_ALL)
-  endif()
+  find_package(GTest REQUIRED)
 
   # build sexp tests
   file(GLOB TEST_SEXP_SOURCES tests/*.cpp)
@@ -68,9 +66,9 @@ if(BUILD_TESTS)
   target_compile_options(test_sexp PRIVATE ${WARNINGS_CXX_FLAGS})
   target_include_directories(test_sexp PUBLIC src/)
   target_link_libraries(test_sexp
-    gtest gtest_main
-    sexp
-    ${CMAKE_THREAD_LIBS_INIT})
+    GTest::GTest
+    GTest::Main
+    sexp)
 
   # add 'make test' target, use 'make test ARGS="-V"' or 'ctest -V' for verbose
   enable_testing()
@@ -80,6 +78,8 @@ if(BUILD_TESTS)
 endif()
 
 if(BUILD_BENCHMARKS)
+  find_package(Threads REQUIRED)
+
   # build google-benchmark
   include_directories(${PROJECT_SOURCE_DIR}/src)
   file(GLOB BENCHMARK_SOURCES external/benchmark/src/*.cc)
@@ -95,7 +95,7 @@ if(BUILD_BENCHMARKS)
   foreach(SOURCE ${BENCHMARKSOURCES})
     get_filename_component(SOURCE_BASENAME ${SOURCE} NAME_WE)
     add_executable(${SOURCE_BASENAME} ${SOURCE})
-    target_link_libraries(${SOURCE_BASENAME} benchmark sexp ${CMAKE_THREAD_LIBS_INIT})
+    target_link_libraries(${SOURCE_BASENAME} benchmark sexp Threads::Threads)
     set_target_properties(${SOURCE_BASENAME} PROPERTIES
       RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/benchmarks/")
     target_compile_options(${SOURCE_BASENAME} PRIVATE -std=c++1y ${WARNINGS_CXX_FLAGS})
