@@ -27,10 +27,8 @@ option(USE_LOCALE "Use C++ locale support" OFF)
 option(USE_CXX17 "Use C++17 features" OFF)
 
 if(USE_CXX17)
-  add_compile_options(-std=c++17)
+  # for std::from_chars()
   add_definitions(-DSEXP_USE_CXX17)
-else()
-  add_compile_options(-std=c++11)
 endif()
 
 if(USE_LOCALE)
@@ -40,6 +38,10 @@ endif()
 file(GLOB SEXP_SOURCES src/*.cpp)
 file(GLOB SEXP_HEADER_SOURCES include/sexp/*.hpp)
 add_library(sexp ${SEXP_SOURCES})
+set_property(TARGET sexp
+    PROPERTY CXX_STANDARD 17
+    PROPERTY CXX_STANDARD_REQUIRED ON
+    PROPERTY CXX_EXTENSIONS OFF)
 set_target_properties(sexp PROPERTIES PUBLIC_HEADER "${SEXP_HEADER_SOURCES}")
 target_compile_options(sexp PRIVATE ${WARNINGS_CXX_FLAGS})
 target_include_directories(sexp SYSTEM PUBLIC include)
@@ -63,6 +65,10 @@ if(BUILD_TESTS)
   # build sexp tests
   file(GLOB TEST_SEXP_SOURCES tests/*.cpp)
   add_executable(test_sexp ${TEST_SEXP_SOURCES})
+  set_property(TARGET test_sexp
+    PROPERTY CXX_STANDARD 17
+    PROPERTY CXX_STANDARD_REQUIRED ON
+    PROPERTY CXX_EXTENSIONS OFF)
   target_compile_options(test_sexp PRIVATE ${WARNINGS_CXX_FLAGS})
   target_include_directories(test_sexp PUBLIC src/)
   target_link_libraries(test_sexp
@@ -84,8 +90,11 @@ if(BUILD_BENCHMARKS)
   include_directories(${PROJECT_SOURCE_DIR}/src)
   file(GLOB BENCHMARK_SOURCES external/benchmark/src/*.cc)
   add_library(benchmark ${BENCHMARK_SOURCES})
+  set_property(TARGET benchmark
+    PROPERTY CXX_STANDARD 17
+    PROPERTY CXX_STANDARD_REQUIRED ON
+    PROPERTY CXX_EXTENSIONS OFF)
   target_compile_definitions(benchmark PRIVATE -DHAVE_STD_REGEX)
-  target_compile_options(benchmark PRIVATE -std=c++1y)
   target_include_directories(benchmark SYSTEM PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/external/benchmark/include)
   set_target_properties(benchmark PROPERTIES CXX_CLANG_TIDY "")
