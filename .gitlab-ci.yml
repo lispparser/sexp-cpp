@@ -14,18 +14,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-image: ubuntu:latest
+image: ubuntu:focal
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
 before_script:
+  - export DEBIAN_FRONTEND=noninteractive
   - apt-get -qq update
   - apt-get -qq -y install lsb-release
   - lsb_release -a
   - apt-get -qq -y install
-    clang-6.0
-    g++-8
+    clang-10
+    g++-10
     language-pack-en
     language-pack-de
     cmake
@@ -44,25 +45,25 @@ before_script:
 build:gcc:release:
   <<: *build_sexpr
   variables:
-    CXX: g++-8
+    CXX: g++-10
     BUILD_TYPE: Release
 
 build:clang:release:
   <<: *build_sexpr
   variables:
-    CXX: clang++-6.0
+    CXX: clang++-10
     BUILD_TYPE: Release
 
 build:gcc:debug:
   <<: *build_sexpr
   variables:
-    CXX: g++-8
+    CXX: g++-10
     BUILD_TYPE: Debug
 
 build:clang:debug:
   <<: *build_sexpr
   variables:
-    CXX: clang++-6.0
+    CXX: clang++-10
     BUILD_TYPE: Debug
 
 # EOF #
