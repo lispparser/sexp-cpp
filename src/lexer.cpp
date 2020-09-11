@@ -73,7 +73,7 @@ Lexer::next_char()
     return;
   }
 
-  m_c = *m_bufpos++;
+  m_c = static_cast<unsigned char>(*m_bufpos++);
   if (m_c == '\n') {
     ++m_linenumber;
   }
