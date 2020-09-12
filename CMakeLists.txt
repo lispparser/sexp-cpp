@@ -37,7 +37,7 @@ endif()
 
 file(GLOB SEXP_SOURCES src/*.cpp)
 file(GLOB SEXP_HEADER_SOURCES include/sexp/*.hpp)
-add_library(sexp ${SEXP_SOURCES})
+add_library(sexp STATIC ${SEXP_SOURCES})
 set_property(TARGET sexp
     PROPERTY CXX_STANDARD 17
     PROPERTY CXX_STANDARD_REQUIRED ON
