@@ -34,7 +34,7 @@ before_script:
     libc++-dev
     libgtest-dev
 
-.build_sexpr_template: &build_sexpr
+.build_project_template: &build_project
   stage: build
   script:
     - mkdir build
@@ -45,27 +45,35 @@ before_script:
     - cd ..; for i in build/benchmarks/*; do "$i"; done
 
 build:gcc:release:
-  <<: *build_sexpr
+  <<: *build_project
   variables:
     CXX: g++-10
     BUILD_TYPE: Release
 
 build:clang:release:
-  <<: *build_sexpr
+  <<: *build_project
   variables:
     CXX: clang++-10
     BUILD_TYPE: Release
 
 build:gcc:debug:
-  <<: *build_sexpr
+  <<: *build_project
   variables:
     CXX: g++-10
     BUILD_TYPE: Debug
 
 build:clang:debug:
-  <<: *build_sexpr
+  <<: *build_project
   variables:
     CXX: clang++-10
     BUILD_TYPE: Debug
+
+build:clang-tidy:
+  <<: *build_project
+  variables:
+    CXX: "clang++-10"
+    BUILD_TYPE: "Debug"
+    CLANG_TIDY: "ON"
+    CLANG_TIDY_FIX: "OFF"
 
 # EOF #
