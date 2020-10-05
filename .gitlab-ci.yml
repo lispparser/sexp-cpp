@@ -42,6 +42,7 @@ before_script:
     - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DWARNINGS=ON -DWERROR=ON -DBUILD_TESTS=ON -DBUILD_BENCHMARKS=ON
     - make VERBOSE=1
     - make test VERBOSE=1 ARGS="-V"
+    - cd ..; for i in build/benchmarks/*; do "$i"; done
 
 build:gcc:release:
   <<: *build_sexpr
