@@ -35,6 +35,20 @@ if(USE_LOCALE)
   add_definitions(-DSEXP_USE_LOCALE)
 endif()
 
+function(build_dependencies)
+  if(BUILD_BENCHMARKS)
+    if(NOT TARGET benchmark)
+      # build google-benchmark
+      file(GLOB BENCHMARK_SOURCES external/benchmark/src/*.cc)
+      add_library(benchmark ${BENCHMARK_SOURCES})
+      target_include_directories(benchmark SYSTEM PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/external/benchmark/include)
+      set_target_properties(benchmark PROPERTIES CXX_CLANG_TIDY "")
+    endif()
+  endif()
+endfunction()
+build_dependencies()
+
 file(GLOB SEXP_SOURCES src/*.cpp)
 file(GLOB SEXP_HEADER_SOURCES include/sexp/*.hpp)
 add_library(sexp STATIC ${SEXP_SOURCES})
@@ -85,19 +99,6 @@ endif()
 
 if(BUILD_BENCHMARKS)
   find_package(Threads REQUIRED)
-
-  # build google-benchmark
-  include_directories(${PROJECT_SOURCE_DIR}/src)
-  file(GLOB BENCHMARK_SOURCES external/benchmark/src/*.cc)
-  add_library(benchmark ${BENCHMARK_SOURCES})
-  set_property(TARGET benchmark
-    PROPERTY CXX_STANDARD 17
-    PROPERTY CXX_STANDARD_REQUIRED ON
-    PROPERTY CXX_EXTENSIONS OFF)
-  target_compile_definitions(benchmark PRIVATE -DHAVE_STD_REGEX)
-  target_include_directories(benchmark SYSTEM PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/external/benchmark/include)
-  set_target_properties(benchmark PROPERTIES CXX_CLANG_TIDY "")
 
   # build benchmarks
   file(GLOB BENCHMARKSOURCES benchmarks/*.cpp)
