@@ -81,11 +81,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1636312093,
-        "narHash": "sha256-CrIhHvqvahDPu/klOLwDLvfeH2+DoVZ9eGAE//xfieo=",
+        "lastModified": 1636364404,
+        "narHash": "sha256-af7j+fpIF6R0EBthCz2ULsuDt5JDakCCrPS0oZtbd10=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "3b0bff383f8e894b1ee7a30b62c8b727a68511df",
+        "rev": "ac515c612b85623fd9955789be861551c1faad4f",
         "type": "github"
       },
       "original": {
@@ -123,17 +123,17 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1636314733,
-        "narHash": "sha256-0BjO5d0Dgv79fyWRUuXvzwTIcWrj87ls9TIZCWeAm3A=",
-        "ref": "master",
-        "rev": "d2f6d6e8507b4da65d3401ca684c20c77b975d57",
-        "revCount": 25,
-        "type": "git",
-        "url": "file:///home/ingo/projects/lispparser/sexp-cpp/external/cmake-modules/"
+        "lastModified": 1636364915,
+        "narHash": "sha256-K/OY1GQ7F++Y7pgLS69Im9yzs5PZcz+0Ld7+PUzj4HQ=",
+        "owner": "grumbel",
+        "repo": "cmake-modules",
+        "rev": "57e046b3f7f4017a2289bb209413fefa4b2b91f6",
+        "type": "gitlab"
       },
       "original": {
-        "type": "git",
-        "url": "file:///home/ingo/projects/lispparser/sexp-cpp/external/cmake-modules/"
+        "owner": "grumbel",
+        "repo": "cmake-modules",
+        "type": "gitlab"
       }
     }
   },
