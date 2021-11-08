@@ -39,16 +39,6 @@ if(USE_LOCALE)
 endif()
 
 function(build_dependencies)
-  if(BUILD_BENCHMARKS)
-    if(NOT TARGET benchmark)
-      # build google-benchmark
-      file(GLOB BENCHMARK_SOURCES external/benchmark/src/*.cc)
-      add_library(benchmark ${BENCHMARK_SOURCES})
-      target_include_directories(benchmark SYSTEM PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/external/benchmark/include)
-      set_target_properties(benchmark PROPERTIES CXX_CLANG_TIDY "")
-    endif()
-  endif()
 endfunction()
 build_dependencies()
 
@@ -116,6 +106,7 @@ if(BUILD_TESTS)
 endif()
 
 if(BUILD_BENCHMARKS)
+  find_package(benchmark REQUIRED)
   find_package(Threads REQUIRED)
 
   # build benchmarks
@@ -123,7 +114,15 @@ if(BUILD_BENCHMARKS)
   foreach(SOURCE ${BENCHMARKSOURCES})
     get_filename_component(SOURCE_BASENAME ${SOURCE} NAME_WE)
     add_executable(${SOURCE_BASENAME} ${SOURCE})
-    target_link_libraries(${SOURCE_BASENAME} benchmark sexp Threads::Threads)
+    set_property(TARGET ${SOURCE_BASENAME}
+      PROPERTY CXX_STANDARD 17
+      PROPERTY CXX_STANDARD_REQUIRED ON
+      PROPERTY CXX_EXTENSIONS OFF)
+    target_link_libraries(${SOURCE_BASENAME}
+      sexp
+      benchmark::benchmark
+      Threads::Threads
+      )
     set_target_properties(${SOURCE_BASENAME} PROPERTIES
       RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/benchmarks/")
     target_compile_options(${SOURCE_BASENAME} PRIVATE -std=c++1y ${WARNINGS_CXX_FLAGS})
