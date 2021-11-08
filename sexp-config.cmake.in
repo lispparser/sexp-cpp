@@ -1,0 +1,10 @@
+get_filename_component(SEXP_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+
+include(CMakeFindDependencyMacro)
+find_dependency(glm REQUIRED IMPORTED_TARGET)
+
+if(NOT TARGET sexp)
+  include("${SEXP_CMAKE_DIR}/sexp-targets.cmake")
+endif()
+
+# EOF #
