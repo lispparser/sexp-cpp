@@ -24,8 +24,6 @@
             doCheck = true;
             nativeBuildInputs = [
               pkgs.cmake
-              pkgs.ninja
-              pkgs.gcc
             ];
             buildInputs = [
               tinycmmc.defaultPackage.${system}
