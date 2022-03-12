@@ -20,6 +20,8 @@
             pname = "sexp-cpp";
             version = "0.1.0";
             src = nixpkgs.lib.cleanSource ./.;
+            cmakeFlags = [ "-DBUILD_TESTS=ON" ];
+            doCheck = true;
             nativeBuildInputs = [
               pkgs.cmake
               pkgs.ninja
@@ -27,6 +29,8 @@
             ];
             buildInputs = [
               tinycmmc.defaultPackage.${system}
+
+              pkgs.gtest
             ];
            };
         };
