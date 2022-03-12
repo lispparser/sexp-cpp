@@ -38,10 +38,6 @@ if(USE_LOCALE)
   add_definitions(-DSEXP_USE_LOCALE)
 endif()
 
-function(build_dependencies)
-endfunction()
-build_dependencies()
-
 file(GLOB SEXP_SOURCES src/*.cpp)
 file(GLOB SEXP_HEADER_SOURCES include/sexp/*.hpp)
 add_library(sexp STATIC ${SEXP_SOURCES})
@@ -55,12 +51,6 @@ target_include_directories(sexp SYSTEM PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
-install(TARGETS sexp
-  EXPORT sexp-targets
-  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/sexp)
-
 configure_file(
   "${CMAKE_CURRENT_SOURCE_DIR}/pkgconfig/sexp.pc.in"
   "${CMAKE_CURRENT_BINARY_DIR}/pkgconfig/sexp.pc"
@@ -68,18 +58,6 @@ configure_file(
 
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/pkgconfig/sexp.pc"
   DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
-
-# CMake integration
-configure_file(sexp-config.cmake.in
-  "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/sexp-config.cmake" @ONLY)
-install(FILES
-  "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/sexp-config.cmake"
-  DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/sexp/")
-export(TARGETS sexp
-  FILE "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/sexp-targets.cmake")
-export(PACKAGE sexp)
-install(EXPORT sexp-targets
-  DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/sexp/")
 
 if(BUILD_TESTS)
   find_package(GTest REQUIRED)
@@ -126,7 +104,9 @@ if(BUILD_BENCHMARKS)
     set_target_properties(${SOURCE_BASENAME} PROPERTIES
       RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/benchmarks/")
     target_compile_options(${SOURCE_BASENAME} PRIVATE -std=c++1y ${WARNINGS_CXX_FLAGS})
-  endforeach(SOURCE)
+  endforeach()
 endif()
+
+include(ExportAndInstallLibrary)
 
 # EOF #
