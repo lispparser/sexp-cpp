@@ -1,9 +1,6 @@
-get_filename_component(SEXP_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+@PACKAGE_INIT@
 
-include(CMakeFindDependencyMacro)
-
-if(NOT TARGET sexp)
-  include("${SEXP_CMAKE_DIR}/sexp-targets.cmake")
-endif()
+include("${CMAKE_CURRENT_LIST_DIR}/sexp-config-version.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/sexp-targets.cmake")
 
 # EOF #
