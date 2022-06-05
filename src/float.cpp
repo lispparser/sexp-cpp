@@ -59,7 +59,7 @@ float string2float(const std::string& text)
 void float2string(std::ostream& os, float value)
 {
 #ifdef SEXP_USE_CXX17
-  constexpr size_t len = std::numeric_limits<float>::digits10 + 1;
+  constexpr size_t len = 32;
   char buffer[len];
   auto result = std::to_chars(buffer, buffer + len, value);
   assert(result.ec == std::errc());
