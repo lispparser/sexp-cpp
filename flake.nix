@@ -20,7 +20,10 @@
             pname = "sexp-cpp";
             version = "0.1.0";
             src = nixpkgs.lib.cleanSource ./.;
-            cmakeFlags = [ "-DBUILD_TESTS=ON" ];
+            cmakeFlags = [
+              "-DBUILD_TESTS=ON"
+              "-DUSE_CXX17=ON"
+            ];
             doCheck = true;
             nativeBuildInputs = [
               pkgs.cmake
