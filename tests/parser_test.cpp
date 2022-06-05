@@ -207,12 +207,12 @@ protected:
   ParserLocaleTest() : m_oldlocale()
   {}
 
-  virtual void SetUp()
+  virtual void SetUp() override
   {
     std::locale::global(std::locale("de_DE.UTF-8"));
   }
 
-  virtual void TearDown()
+  virtual void TearDown() override
   {
     std::locale::global(m_oldlocale);
   }
