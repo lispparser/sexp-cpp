@@ -30,8 +30,16 @@ namespace sexp {
 float string2float(const std::string& text)
 {
 #ifdef SEXP_USE_CXX17
+  char const* start = text.data();
+
+  // A leading + (e.g. "+5") is not accepted by from_chars(), so skip it
+  if (!text.empty() && text[0] == '+') {
+    start += 1;
+  }
+
   float result;
-  std::from_chars(text.data(), text.data() + text.size(), result);
+  [[maybe_unused]] auto err = std::from_chars(start, text.data() + text.size(), result);
+  assert(err.ec == std::errc());
   return result;
 #else
 #  ifdef SEXP_USE_LOCALE
