@@ -15,7 +15,7 @@
       let
         pkgs = nixpkgs.legacyPackages.${system};
       in rec {
-        packages = flake-utils.lib.flattenTree {
+        packages = flake-utils.lib.flattenTree rec {
           sexp-cpp = pkgs.stdenv.mkDerivation {
             pname = "sexp-cpp";
             version = "0.1.0";
@@ -29,12 +29,13 @@
               pkgs.cmake
             ];
             buildInputs = [
-              tinycmmc.defaultPackage.${system}
+              tinycmmc.packages.${system}.default
 
               pkgs.gtest
             ];
-           };
+          };
+          default = sexp-cpp;
         };
-        defaultPackage = packages.sexp-cpp;
-      });
+      }
+    );
 }
