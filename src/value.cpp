@@ -27,9 +27,6 @@ std::string
 Value::str() const
 {
   std::ostringstream os;
-#ifdef SEXP_USE_LOCALE
-  os.imbue(std::locale::classic());
-#endif
   os << *this;
   return os.str();
 }

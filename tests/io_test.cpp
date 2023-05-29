@@ -38,17 +38,21 @@ TEST(IOTest, roundtrip)
   }
 }
 
-#ifdef SEXP_USE_LOCALE
-
 TEST(IOLocaleTest, locale_safe_output)
 {
   auto sx = sexp::Value::real(0.015625f);
   std::stringstream out;
-  out.imbue(std::locale("de_DE.UTF-8"));
+
+  try {
+    // This will fail when the locale is not installed on the system,
+    // just ignore the test it in that case and let the test succeed.
+    out.imbue(std::locale("de_DE.UTF-8"));
+  } catch (std::exception const& err) {
+    std::cerr << "warning: failed to setup locale: " << err.what() << std::endl;
+  }
+
   out << sx;
   ASSERT_EQ("0.015625", out.str());
 }
-
-#endif
 
 /* EOF */

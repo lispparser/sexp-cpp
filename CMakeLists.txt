@@ -26,12 +26,6 @@ include(GNUInstallDirs)
 include(MaximumWarnings)
 include(ClangTidy)
 
-option(USE_LOCALE "Use C++ locale support" OFF)
-
-if(USE_LOCALE)
-  add_definitions(-DSEXP_USE_LOCALE)
-endif()
-
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)

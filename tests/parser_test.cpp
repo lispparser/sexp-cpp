@@ -16,6 +16,7 @@
 
 #include <gtest/gtest.h>
 
+#include <iostream>
 #include <sstream>
 
 #include "sexp/io.hpp"
@@ -192,9 +193,6 @@ TEST(ParserTest, line_numbers)
   ASSERT_EQ(3, sexp::list_ref(sx, 2).get_line());
 }
 
-
-#ifdef SEXP_USE_LOCALE
-
 // C++ locale support comes in the form of ugly global state that
 // spreads over most string formating functions, changing locale can
 // break a lot of stuff.
@@ -209,7 +207,13 @@ protected:
 
   virtual void SetUp() override
   {
-    std::locale::global(std::locale("de_DE.UTF-8"));
+    try {
+      // This will fail when the locale is not installed on the system,
+      // just ignore the test it in that case and let the test succeed.
+      std::locale::global(std::locale("de_DE.UTF-8"));
+    } catch (std::exception const& err) {
+      std::cerr << "warning: failed to setup locale: " << err.what() << std::endl;
+    }
   }
 
   virtual void TearDown() override
@@ -229,7 +233,5 @@ TEST_F(ParserLocaleTest, locale_safe_output)
   sexp::Value sx = sexp::Value::real(0.015625f);
   ASSERT_EQ("0.015625", sx.str());
 }
-
-#endif
 
 /* EOF */
