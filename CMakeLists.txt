@@ -27,24 +27,18 @@ include(MaximumWarnings)
 include(ClangTidy)
 
 option(USE_LOCALE "Use C++ locale support" OFF)
-option(USE_CXX17 "Use C++17 features" OFF)
-
-if(USE_CXX17)
-  # for std::from_chars()
-  add_definitions(-DSEXP_USE_CXX17)
-endif()
 
 if(USE_LOCALE)
   add_definitions(-DSEXP_USE_LOCALE)
 endif()
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 file(GLOB SEXP_SOURCES src/*.cpp)
 file(GLOB SEXP_HEADER_SOURCES include/sexp/*.hpp)
 add_library(sexp STATIC ${SEXP_SOURCES})
-set_property(TARGET sexp
-    PROPERTY CXX_STANDARD 17
-    PROPERTY CXX_STANDARD_REQUIRED ON
-    PROPERTY CXX_EXTENSIONS OFF)
 set_target_properties(sexp PROPERTIES PUBLIC_HEADER "${SEXP_HEADER_SOURCES}")
 target_compile_options(sexp PRIVATE ${WARNINGS_CXX_FLAGS})
 target_include_directories(sexp SYSTEM PUBLIC
@@ -65,10 +59,6 @@ if(BUILD_TESTS)
   # build sexp tests
   file(GLOB TEST_SEXP_SOURCES tests/*.cpp)
   add_executable(test_sexp ${TEST_SEXP_SOURCES})
-  set_property(TARGET test_sexp
-    PROPERTY CXX_STANDARD 17
-    PROPERTY CXX_STANDARD_REQUIRED ON
-    PROPERTY CXX_EXTENSIONS OFF)
   target_compile_options(test_sexp PRIVATE ${WARNINGS_CXX_FLAGS})
   target_include_directories(test_sexp PUBLIC src/)
   target_link_libraries(test_sexp
@@ -92,10 +82,6 @@ if(BUILD_BENCHMARKS)
   foreach(SOURCE ${BENCHMARKSOURCES})
     get_filename_component(SOURCE_BASENAME ${SOURCE} NAME_WE)
     add_executable(${SOURCE_BASENAME} ${SOURCE})
-    set_property(TARGET ${SOURCE_BASENAME}
-      PROPERTY CXX_STANDARD 17
-      PROPERTY CXX_STANDARD_REQUIRED ON
-      PROPERTY CXX_EXTENSIONS OFF)
     target_link_libraries(${SOURCE_BASENAME}
       sexp
       benchmark::benchmark

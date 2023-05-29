@@ -17,11 +17,8 @@
 
 #include "float.hpp"
 
-#ifdef SEXP_USE_CXX17
-#  include <charconv>
-#  include <assert.h>
-#endif
-
+#include <cassert>
+#include <charconv>
 #include <limits>
 #include <sstream>
 
@@ -29,7 +26,6 @@ namespace sexp {
 
 float string2float(const std::string& text)
 {
-#ifdef SEXP_USE_CXX17
   char const* start = text.data();
 
   // A leading + (e.g. "+5") is not accepted by from_chars(), so skip it
@@ -41,41 +37,15 @@ float string2float(const std::string& text)
   [[maybe_unused]] auto err = std::from_chars(start, text.data() + text.size(), result);
   assert(err.ec == std::errc());
   return result;
-#else
-#  ifdef SEXP_USE_LOCALE
-  std::istringstream in(text);
-  in.imbue(std::locale::classic());
-
-  float value;
-  in >> value;
-
-  return value;
-#  else
-  return strtof(text.c_str(), nullptr);
-#  endif
-#endif
 }
 
 void float2string(std::ostream& os, float value)
 {
-#ifdef SEXP_USE_CXX17
   constexpr size_t len = 32;
   char buffer[len];
   auto result = std::to_chars(buffer, buffer + len, value);
   assert(result.ec == std::errc());
   os.write(buffer, result.ptr - buffer);
-#else
-  auto precision = os.precision(std::numeric_limits<float>::digits10 + 1);
-#  ifdef SEXP_USE_LOCALE
-  const auto& loc = os.getloc();
-  os.imbue(std::locale::classic());
-  os << value;
-  os.imbue(loc);
-#  else
-  os << value;
-#  endif
-  os.precision(precision);
-#endif
 }
 
 } // namespace sexp
