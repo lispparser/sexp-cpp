@@ -16,7 +16,7 @@
           default = sexp-cpp;
 
           sexp-cpp = pkgs.callPackage ./sexpcpp.nix {
-            tinycmmc = tinycmmc.packages.${pkgs.system}.default;
+            tinycmmc = tinycmmc.packages.${pkgs.stdenv.hostPlatform.system}.default;
           };
         };
       }
