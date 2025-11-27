@@ -14,7 +14,7 @@ stdenv.mkDerivation {
   cmakeFlags = [
     "-DBUILD_TESTS=ON"
   ]
-  ++ (lib.optional (!stdenv.targetPlatform.isWindows) "-DUSE_CXX17=ON");
+  ++ (lib.optional (!stdenv.hostPlatform.isWindows) "-DUSE_CXX17=ON");
 
   doCheck = true;
 
