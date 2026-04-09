@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs?ref=nixos-unstable";
 
-    tinycmmc.url = "github:grumbel/tinycmmc";
+    tinycmmc.url = "git+https://github.com/grumbel/tinycmmc.git";
     tinycmmc.inputs.nixpkgs.follows = "nixpkgs";
     tinycmmc.inputs.flake-utils.follows = "flake-utils";
   };
