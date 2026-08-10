@@ -36,7 +36,33 @@ if(WERROR)
   list(APPEND WARNINGS_CXX_FLAGS -Werror)
 endif()
 if(WARNINGS)
-  list(APPEND WARNINGS_CXX_FLAGS -Wall -Wextra -Wpedantic)
+  list(APPEND WARNINGS_CXX_FLAGS -Wall -Wextra -Wpedantic
+      -Wcast-align
+      -Wcast-qual
+      -Wconversion
+      -Wctor-dtor-privacy
+      -Wdisabled-optimization
+      -Wdouble-promotion
+      -Weffc++
+      -Wformat=2
+      -Winit-self
+      -Winvalid-pch
+      -Wlogical-op
+      -Wmissing-format-attribute
+      -Wmissing-noreturn
+      -Wunused-parameter
+      -Wnon-virtual-dtor
+      -Wold-style-cast
+      -Woverloaded-virtual
+      -Wpacked
+      -Wredundant-decls
+      -Wshadow
+      -Wsign-promo
+      -Wstrict-null-sentinel
+      -Wsuggest-override
+      -Wunreachable-code
+      -Wzero-as-null-pointer-constant
+    )
 endif()
 
 if(CLANG_TIDY AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.6)
