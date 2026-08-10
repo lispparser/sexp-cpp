@@ -26,10 +26,16 @@ option(WARNINGS "Enable extra compiler warnings" OFF)
 option(WERROR "Treat warnings as errors" OFF)
 option(CLANG_TIDY "Enable clang-tidy" OFF)
 option(CLANG_TIDY_FIX "Apply clang-tidy fixes to source code" OFF)
+option(USE_CXX17 "Use C++17 features" OFF)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+
+if(USE_CXX17)
+  # for std::from_chars()
+  add_definitions(-DSEXP_USE_CXX17)
+endif()
 
 set(WARNINGS_CXX_FLAGS "")
 if(WERROR)
