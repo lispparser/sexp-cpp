@@ -16,7 +16,7 @@
       isDev = nixpkgs.lib.strings.hasInfix "-dev" versionBase;
       version =
         if isDev then
-          "${versionBase}.${toString self.revCount}+g${gitRev}"
+          "${versionBase}.${toString (self.revCount or 0)}+g${gitRev}"
         else
           versionBase;
     in
