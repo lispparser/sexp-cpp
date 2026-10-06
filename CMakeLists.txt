@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-cmake_minimum_required(VERSION 3.10...4.1)
+cmake_minimum_required(VERSION 3.21...4.1)
 
 # Source of truth: top-level VERSION file (e.g. "0.2.0-dev"), or
 # -DPROJECT_VERSION_FULL=... from packaging (Nix may append .<revCount>+g<rev>).
