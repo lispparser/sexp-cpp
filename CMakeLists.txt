@@ -18,7 +18,8 @@ cmake_minimum_required(VERSION 3.21...4.1)
 
 # Source of truth: top-level VERSION file (e.g. "0.2.0-dev"), or
 # -DPROJECT_VERSION_FULL=... from packaging (Nix may append .<revCount>+g<rev>).
-if(NOT DEFINED PROJECT_VERSION_FULL)
+# A parent project's PROJECT_VERSION_FULL isn't ours when we are a subdirectory
+if(NOT DEFINED PROJECT_VERSION_FULL OR NOT CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
   file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/VERSION" PROJECT_VERSION_FULL LIMIT_COUNT 1)
 endif()
 
