@@ -31,6 +31,7 @@ project(sexp VERSION ${_project_version_cmake} LANGUAGES CXX)
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
+include(CheckCXXSourceCompiles)
 
 option(BUILD_TESTS "Build tests" OFF)
 option(BUILD_BENCHMARKS "Build benchmarks" OFF)
@@ -39,16 +40,35 @@ option(WARNINGS "Enable extra compiler warnings" OFF)
 option(WERROR "Treat warnings as errors" OFF)
 option(CLANG_TIDY "Enable clang-tidy" OFF)
 option(CLANG_TIDY_FIX "Apply clang-tidy fixes to source code" OFF)
-option(USE_CXX17 "Use C++17 features" OFF)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-if(USE_CXX17)
-  # for std::from_chars()
-  add_definitions(-DSEXP_USE_CXX17)
-endif()
+# std::from_chars() and std::to_chars() for float are missing from older
+# standard libraries (libstdc++ before GCC 11, from_chars() in libc++
+# before LLVM 20). They can also be declared in the headers but missing
+# from an older libstdc++.so the program is linked against (R36S), so
+# check by linking, not just by compiling. Without them src/float.cpp
+# falls back to iostreams with the classic locale.
+check_cxx_source_compiles("
+#include <charconv>
+int main(int argc, char** argv)
+{
+  float f = 0.0f;
+  double d = 0.0;
+  auto const rf = std::from_chars(argv[0], argv[0] + argc, f);
+  auto const rd = std::from_chars(argv[0], argv[0] + argc, d);
+  return static_cast<int>(rf.ec) + static_cast<int>(rd.ec) + static_cast<int>(f + static_cast<float>(d));
+}" SEXP_HAVE_FROM_CHARS_FLOAT)
+
+check_cxx_source_compiles("
+#include <charconv>
+int main(int argc, char** argv)
+{
+  auto const result = std::to_chars(argv[0], argv[0] + argc, static_cast<float>(argc));
+  return static_cast<int>(result.ec);
+}" SEXP_HAVE_TO_CHARS_FLOAT)
 
 set(WARNINGS_CXX_FLAGS "")
 if(WERROR)
@@ -104,6 +124,9 @@ set_target_properties(sexp PROPERTIES
   PUBLIC_HEADER "${SEXP_HEADER_SOURCES}"
   EXPORT_NAME sexp)
 target_compile_options(sexp PRIVATE ${WARNINGS_CXX_FLAGS})
+target_compile_definitions(sexp PRIVATE
+  $<$<BOOL:${SEXP_HAVE_FROM_CHARS_FLOAT}>:SEXP_HAVE_FROM_CHARS_FLOAT>
+  $<$<BOOL:${SEXP_HAVE_TO_CHARS_FLOAT}>:SEXP_HAVE_TO_CHARS_FLOAT>)
 target_include_directories(sexp SYSTEM PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
